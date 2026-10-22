@@ -35,6 +35,18 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 - **Las fotos de las ternas se ven completas**: los candidatos, la historia y el ganador muestran la
   foto **entera** (sin recortes) sobre un fondo desenfocado de la misma foto. En los círculos
   pequeños (portada, podio, tabla de puestos) se recorta desde arriba para que no se corte la cara.
+- **Se pueden ampliar fotos y videos**:
+  - **Fotos**: al tocarlas se abren en grande (completas, sin recortes) en un visor con fondo negro.
+    Funciona en la historia de cada candidato y en la foto del ganador.
+  - **Videos**: el botón **▶** de la grilla de candidatos abre el video en grande, y dentro de la
+    historia el botón **⛶ Ver en pantalla completa** lo abre con un reproductor grande que tiene el
+    botón **⛶ Pantalla completa** (también con doble clic sobre el video).
+- **La Gordiada del año** anuncia que el premio se entrega y quién cuenta las historias: antes de
+  revelar aparece el bloque **🏆 El premio** ("Este premio sera entregado por el mismisimo Franco
+  Bernardi (alias Gordi) al ganador"), arriba de los candidatos dice *"Las historias las cuenta
+  Franco Bernardi (alias Gordi)"* y en cada historia *"Historia contada por Franco Bernardi
+  (alias Gordi)"*. Se configura con `mencion`, `mencion_titulo` y `narrador` en
+  `web/src/data/categories.json`.
 
 ### Rutas
 
@@ -127,7 +139,6 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 | `nombre` | Cómo se muestra y cómo queda registrado el voto. |
 | `grupo` | Solo informativo (`achura` o `invitado`). No separa la lista. |
 | `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. **No se muestra** (la votación es solo con iniciales), pero queda guardada por si se quiere usar. |
-
 - Todos votan **una sola vez** y el voto vale **1** (las anotaciones `(+2)` / `(+1)` no cuentan).
 - `"activo": false` cierra la votación.
 - Para cambiar los nombres, se edita `data/invitados.json` y se recarga el sitio

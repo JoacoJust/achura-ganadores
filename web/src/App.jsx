@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
@@ -312,6 +312,127 @@ function FotoEntera({ src, alt, className = '', size = 70 }) {
   )
 }
 
+/* ------------------------- ampliar fotos y videos ------------------------- */
+
+/* La foto EN GRANDE (a pantalla completa, sin recortes) */
+function ModalImagen({ src, alt, onCerrar }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCerrar()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onCerrar])
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-reveal"
+      onClick={(e) => {
+        e.stopPropagation()
+        onCerrar()
+      }}
+    >
+      <button
+        onClick={onCerrar}
+        aria-label="Cerrar"
+        className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-cyan/60 transition text-lg"
+      >
+        ✕
+      </button>
+      <div className="max-h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+        <img
+          src={src}
+          alt={alt || ''}
+          className="max-h-[88vh] max-w-[94vw] object-contain rounded-xl"
+        />
+      </div>
+    </div>
+  )
+}
+
+/* El video EN GRANDE, con botón de pantalla completa */
+function ModalVideo({ src, poster, onCerrar }) {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCerrar()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onCerrar])
+
+  async function pantallaCompleta() {
+    const v = ref.current
+    if (!v) return
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+        return
+      }
+      if (v.requestFullscreen) await v.requestFullscreen()
+      else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen()
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen()
+    } catch (e) {}
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-reveal"
+      onClick={(e) => {
+        e.stopPropagation()
+        onCerrar()
+      }}
+    >
+      <button
+        onClick={onCerrar}
+        aria-label="Cerrar"
+        className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-cyan/60 transition text-lg z-10"
+      >
+        ✕
+      </button>
+
+      <div className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+        <video
+          ref={ref}
+          src={src}
+          poster={poster}
+          controls
+          autoPlay
+          playsInline
+          onDoubleClick={pantallaCompleta}
+          className="w-full max-h-[78vh] rounded-2xl bg-black"
+        />
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <button
+            onClick={pantallaCompleta}
+            className="inline-flex items-center gap-2 border border-cyan/50 hover:bg-cyan/10 hover:text-cyan text-cyan/90 rounded-full px-5 py-2.5 text-sm transition"
+          >
+            ⛶ Pantalla completa
+          </button>
+          <button
+            onClick={onCerrar}
+            className="border border-white/20 hover:bg-white/5 rounded-full px-5 py-2.5 text-sm text-white/70 transition"
+          >
+            Cerrar
+          </button>
+        </div>
+        <p className="mt-3 text-center text-[11px] text-white/35">
+          Doble clic en el video para ponerlo en pantalla completa.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function BadgeEnVivo({ texto = 'En vivo' }) {
   return (
     <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-cyan/80">
@@ -568,6 +689,7 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
     }
   })
   const [historia, setHistoria] = useState(null)
+  const [fotoGanador, setFotoGanador] = useState(null)
 
   // Una terna ya mostrada no se vuelve a revelar: se entra directo al resultado
   const yaMostrada = mostradas.includes(cat.id)
@@ -607,6 +729,16 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
       </div>
 
+      {/* La mención (o el premio) se anuncia siempre, antes de revelar */}
+      {cat.mencion && cat.mencion.trim() && (
+        <div className="mt-8 rounded-2xl border border-gold/30 bg-gold/[0.04] p-5 sm:p-6 text-center">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">
+            {cat.mencion_titulo && cat.mencion_titulo.trim() ? cat.mencion_titulo : '🎖 Mención honorífica'}
+          </p>
+          <p className="mt-2 text-white/75">{cat.mencion}</p>
+        </div>
+      )}
+
       {/* 1) los candidatos y sus historias */}
       <Candidatos cat={cat} onAbrir={setHistoria} />
 
@@ -643,12 +775,18 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
                   <div className={`grid ${varios ? 'grid-cols-2' : 'grid-cols-1'} gap-px bg-white/10`}>
                     {ganadores.map((g) => (
                       <div key={g.id} className="relative h-64 md:h-auto md:min-h-[400px]">
-                        <FotoEntera
-                          src={g.foto}
-                          alt={g.nombre}
-                          className="absolute inset-0 w-full h-full"
-                          size={90}
-                        />
+                        <button
+                          onClick={() => setFotoGanador(g.foto)}
+                          aria-label={`Ampliar la foto de ${g.nombre}`}
+                          className="absolute inset-0 w-full h-full cursor-zoom-in"
+                        >
+                          <FotoEntera
+                            src={g.foto}
+                            alt={g.nombre}
+                            className="absolute inset-0 w-full h-full"
+                            size={90}
+                          />
+                        </button>
                       </div>
                     ))}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent via-transparent to-ink/90 md:to-ink/95" />
@@ -699,13 +837,6 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
               <p className="text-white/50 mt-3 max-w-md mx-auto">
                 Todavía no hay votos cargados en esta terna. Cuando se cierre la votación, acá aparece el ganador.
               </p>
-            </div>
-          )}
-
-          {cat.mencion && cat.mencion.trim() && (
-            <div className="mt-8 rounded-2xl border border-gold/30 bg-gold/[0.04] p-5 sm:p-6">
-              <p className="text-[11px] uppercase tracking-[0.3em] text-gold">🎖 Mención honorífica</p>
-              <p className="mt-2 text-white/75">{cat.mencion}</p>
             </div>
           )}
 
@@ -774,6 +905,10 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
       )}
 
       {historia && <ModalHistoria cat={cat} nom={historia} onCerrar={() => setHistoria(null)} />}
+
+      {fotoGanador && (
+        <ModalImagen src={fotoGanador} alt="Ganador" onCerrar={() => setFotoGanador(null)} />
+      )}
     </div>
   )
 }
@@ -785,12 +920,17 @@ function tieneHistoria(n) {
 }
 
 function Candidatos({ cat, onAbrir }) {
+  const [videoAbierto, setVideoAbierto] = useState(null)
+
   return (
     <section id="candidatos" className="mt-12">
       <div className="text-center">
         <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">La terna</p>
         <h2 className="font-serif text-2xl sm:text-3xl mt-3">Los candidatos</h2>
         <p className="mt-3 text-xs text-white/40">Tocá a un candidato para ver su historia.</p>
+        {cat.narrador && (
+          <p className="mt-2 text-xs text-gold/85">Las historias las cuenta {cat.narrador}</p>
+        )}
         <div className="gold-rule h-px w-32 mx-auto mt-5" />
       </div>
 
@@ -810,8 +950,15 @@ function Candidatos({ cat, onAbrir }) {
                 size={60}
               />
               {esVideo(n.media) && (
-                <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm">
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setVideoAbierto(n)
+                  }}
+                  title="Ver el video en pantalla completa"
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                >
+                  <span className="bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm group-hover:bg-cyan group-hover:text-black transition">
                     ▶
                   </span>
                 </span>
@@ -828,6 +975,14 @@ function Candidatos({ cat, onAbrir }) {
           </button>
         ))}
       </div>
+
+      {videoAbierto && (
+        <ModalVideo
+          src={videoAbierto.media}
+          poster={videoAbierto.poster}
+          onCerrar={() => setVideoAbierto(null)}
+        />
+      )}
     </section>
   )
 }
@@ -835,6 +990,8 @@ function Candidatos({ cat, onAbrir }) {
 function ModalHistoria({ cat, nom, onCerrar }) {
   const bloques = (nom.story || []).filter((b) => (b.contenido || '').trim())
   const video = esVideo(nom.media)
+  const [fotoGrande, setFotoGrande] = useState(null)
+  const [videoGrande, setVideoGrande] = useState(null)
 
   useEffect(() => {
     const onKey = (e) => {
@@ -857,16 +1014,36 @@ function ModalHistoria({ cat, nom, onCerrar }) {
           <p className="text-[10px] uppercase tracking-[0.3em] text-cyan/80">{cat.nombre}</p>
           <h3 className="font-serif text-2xl sm:text-3xl mt-1">{nom.nombre}</h3>
           <div className="gold-rule h-px w-24 mt-4" />
+          {cat.narrador && (
+            <p className="mt-3 text-sm text-gold/90">Historia contada por {cat.narrador}</p>
+          )}
 
           {video ? (
-            <video src={nom.media} poster={nom.poster} controls autoPlay className="w-full rounded-xl mt-6" />
+            <div className="mt-6">
+              <video src={nom.media} poster={nom.poster} controls autoPlay playsInline className="w-full rounded-xl" />
+              <button
+                onClick={() => setVideoGrande(nom)}
+                className="mt-3 inline-flex items-center gap-2 border border-cyan/50 hover:bg-cyan/10 hover:text-cyan text-cyan/90 rounded-full px-4 py-2 text-xs uppercase tracking-[0.15em] transition"
+              >
+                ⛶ Ver en pantalla completa
+              </button>
+            </div>
           ) : (
-            <FotoEntera
-              src={fotoDe(nom)}
-              alt={nom.nombre}
-              className="w-full h-80 rounded-xl mt-6"
-              size={60}
-            />
+            <button
+              onClick={() => setFotoGrande(fotoDe(nom))}
+              aria-label={`Ampliar la foto de ${nom.nombre}`}
+              className="block w-full cursor-zoom-in"
+            >
+              <FotoEntera
+                src={fotoDe(nom)}
+                alt={nom.nombre}
+                className="w-full h-80 rounded-xl mt-6"
+                size={60}
+              />
+              <span className="mt-2 block text-[11px] uppercase tracking-[0.2em] text-white/35">
+                Tocá la foto para verla grande
+              </span>
+            </button>
           )}
 
           {bloques.length > 0 && (
@@ -893,6 +1070,17 @@ function ModalHistoria({ cat, nom, onCerrar }) {
           </button>
         </div>
       </div>
+
+      {fotoGrande && (
+        <ModalImagen src={fotoGrande} alt={nom.nombre} onCerrar={() => setFotoGrande(null)} />
+      )}
+      {videoGrande && (
+        <ModalVideo
+          src={videoGrande.media}
+          poster={videoGrande.poster}
+          onCerrar={() => setVideoGrande(null)}
+        />
+      )}
     </div>
   )
 }

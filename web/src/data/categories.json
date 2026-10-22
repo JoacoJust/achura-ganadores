@@ -678,7 +678,9 @@
     "nombre": "Gordiada del año",
     "tipo": "story",
     "poster": "/media/gordiada-del-ano.jpg",
-    "mencion": "Este premio sera otorgado por el mismisimo Franco Bernardi al ganador.",
+    "mencion": "Este premio sera entregado por el mismisimo Franco Bernardi (alias Gordi) al ganador.",
+    "mencion_titulo": "🏆 El premio",
+    "narrador": "Franco Bernardi (alias Gordi)",
     "nominados": [
       {
         "id": "n69",
@@ -732,8 +734,7 @@
           }
         ]
       }
-    ],
-    "mencion_titulo": ""
+    ]
   },
   {
     "id": "mejor-momento-mdt",
