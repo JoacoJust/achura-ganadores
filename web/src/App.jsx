@@ -3,15 +3,16 @@ import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
 /* ---------------------------------------------------------------
-   Sitio de Achura Awards.
+   Achura Awards.
 
-   Dos secciones:
-   1) OUTFIT DEL DÍA (público)  -> #/        votan los invitados
-   2) TERNAS Y GANADORES (privado) -> #/ternas  pide contraseña
+   Tres partes:
+   1) VOTAR OUTFIT DEL DÍA (público) -> #/      el invitado ingresa su nombre y vota
+   2) TERNAS Y GANADORES (privado)   -> #/ternas contraseña + resultados EN VIVO
+   3) OUTFIT DEL DÍA (privado)      -> #/outfit-panel ranking en vivo + quiénes votaron
 
    Las ternas (nombres, fotos, videos) salen de web/src/data/categories.json,
-   la misma copia de la app de votación. Los resultados NO viajan en el
-   bundle: se piden a GET /api/resultados, que exige la cookie de acceso.
+   la misma copia de la app de votación. Los resultados NO viajan en el bundle:
+   se piden a la API, que exige la cookie de acceso.
 ---------------------------------------------------------------- */
 
 const esVideo = (m) => /\.(mp4|webm|mov|m4v|ogv)$/i.test(m || '') && !/placeholder/i.test(m || '')
@@ -40,17 +41,18 @@ function resultadoDe(datos, id) {
     ganadores: [],
     empate: false,
     empatados: [],
+    permitido: true,
+    pesos: [2, 1],
   }
 }
 
 function ganadoresDe(datos, id) {
   const r = resultadoDe(datos, id)
   if (Array.isArray(r.ganadores) && r.ganadores.length) return r.ganadores
-  const top = (r.puestos || []).filter((p) => p.votos > 0).slice(0, 1)
-  return top
+  return (r.puestos || []).filter((p) => p.votos > 0).slice(0, 1)
 }
 
-/* ---------------- ruteo por hash (#/, #/ternas, #/terna/:id) ---------------- */
+/* ---------------- ruteo por hash (#/, #/ternas, #/terna/:id, #/outfit-panel) ---------------- */
 
 function useRuta() {
   const [hash, setHash] = useState(() => window.location.hash || '#/')
@@ -67,45 +69,75 @@ function useRuta() {
   return hash
 }
 
-const esRutaPrivada = (hash) => hash === '#/ternas' || hash.startsWith('#/terna/')
+const esRutaPrivada = (hash) =>
+  hash === '#/ternas' || hash.startsWith('#/terna/') || hash === '#/outfit-panel'
 
 export default function App() {
   const hash = useRuta()
   const [res, setRes] = useState({ estado: 'cargando', datos: null, error: '' })
 
-  async function cargarResultados() {
+  // Chequeo de acceso (no necesita la base)
+  async function chequearAcceso() {
     try {
       const r = await fetch('/api/resultados', { headers: { 'Cache-Control': 'no-cache' } })
       if (r.status === 401) {
         setRes({ estado: 'sin_acceso', datos: null, error: '' })
         return
       }
-      if (!r.ok) {
-        const d = await r.json().catch(() => ({}))
-        throw new Error(d.error || 'No se pudieron cargar los resultados')
+      // 503 = todavía no hay resultados.json generado: el acceso está bien igual
+      if (r.status === 503) {
+        setRes((s) => (s.estado === 'ok' ? s : { ...s, estado: 'ok' }))
+        return
       }
-      setRes({ estado: 'ok', datos: await r.json(), error: '' })
+      if (!r.ok) throw new Error('No se pudieron cargar los resultados')
+      const datos = await r.json()
+      setRes({ estado: 'ok', datos, error: '' })
     } catch (e) {
       setRes({ estado: 'error', datos: null, error: e.message })
     }
   }
 
+  // Resultados EN VIVO: se recalculan contra la base cada 8 segundos
+  async function cargarVivo() {
+    try {
+      const r = await fetch('/api/resultados/vivo', { headers: { 'Cache-Control': 'no-cache' } })
+      if (r.status === 401) {
+        setRes({ estado: 'sin_acceso', datos: null, error: '' })
+        return
+      }
+      if (!r.ok) return
+      setRes({ estado: 'ok', datos: await r.json(), error: '' })
+    } catch (e) {
+      // si falla la base nos quedamos con lo último que se vio
+    }
+  }
+
   useEffect(() => {
-    cargarResultados()
+    chequearAcceso()
+    cargarVivo()
+    const t = setInterval(cargarVivo, 8000)
+    return () => clearInterval(t)
   }, [])
+
+  async function recargar() {
+    await chequearAcceso()
+    await cargarVivo()
+  }
 
   let vista
   if (hash.startsWith('#/terna/')) {
-    vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={cargarResultados} />
+    vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={recargar} />
   } else if (hash === '#/ternas') {
-    vista = <Ternas res={res} recargar={cargarResultados} />
+    vista = <Ternas res={res} recargar={recargar} />
+  } else if (hash === '#/outfit-panel') {
+    vista = <OutfitPanel res={res} recargar={recargar} />
   } else {
     vista = <Outfit />
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header hash={hash} autorizado={res.estado === 'ok'} recargar={cargarResultados} />
+      <Header hash={hash} autorizado={res.estado === 'ok'} recargar={recargar} />
       <main className="flex-1">{vista}</main>
       <Footer generado={res.estado === 'ok' ? res.datos && res.datos.generado : null} />
     </div>
@@ -115,50 +147,48 @@ export default function App() {
 /* ------------------------------- layout ------------------------------- */
 
 function Header({ hash, autorizado, recargar }) {
-  const enOutfit = !esRutaPrivada(hash)
+  const enVotar = hash === '#/' || hash === ''
+  const enTernas = hash === '#/ternas' || hash.startsWith('#/terna/')
+  const enPanel = hash === '#/outfit-panel'
 
   async function salir() {
     await fetch('/api/salir', { method: 'POST' })
+    window.location.hash = '#/'
     await recargar()
   }
 
+  const link = (activo) =>
+    `px-2.5 sm:px-3 py-2 rounded-full transition ${
+      activo ? 'text-gold bg-white/5' : 'text-white/60 hover:text-white'
+    }`
+
   return (
     <header className="sticky top-0 z-20 backdrop-blur-md bg-ink/70 border-b border-white/10">
-      <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
-        <a href="#/" className="flex items-center gap-3 group">
+      <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-3">
+        <a href="#/" className="flex items-center gap-3 group shrink-0">
           <span className="text-gold group-hover:text-cyan transition">
             <Emblem size={34} />
           </span>
-          <span className="leading-none">
+          <span className="leading-none hidden sm:block">
             <span className="block font-serif text-sm tracking-[0.28em] uppercase">Achura Awards</span>
             <span className="block text-[10px] tracking-[0.32em] uppercase text-cyan/80 mt-1">2026</span>
           </span>
         </a>
 
-        <nav className="flex items-center gap-1 text-[11px] sm:text-xs uppercase tracking-[0.16em]">
-          <a
-            href="#/"
-            className={`px-3 py-2 rounded-full transition ${
-              enOutfit ? 'text-gold bg-white/5' : 'text-white/60 hover:text-white'
-            }`}
-          >
-            Outfit del día
+        <nav className="flex items-center gap-0.5 text-[11px] sm:text-xs uppercase tracking-[0.14em]">
+          <a href="#/" className={link(enVotar)}>
+            Votar outfit
           </a>
-          <a
-            href="#/ternas"
-            className={`px-3 py-2 rounded-full transition flex items-center gap-1.5 ${
-              !enOutfit ? 'text-gold bg-white/5' : 'text-white/60 hover:text-white'
-            }`}
-            title="Sección privada"
-          >
+          <a href="#/ternas" className={`${link(enTernas)} flex items-center gap-1.5`} title="Sección privada">
             <span className="text-[10px]">{autorizado ? '★' : '🔒'}</span> Ternas
           </a>
-          {autorizado && !enOutfit && (
-            <button
-              onClick={salir}
-              className="ml-1 px-3 py-2 rounded-full text-white/45 hover:text-white transition"
-              title="Cerrar la sección privada"
-            >
+          {autorizado && (
+            <a href="#/outfit-panel" className={link(enPanel)}>
+              Outfit en vivo
+            </a>
+          )}
+          {autorizado && (
+            <button onClick={salir} className="ml-1 px-2 py-2 rounded-full text-white/40 hover:text-white transition">
               Salir
             </button>
           )}
@@ -174,7 +204,7 @@ function Footer({ generado }) {
       <div className="max-w-6xl mx-auto px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
         <span className="tracking-[0.25em] uppercase">Achura Awards</span>
         {generado ? (
-          <span>Resultados actualizados {new Date(generado).toLocaleDateString('es-AR')}</span>
+          <span>Resultados actualizados {new Date(generado).toLocaleTimeString('es-AR')}</span>
         ) : (
           <span>Outfit del día</span>
         )}
@@ -194,6 +224,15 @@ function Foto({ src, alt, className = '', size = 70 }) {
     )
   }
   return <img src={src} alt={alt} loading="lazy" className={className} onError={() => setError(true)} />
+}
+
+function BadgeEnVivo({ texto = 'En vivo' }) {
+  return (
+    <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-cyan/80">
+      <span className="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse" />
+      {texto}
+    </span>
+  )
 }
 
 /* ------------------------- acceso a la sección privada ------------------------- */
@@ -259,7 +298,7 @@ function Acceso({ onOk }) {
         </form>
 
         <a href="#/" className="inline-block mt-6 text-xs text-white/40 hover:text-white transition">
-          ← Ir al Outfit del día
+          ← Ir a votar el outfit
         </a>
       </div>
     </div>
@@ -296,6 +335,9 @@ function Ternas({ res, recargar }) {
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
             <div className="text-center animate-fade-up">
+              <div className="flex justify-center mb-4">
+                <BadgeEnVivo />
+              </div>
               <p className="text-[11px] uppercase tracking-[0.45em] text-cyan/80">Sección privada</p>
               <h1 className="font-serif text-4xl sm:text-6xl mt-4 tracking-wide">
                 LOS <span className="text-gold">GANADORES</span>
@@ -305,7 +347,7 @@ function Ternas({ res, recargar }) {
                 Entrá a cada terna para ver el ganador y cómo quedaron los puestos.
               </p>
               <p className="mt-4 text-xs text-white/35">
-                {definidas} de {categorias.length} ternas con votos
+                {definidas} de {categorias.length} ternas con votos · se actualiza solo
               </p>
             </div>
 
@@ -343,8 +385,6 @@ function Ternas({ res, recargar }) {
                 )
               })}
             </div>
-
-            <OutfitEnVivo />
 
             <p className="mt-16 text-center text-[11px] text-white/25">
               Cada persona votó 2 veces por terna: el 1º voto vale 2 puntos y el 2º vale 1 punto.
@@ -385,6 +425,7 @@ function DetalleTerna({ cat, datos }) {
   const ganadores = ganadoresDe(datos, cat.id)
   const varios = ganadores.length > 1
   const conVotos = puestos.filter((p) => p.votos > 0)
+  const abierta = r.permitido !== false
 
   function irAPuestos() {
     const el = document.getElementById('puestos')
@@ -398,6 +439,9 @@ function DetalleTerna({ cat, datos }) {
       </a>
 
       <div className="mt-6 text-center">
+        <div className="flex justify-center mb-4">
+          {abierta ? <BadgeEnVivo /> : <span className="text-[10px] uppercase tracking-[0.25em] text-white/35">Cerrada</span>}
+        </div>
         <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">{cat.nombre}</p>
         <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">
           {varios ? 'Los ganadores' : 'El ganador'}
@@ -480,12 +524,22 @@ function DetalleTerna({ cat, datos }) {
 
       <section id="puestos" className="mt-24 scroll-mt-24">
         <div className="text-center">
+          <div className="flex justify-center mb-3">
+            <BadgeEnVivo texto="Puestos en vivo" />
+          </div>
           <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Puestos</p>
           <h2 className="font-serif text-2xl sm:text-3xl mt-3">
             {r.total > 0 ? 'Así quedó la terna' : 'Los candidatos'}
           </h2>
           {varios && r.total > 0 && (
             <p className="mt-3 text-xs text-cyan/70">Premio compartido: los dos primeros puestos son ganadores.</p>
+          )}
+          {r.total > 0 && (
+            <p className="text-xs text-white/40 mt-3">
+              {Array.isArray(r.pesos) && r.pesos.length === 1
+                ? 'En esta terna cada persona vota una sola vez: 2 puntos.'
+                : 'Cada persona votó 2 veces: el 1º voto vale 2 puntos y el 2º vale 1 punto.'}
+            </p>
           )}
           <div className="gold-rule h-px w-32 mx-auto mt-5" />
         </div>
@@ -502,6 +556,7 @@ function DetalleTerna({ cat, datos }) {
                   posicion={i + 1}
                   maximo={puestos[0]?.votos || 1}
                   esGanador={ganadores.some((g) => g.id === p.id)}
+                  lider={!varios && i === 0 && abierta}
                 />
               ))}
             </div>
@@ -565,7 +620,7 @@ function Podio({ puestos }) {
   )
 }
 
-function FilaPuesto({ puesto, posicion, maximo, esGanador }) {
+function FilaPuesto({ puesto, posicion, maximo, esGanador, lider }) {
   const ancho = maximo > 0 ? Math.max((puesto.votos / maximo) * 100, puesto.votos > 0 ? 6 : 0) : 0
 
   return (
@@ -581,6 +636,7 @@ function FilaPuesto({ puesto, posicion, maximo, esGanador }) {
           <p className={`truncate ${esGanador ? 'text-gold' : 'text-white/85'}`}>
             {esGanador && <span className="mr-1">★</span>}
             {puesto.nombre}
+            {lider && <span className="ml-2 text-[10px] uppercase tracking-[0.2em] text-cyan/70">Líder</span>}
           </p>
           <p className="text-xs text-white/45 whitespace-nowrap">
             {puesto.votos} pts · {puesto.pct}%
@@ -597,7 +653,32 @@ function FilaPuesto({ puesto, posicion, maximo, esGanador }) {
   )
 }
 
-/* ------------------ outfit del día en vivo (solo organizador) ------------------ */
+/* ------------------- outfit del día EN VIVO (privado, organizador) ------------------- */
+
+function OutfitPanel({ res, recargar }) {
+  return (
+    <BloquePrivado res={res} recargar={recargar}>
+      {() => (
+        <div className="max-w-5xl mx-auto px-5 pt-12 pb-20">
+          <a href="#/ternas" className="text-sm text-white/50 hover:text-white transition">
+            ← Volver a las ternas
+          </a>
+
+          <div className="mt-6 text-center">
+            <div className="flex justify-center mb-4">
+              <BadgeEnVivo />
+            </div>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Organizador</p>
+            <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">Outfit del día</h1>
+            <div className="gold-rule h-px w-40 mx-auto mt-5" />
+          </div>
+
+          <OutfitEnVivo />
+        </div>
+      )}
+    </BloquePrivado>
+  )
+}
 
 function OutfitEnVivo() {
   const [d, setD] = useState(null)
@@ -608,30 +689,30 @@ function OutfitEnVivo() {
       if (!r.ok) return
       setD(await r.json())
     } catch (e) {
-      // si falla, dejamos lo último que se vio
+      // nos quedamos con lo último que se vio
     }
   }
 
   useEffect(() => {
     cargar()
-    const t = setInterval(cargar, 6000)
+    const t = setInterval(cargar, 5000)
     return () => clearInterval(t)
   }, [])
 
-  if (!d) return null
+  if (!d) return <p className="text-center text-white/40 py-16">Cargando…</p>
 
   const maximo = d.ranking[0]?.votos || 1
 
   return (
-    <section className="mt-20 border-t border-white/10 pt-12">
+    <div className="mt-10">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">En vivo</p>
-          <h2 className="font-serif text-2xl sm:text-3xl mt-2">{d.titulo || 'Outfit del día'}</h2>
+          <h2 className="font-serif text-2xl sm:text-3xl">Ranking en vivo</h2>
+          <p className="text-xs text-white/40 mt-2">
+            {d.total} {d.total === 1 ? 'voto' : 'votos'} · {d.activo ? 'votación abierta' : 'votación cerrada'}
+          </p>
         </div>
-        <p className="text-xs text-white/40">
-          {d.total} {d.total === 1 ? 'voto' : 'votos'} · {d.activo ? 'votación abierta' : 'votación cerrada'}
-        </p>
+        <BadgeEnVivo texto="Se actualiza solo" />
       </div>
 
       <div className="mt-8 grid md:grid-cols-2 gap-8">
@@ -670,7 +751,7 @@ function OutfitEnVivo() {
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">Quiénes votaron</p>
           {d.ultimos.length ? (
-            <ul className="mt-3 space-y-1.5 max-h-64 overflow-auto pr-2">
+            <ul className="mt-3 space-y-1.5 max-h-80 overflow-auto pr-2">
               {d.ultimos.map((v, i) => (
                 <li
                   key={i}
@@ -688,7 +769,7 @@ function OutfitEnVivo() {
           )}
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 
@@ -733,11 +814,7 @@ function Outfit() {
 
   useEffect(() => {
     cargar()
-  }, [])
-
-  // Resultados en vivo mientras dura la noche
-  useEffect(() => {
-    const t = setInterval(cargar, 6000)
+    const t = setInterval(cargar, 15000)
     return () => clearInterval(t)
   }, [])
 
@@ -773,16 +850,12 @@ function Outfit() {
   const votado = invitados.find((i) => i.id === miVoto)
   const puedenVotar = activo && baseOk && !yaVoto
   const necesitaNombre = puedenVotar && !nombre.trim()
-  const ranking = [...invitados].sort((a, b) => b.votos - a.votos)
-  const maximo = ranking[0]?.votos || 1
 
   return (
     <div className="max-w-5xl mx-auto px-5 pt-12 pb-20">
       <div className="text-center">
         <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Votación de la noche</p>
-        <h1 className="font-serif text-4xl sm:text-6xl mt-4 tracking-wide">
-          {titulo || 'Outfit del día'}
-        </h1>
+        <h1 className="font-serif text-4xl sm:text-6xl mt-4 tracking-wide">{titulo || 'Outfit del día'}</h1>
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
         <p className="mt-5 text-white/55 text-sm max-w-md mx-auto">
           {necesitaNombre
@@ -790,8 +863,8 @@ function Outfit() {
             : puedenVotar
               ? 'Elegí el mejor outfit de la noche. Un voto por dispositivo.'
               : yaVoto
-                ? 'Ya registraste tu voto. Estos son los resultados en vivo.'
-                : 'La votación está cerrada. Estos son los resultados.'}
+                ? '¡Gracias por votar!'
+                : 'La votación está cerrada.'}
         </p>
       </div>
 
@@ -853,10 +926,21 @@ function Outfit() {
       )}
 
       {yaVoto && (
-        <div className="mt-8 rounded-2xl border border-gold/40 bg-gold/[0.06] p-5 text-center">
-          <p className="text-gold text-sm uppercase tracking-[0.2em]">✓ Tu voto</p>
-          <p className="font-serif text-2xl mt-2">{votado ? votado.nombre : 'Registrado'}</p>
-          {miNombre && <p className="mt-1 text-xs text-white/40">Votó {miNombre}</p>}
+        <div className="mt-12 max-w-md mx-auto rounded-3xl border border-gold/40 bg-gold/[0.06] p-8 text-center animate-reveal">
+          <p className="text-4xl">✓</p>
+          <p className="font-serif text-3xl mt-4">{votado ? votado.nombre : 'Voto registrado'}</p>
+          {miNombre && <p className="text-sm text-white/50 mt-3">Tu voto quedó registrado como {miNombre}.</p>}
+          <p className="text-xs text-white/35 mt-5">
+            Los resultados se dan en la noche de los premios.
+          </p>
+        </div>
+      )}
+
+      {!activo && !yaVoto && (
+        <div className="mt-12 max-w-md mx-auto rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center">
+          <p className="text-3xl">🔒</p>
+          <p className="font-serif text-2xl mt-4">La votación está cerrada</p>
+          <p className="text-sm text-white/45 mt-3">Gracias a todos los que participaron.</p>
         </div>
       )}
 
@@ -873,40 +957,6 @@ function Outfit() {
               <p className="mt-3 text-sm text-white/85 group-hover:text-white truncate">{inv.nombre}</p>
               <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-cyan/70 group-hover:text-cyan">Votar →</p>
             </button>
-          ))}
-        </div>
-      )}
-
-      {(yaVoto || !activo) && (
-        <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-          {ranking.map((inv) => (
-            <div
-              key={inv.id}
-              className={`rounded-2xl border p-3 ${
-                inv.id === miVoto ? 'border-gold/50 bg-gold/[0.06]' : 'border-white/10 bg-white/[0.03]'
-              }`}
-            >
-              <div className="relative">
-                <FotoInvitado invitado={inv} className="w-full aspect-[4/5] rounded-xl" />
-                {inv.votos > 0 && ranking[0].votos === inv.votos && (
-                  <span className="absolute top-2 left-2 bg-gold text-black text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    ★ TOP
-                  </span>
-                )}
-              </div>
-              <p className={`mt-3 text-sm truncate ${inv.id === miVoto ? 'text-gold' : 'text-white/85'}`}>
-                {inv.nombre}
-              </p>
-              <div className="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                <div
-                  className={`h-full rounded-full ${inv.id === miVoto ? 'bg-gold' : 'bg-cyan/60'}`}
-                  style={{ width: `${inv.votos > 0 ? Math.max((inv.votos / maximo) * 100, 8) : 0}%` }}
-                />
-              </div>
-              <p className="mt-2 text-[11px] text-white/45">
-                {inv.votos} {inv.votos === 1 ? 'voto' : 'votos'}
-              </p>
-            </div>
           ))}
         </div>
       )}

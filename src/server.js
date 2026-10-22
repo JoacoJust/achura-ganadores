@@ -7,6 +7,7 @@ const express = require('express');
 
 const { connect } = require('./db');
 const OutfitVoto = require('./models/OutfitVoto');
+const { calcularResultados } = require('./resultados');
 
 const PORT = process.env.PORT || 3003;
 const ROOT = path.join(__dirname, '..');
@@ -114,6 +115,27 @@ app.get('/api/resultados', (req, res) => {
     res.type('application/json').send(raw);
   } catch (e) {
     res.status(503).json({ error: 'Todavía no hay resultados generados' });
+  }
+});
+
+// Resultados EN VIVO: se calculan contra la base en el momento (para el organizador).
+let cacheVivo = { ts: 0, data: null };
+
+app.get('/api/resultados/vivo', async (req, res) => {
+  if (!tieneAcceso(req)) return res.status(401).json({ error: 'Necesitás la contraseña' });
+  try {
+    const ahora = Date.now();
+    if (cacheVivo.data && ahora - cacheVivo.ts < 4000) {
+      res.setHeader('Cache-Control', 'no-store');
+      return res.json(cacheVivo.data);
+    }
+    const data = await calcularResultados();
+    cacheVivo = { ts: ahora, data };
+    res.setHeader('Cache-Control', 'no-store');
+    res.json(data);
+  } catch (e) {
+    console.error('Resultados en vivo:', e.message);
+    res.status(503).json({ error: 'No se pudieron calcular los resultados' });
   }
 });
 
