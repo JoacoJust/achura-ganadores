@@ -189,6 +189,7 @@ app.get('/api/outfit/detalle', async (req, res) => {
         id: i.id,
         nombre: i.nombre,
         foto: i.foto || '',
+        grupo: i.grupo || 'invitado',
         votos: votos.filter((v) => v.invitado === i.id).length,
       }))
       .sort((a, b) => b.votos - a.votos);

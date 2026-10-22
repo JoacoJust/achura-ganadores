@@ -23,7 +23,11 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 - Al entrar a una terna se ve **la terna completa**: primero los **candidatos con sus historias**
   (tocá a un candidato para abrirla), después un botón **✦ Revelar al ganador** y recién ahí el
   ganador (foto + nombre + puntos) con los **puestos** (podio + tabla), que se siguen actualizando en vivo.
-- La revelation queda accordada por terna en el navegador, así que se puede ir y volver sin perderla.
+- Al revelar, la terna queda **marcada como "ya se mostró"** (se anota en el navegador del
+  organizador, en `localStorage`, clave `achura_ternas_mostradas`) y aparece un botón
+  **Continuar →** que salta a la próxima terna que todavía no se mostró. En la portada se ve
+  *"X de 17 ternas mostradas"* y las ternas ya feitas salen tachadas con un **✓**.
+- La revelación queda accordada por terna en el navegador, así que se puede ir y volver sin perderla.
 - **Achura del año tiene premio compartido: dos ganadores.** Se configura con `"ganadores": 2` en
   `web/src/data/categories.json`.
 - Los resultados **no viajan en el JavaScript**: se piden a la API, que exige la cookie que se obtiene
@@ -100,21 +104,30 @@ Si queda un empate en el 1º puesto de un premio individual, el sitio lo avisa.
 
 ## Outfit del día
 
-La lista de invitados está en **`data/invitados.json`** (ahora hay **19 lugares**, `invitado-1` … `invitado-19`):
+La lista de invitados está en **`data/invitados.json`**. Hay **19 personas** (9 de Achura + 10
+Invitados), con un campo `grupo` para que la grilla salga dividida en dos secciones:
 
 ```json
 {
   "titulo": "Outfit del día",
   "activo": true,
   "invitados": [
-    { "id": "invitado-1", "nombre": "Nombre del invitado", "foto": "/media/outfit-1.jpg" }
+    { "id": "jesus-quiero", "nombre": "Jesús Quiero", "grupo": "achura", "foto": "" },
+    { "id": "guadalupe-pedernera", "nombre": "Guadalupe Pedernera", "grupo": "invitado", "foto": "" }
   ]
 }
 ```
 
-- `foto` puede ser una ruta de `/media` (archivos en `web/public/media/`) o una URL.
-- Si no hay foto, la tarjeta muestra las iniciales.
+| Campo | Qué es |
+| --- | --- |
+| `id` | Identificador del voto (no se repite). |
+| `nombre` | Cómo se muestra y cómo queda registrado el voto. |
+| `grupo` | `achura` o `invitado`: define la sección de la grilla y la etiqueta del ranking. |
+| `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. Si está vacía, la tarjeta muestra las iniciales. |
+
 - `"activo": false` cierra la votación.
+- Para cambiar los nombres o agregar fotos, se edita `data/invitados.json` y se recarga el sitio
+  (no hace falta buildear: el backend lo lee en cada request).
 
 Cada dispositivo vota **una sola vez** (cookie `outfit_token` + colección `outfit_votos`).
 Antes de votar se pide el **nombre** del invitado (se guarda en el dispositivo y queda registrado
@@ -154,7 +167,7 @@ src/models/OutfitVoto.js    Votos del Outfit del día
 src/models/votacion.js      Lectura de categorías/opciones/votos de achura-awards
 scripts/sync-resultados.js  Genera data/resultados.json (respaldo)
 data/resultados.json        Resultados (privado, se sirve por API; no se versiona)
-data/invitados.json         Lista de invitados del Outfit (19)
+data/invitados.json         Lista de invitados del Outfit (19: 9 Achura + 10 Invitados)
 web/src/App.jsx             Outfit público + ternas privadas + panel en vivo del organizador
 web/src/data/categories.json  Copia de las 17 ternas (nombres, fotos, videos)
 web/public/media/           Fotos y videos copiados de achura-awards

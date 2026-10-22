@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
@@ -50,6 +50,70 @@ function ganadoresDe(datos, id) {
   const r = resultadoDe(datos, id)
   if (Array.isArray(r.ganadores) && r.ganadores.length) return r.ganadores
   return (r.puestos || []).filter((p) => p.votos > 0).slice(0, 1)
+}
+
+/* ------------- ternas ya mostradas (para no volver a mostrarlas) ------------- */
+
+const KEY_MOSTRADAS = 'achura_ternas_mostradas'
+
+function leerMostradas() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEY_MOSTRADAS) || '[]')
+    return Array.isArray(raw) ? raw : []
+  } catch (e) {
+    return []
+  }
+}
+
+function useMostradas() {
+  const [ids, setIds] = useState(leerMostradas)
+
+  const marcar = useCallback((id) => {
+    setIds((prev) => {
+      if (prev.includes(id)) return prev
+      const next = [...prev, id]
+      try {
+        localStorage.setItem(KEY_MOSTRADAS, JSON.stringify(next))
+      } catch (e) {}
+      return next
+    })
+  }, [])
+
+  return [ids, marcar]
+}
+
+// La próxima terna que todavía no se mostró (arranca por la siguiente de la actual)
+function siguienteTerna(idActual, mostradas) {
+  const i = categorias.findIndex((c) => c.id === idActual)
+  if (i < 0) return '#/ternas'
+  const resto = categorias.slice(i + 1).concat(categorias.slice(0, i))
+  const sig = resto.find((c) => !mostradas.includes(c.id))
+  return sig ? `#/terna/${encodeURIComponent(sig.id)}` : '#/ternas'
+}
+
+/* ------------- los invitados del outfit, agrupados ------------- */
+
+const GRUPOS_INVITADOS = [
+  { key: 'achura', titulo: 'Achura' },
+  { key: 'invitado', titulo: 'Invitados' },
+]
+
+function agruparInvitados(invitados) {
+  const lista = invitados || []
+  const grupos = GRUPOS_INVITADOS.map((g) => ({
+    ...g,
+    lista: lista.filter((i) => (i.grupo || 'invitado') === g.key),
+  }))
+  const conocidos = new Set(GRUPOS_INVITADOS.map((g) => g.key))
+  const otros = lista.filter((i) => !conocidos.has(i.grupo))
+  if (otros.length) grupos.push({ key: 'otros', titulo: 'Otros', lista: otros })
+  return grupos.filter((g) => g.lista.length)
+}
+
+function etiquetaGrupo(grupo) {
+  if (grupo === 'achura') return 'Achura'
+  if (grupo === 'invitado') return 'Invitado'
+  return 'Invitado'
 }
 
 /* ---------------- ruteo por hash (#/, #/ternas, #/terna/:id, #/outfit-panel) ---------------- */
@@ -124,11 +188,22 @@ export default function App() {
     await cargarVivo()
   }
 
+  // Ternas que ya se mostraron en la noche: quedan anotadas en el navegador
+  const [mostradas, marcarMostrada] = useMostradas()
+
   let vista
   if (hash.startsWith('#/terna/')) {
-    vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={recargar} />
+    vista = (
+      <Terna
+        id={decodeURIComponent(hash.slice('#/terna/'.length))}
+        res={res}
+        recargar={recargar}
+        mostradas={mostradas}
+        marcarMostrada={marcarMostrada}
+      />
+    )
   } else if (hash === '#/ternas') {
-    vista = <Ternas res={res} recargar={recargar} />
+    vista = <Ternas res={res} recargar={recargar} mostradas={mostradas} />
   } else if (hash === '#/outfit-panel') {
     vista = <OutfitPanel res={res} recargar={recargar} />
   } else {
@@ -327,11 +402,13 @@ function BloquePrivado({ res, recargar, children }) {
 
 /* ------------------------------ ternas (privado) ------------------------------ */
 
-function Ternas({ res, recargar }) {
+function Ternas({ res, recargar, mostradas = [] }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
       {(datos) => {
         const definidas = categorias.filter((c) => ganadoresDe(datos, c.id).length > 0).length
+        const pendientes = categorias.filter((c) => !mostradas.includes(c.id))
+        const siguiente = pendientes[0]
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
             <div className="text-center animate-fade-up">
@@ -351,9 +428,35 @@ function Ternas({ res, recargar }) {
               </p>
             </div>
 
+            {siguiente && (
+              <div className="mt-10 rounded-3xl border border-gold/30 bg-gold/[0.05] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-center sm:text-left">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-gold">
+                    {mostradas.length} de {categorias.length} ternas mostradas
+                  </p>
+                  <p className="mt-2 text-white/70 text-sm">
+                    Sigue con <span className="text-white">{siguiente.nombre}</span>
+                  </p>
+                </div>
+                <a
+                  href={`#/terna/${encodeURIComponent(siguiente.id)}`}
+                  className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-6 py-3 rounded-full hover:brightness-110 shadow-goldglow transition"
+                >
+                  Continuar →
+                </a>
+              </div>
+            )}
+
+            {pendientes.length === 0 && (
+              <p className="mt-10 text-center text-sm text-gold/90">
+                ✦ Ya mostraste todas las ternas.
+              </p>
+            )}
+
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
               {categorias.map((cat, i) => {
                 const listoTerna = ganadoresDe(datos, cat.id).length > 0
+                const mostrada = mostradas.includes(cat.id)
                 return (
                   <a
                     key={cat.id}
@@ -368,13 +471,22 @@ function Ternas({ res, recargar }) {
                         className="w-full h-full rounded-full object-cover"
                         size={70}
                       />
+                      {mostrada && (
+                        <span className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-gold text-black text-xs flex items-center justify-center shadow-goldglow">
+                          ✓
+                        </span>
+                      )}
                     </span>
 
                     <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
                       {cat.nombre}
                     </span>
 
-                    {listoTerna ? (
+                    {mostrada ? (
+                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-gold/70">
+                        Ya se mostró ✓
+                      </span>
+                    ) : listoTerna ? (
                       <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
                         Ver ganador →
                       </span>
@@ -398,7 +510,7 @@ function Ternas({ res, recargar }) {
 
 /* ------------------------------ terna (privado) ------------------------------ */
 
-function Terna({ id, res, recargar }) {
+function Terna({ id, res, recargar, mostradas = [], marcarMostrada }) {
   const cat = categorias.find((c) => c.id === id)
 
   if (!cat) {
@@ -414,12 +526,20 @@ function Terna({ id, res, recargar }) {
 
   return (
     <BloquePrivado res={res} recargar={recargar}>
-      {(datos) => <DetalleTerna cat={cat} datos={datos} />}
+      {(datos) => (
+        <DetalleTerna
+          key={cat.id}
+          cat={cat}
+          datos={datos}
+          mostradas={mostradas}
+          marcarMostrada={marcarMostrada}
+        />
+      )}
     </BloquePrivado>
   )
 }
 
-function DetalleTerna({ cat, datos }) {
+function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
   const r = resultadoDe(datos, cat.id)
   const puestos = r.puestos || []
   const ganadores = ganadoresDe(datos, cat.id)
@@ -438,6 +558,10 @@ function DetalleTerna({ cat, datos }) {
   })
   const [historia, setHistoria] = useState(null)
 
+  // Una terna ya mostrada no se vuelve a revelar: se entra directo al resultado
+  const yaMostrada = mostradas.includes(cat.id)
+  const mostrarGanador = revelado || yaMostrada
+
   function irAPuestos() {
     const el = document.getElementById('puestos')
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -448,11 +572,14 @@ function DetalleTerna({ cat, datos }) {
     try {
       sessionStorage.setItem('revelado_' + cat.id, '1')
     } catch (e) {}
+    if (marcarMostrada) marcarMostrada(cat.id)
     setTimeout(() => {
       const el = document.getElementById('ganador')
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 150)
   }
+
+  const siguiente = siguienteTerna(cat.id, mostradas)
 
   return (
     <div className="max-w-5xl mx-auto px-5 pt-8 pb-20">
@@ -473,7 +600,7 @@ function DetalleTerna({ cat, datos }) {
       <Candidatos cat={cat} onAbrir={setHistoria} />
 
       {/* 2) el botón para revelar */}
-      {!revelado && (
+      {!mostrarGanador && (
         <div className="mt-14 text-center animate-fade-up">
           <button
             onClick={revelar}
@@ -488,7 +615,7 @@ function DetalleTerna({ cat, datos }) {
       )}
 
       {/* 3) los ganadores (después de revelar) */}
-      {revelado && (
+      {mostrarGanador && (
         <section id="ganador" className="mt-16 scroll-mt-24">
           <div className="text-center">
             <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Resultado</p>
@@ -613,6 +740,24 @@ function DetalleTerna({ cat, datos }) {
             ) : (
               <p className="mt-10 text-center text-white/40">Todavía no hay votos en esta terna.</p>
             )}
+          </div>
+
+          {/* 4) la terna ya se mostró: aviso + continuar con la próxima */}
+          <div className="mt-16 rounded-3xl border border-gold/25 bg-gold/[0.04] p-6 sm:p-7 text-center animate-fade-up">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-gold">
+              ✓ Esta terna ya se mostró
+            </p>
+            <p className="mt-2 text-white/55 text-sm max-w-md mx-auto">
+              {siguiente === '#/ternas'
+                ? 'No la vuelvas a presentar. Ya mostraste todas las ternas.'
+                : 'No la vuelvas a presentar. Seguí con la próxima terna que falta.'}
+            </p>
+            <a
+              href={siguiente}
+              className="mt-5 inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
+            >
+              {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
+            </a>
           </div>
         </section>
       )}
@@ -903,6 +1048,11 @@ function OutfitEnVivo() {
                     {inv.votos} {inv.votos === 1 ? 'voto' : 'votos'}
                   </p>
                 </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 border border-white/10 rounded-full px-1.5 py-0.5">
+                    {etiquetaGrupo(inv.grupo)}
+                  </span>
+                </div>
                 <div className="mt-1.5 h-1.5 rounded-full bg-white/5 overflow-hidden">
                   <div
                     className={`h-full rounded-full ${i === 0 && inv.votos > 0 ? 'bg-gold' : 'bg-cyan/60'}`}
@@ -1111,18 +1261,34 @@ function Outfit() {
       )}
 
       {puedenVotar && !necesitaNombre && (
-        <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-          {invitados.map((inv, i) => (
-            <button
-              key={inv.id}
-              onClick={() => setElegido(inv)}
-              className="group text-left rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-cyan/60 hover:bg-white/[0.06] transition animate-fade-up"
-              style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
-            >
-              <FotoInvitado invitado={inv} className="w-full aspect-[4/5] rounded-xl" />
-              <p className="mt-3 text-sm text-white/85 group-hover:text-white truncate">{inv.nombre}</p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-cyan/70 group-hover:text-cyan">Votar →</p>
-            </button>
+        <div className="mt-12">
+          {agruparInvitados(invitados).map((g, gi) => (
+            <section key={g.key} className={gi === 0 ? '' : 'mt-14'}>
+              <div className="flex items-center gap-4">
+                <h2 className="text-[11px] uppercase tracking-[0.4em] text-gold whitespace-nowrap">
+                  {g.titulo}
+                </h2>
+                <div className="gold-rule h-px flex-1" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-white/25">
+                  {g.lista.length}
+                </span>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+                {g.lista.map((inv, i) => (
+                  <button
+                    key={inv.id}
+                    onClick={() => setElegido(inv)}
+                    className="group text-left rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-cyan/60 hover:bg-white/[0.06] transition animate-fade-up"
+                    style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
+                  >
+                    <FotoInvitado invitado={inv} className="w-full aspect-[4/5] rounded-xl" />
+                    <p className="mt-3 text-sm text-white/85 group-hover:text-white truncate">{inv.nombre}</p>
+                    <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-cyan/70 group-hover:text-cyan">Votar →</p>
+                  </button>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}
