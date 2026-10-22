@@ -1700,11 +1700,49 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
 
 const VOTANTE_KEY = 'achura_outfit_votante'
 
+const normalizarNombre = (s) =>
+  String(s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+// A qué invitado del padrón corresponde el nombre que se escribió.
+// Acepta nombre y apellido en cualquier orden, alias ("Joaco", "Gordi") y
+// abreviaturas de 4+ letras ("Joaq", "Sofi"). Si hay dudas, pide el nombre completo.
+function buscarInvitado(invitados, texto) {
+  const k = normalizarNombre(texto)
+  if (k.length < 2) return { error: 'Escribí tu nombre para votar.' }
+  const busca = k.split(' ')
+  const filtrar = (modo) =>
+    (invitados || []).filter((inv) => {
+      const nombres = [inv.nombre, ...(inv.alias || [])].map(normalizarNombre)
+      return nombres.some((n) => {
+        const partes = n.split(' ')
+        return busca.every((t) =>
+          modo === 'exacto' ? partes.includes(t) : partes.some((p) => p.startsWith(t))
+        )
+      })
+    })
+  const exactos = filtrar('exacto')
+  const candidatos = exactos.length ? exactos : filtrar('prefijo')
+  if (!candidatos.length) {
+    return { error: 'No encontramos ese nombre en la lista. Escribí nombre y apellido (o tu apodo).' }
+  }
+  if (candidatos.length > 1) {
+    return { error: 'Hay más de una persona con ese nombre. Escribí el nombre completo.' }
+  }
+  return { id: candidatos[0].id, nombre: candidatos[0].nombre }
+}
+
 function Outfit() {
   const [estado, setEstado] = useState(null)
   const [error, setError] = useState('')
   const [elegido, setElegido] = useState(null)
   const [enviando, setEnviando] = useState(false)
+  const [nombreTemp, setNombreTemp] = useState('')
   const [votanteId, setVotanteId] = useState(() => {
     try {
       return localStorage.getItem(VOTANTE_KEY) || ''
@@ -1726,7 +1764,25 @@ function Outfit() {
       localStorage.removeItem(VOTANTE_KEY)
     } catch (e) {}
     setVotanteId('')
+    setNombreTemp('')
     setElegido(null)
+  }
+
+  function guardarNombre(e) {
+    e.preventDefault()
+    const lista = (estado && estado.invitados) || []
+    const yaVotaron = (estado && estado.votantes) || []
+    const r = buscarInvitado(lista, nombreTemp)
+    if (r.error) {
+      setError(r.error)
+      return
+    }
+    if (yaVotaron.includes(r.id)) {
+      setError('Ese nombre ya votó. Si sos otra persona, escribí tu nombre completo.')
+      return
+    }
+    setError('')
+    elegirVotante(r.id)
   }
 
   async function cargar() {
@@ -1797,7 +1853,7 @@ function Outfit() {
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
         <p className="mt-5 text-white/55 text-sm max-w-md mx-auto">
           {necesitaNombre
-            ? 'Elegí tu nombre de la lista y votá el mejor outfit de la noche. Cada uno vota una sola vez.'
+            ? 'Escribí tu nombre y votá el mejor outfit de la noche. Cada uno vota una sola vez.'
             : completo && puedenVotar
               ? '¡Ya votaron las 19 personas!'
               : puedenVotar
@@ -1837,39 +1893,31 @@ function Outfit() {
       )}
 
       {necesitaNombre && (
-        <div className="mt-10 max-w-3xl mx-auto rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-7 animate-fade-up">
-          <p className="text-[10px] uppercase tracking-[0.32em] text-cyan/80 text-center">¿Quién sos?</p>
-          <p className="mt-2 text-sm text-white/45 text-center">
-            Elegí tu nombre para votar. Hay {padron} invitados y cada uno vota una sola vez.
+        <form
+          onSubmit={guardarNombre}
+          className="mt-10 max-w-sm mx-auto rounded-3xl border border-white/10 bg-white/[0.03] p-7 text-center animate-fade-up"
+        >
+          <p className="text-[10px] uppercase tracking-[0.32em] text-cyan/80">Ingresá tu nombre</p>
+          <p className="mt-2 text-sm text-white/45">Para registrar tu voto del outfit.</p>
+          <input
+            autoFocus
+            value={nombreTemp}
+            onChange={(e) => setNombreTemp(e.target.value)}
+            maxLength={40}
+            placeholder="Tu nombre"
+            className="mt-5 w-full rounded-xl bg-white/5 border border-white/15 focus:border-cyan/70 focus:outline-none px-4 py-3 text-center text-lg text-white placeholder:text-white/25"
+          />
+          <button
+            type="submit"
+            disabled={nombreTemp.replace(/\s+/g, ' ').trim().length < 2}
+            className="mt-3 w-full bg-gold text-black font-semibold rounded-full py-3 text-sm hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Continuar
+          </button>
+          <p className="mt-4 text-[11px] text-white/25">
+            Tiene que coincidir con la lista de invitados ({padron}). Podés usar tu apodo.
           </p>
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            {invitados.map((inv) => {
-              const yaVotoEse = votantes.includes(inv.id)
-              return (
-                <button
-                  key={inv.id}
-                  disabled={yaVotoEse}
-                  onClick={() => elegirVotante(inv.id)}
-                  className={`flex items-center gap-2.5 rounded-xl border px-3 py-2 text-left transition ${
-                    yaVotoEse
-                      ? 'border-white/5 bg-white/[0.01] text-white/25 cursor-not-allowed'
-                      : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-cyan/60 hover:bg-white/[0.06]'
-                  }`}
-                >
-                  <AvatarInvitado
-                    invitado={inv}
-                    className={`w-7 h-7 rounded-full shrink-0 ${yaVotoEse ? 'opacity-40' : ''}`}
-                    text="text-[10px]"
-                  />
-                  <span className="truncate text-sm">{inv.nombre}</span>
-                  {yaVotoEse && (
-                    <span className="ml-auto text-[10px] uppercase tracking-[0.15em]">✓ votó</span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        </form>
       )}
 
       {puedenVotar && votante && (

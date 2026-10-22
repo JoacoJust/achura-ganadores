@@ -12,7 +12,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 
 | Parte | URL | Quién entra | Qué ve |
 | --- | --- | --- | --- |
-| **1 · Votar el Outfit del día** | `/#/` | Público | Elige **su nombre** de la lista de 19 y vota el mejor outfit (**una persona = un voto**, máximo 19). Solo se ven **las iniciales** de los 19. **No ve ranking ni ternas.** |
+| **1 · Votar el Outfit del día** | `/#/` | Público | Escribe **su nombre** (se valida contra la lista de 19) y vota el mejor outfit: **una persona = un voto**, máximo 19. Solo se ven **las iniciales** de los 19. **No ve ranking ni ternas.** |
 | **2 · Ternas y ganadores** | `/#/ternas` | **Privado** (contraseña) | Todas las ternas **en vivo**: portada sin nombres, y al entrar a cada terna el ganador + los puestos, actualizándose solos. Incluye la terna del **Outfit del día** con la encuesta en vivo. |
 | **3 · Outfit del día (organizador)** | `/#/outfit-panel` | **Privado** (contraseña) | Ranking del outfit **en vivo** (solo iniciales, sin fotos) + **quiénes votaron** y a qué hora. |
 
@@ -143,7 +143,7 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
   "titulo": "Outfit del día",
   "activo": true,
   "invitados": [
-    { "id": "jesus-quiero", "nombre": "Jesús Quiero", "grupo": "achura", "foto": "" },
+    { "id": "jesus-quiero", "nombre": "Jesús Quiero", "alias": ["Jesús"], "grupo": "achura", "foto": "" },
     { "id": "guadalupe-pedernera", "nombre": "Guadalupe Pedernera", "grupo": "invitado", "foto": "" }
   ]
 }
@@ -153,6 +153,7 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 | --- | --- |
 | `id` | Identificador del invitado **y de su voto** (no se repite). |
 | `nombre` | Cómo se muestra en la lista y cómo queda registrado el voto. |
+| `alias` | Opcional. Apodos con los que también se reconoce al votar (`"Joaco"`, `"Gordi"`, `"Sofi"`). |
 | `grupo` | Solo informativo (`achura` o `invitado`). No separa la lista. |
 | `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. **No se muestra** (la votación es solo con iniciales), pero queda guardada por si se quiere usar. |
 - Todos votan **una sola vez** y el voto vale **1** (las anotaciones `(+2)` / `(+1)` no cuentan).
@@ -168,15 +169,19 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 
 ### Cómo se vota
 
-1. El votante elige **su nombre** de la lista de los 19 (¿Quién sos?). No se escribe a mano.
-2. Vota el outfit que quiera. Queda **una sola vez por persona**: si el nombre ya votó, el servidor
-   responde *"Ese nombre ya votó"* (aunque entre desde otro celular).
-3. Nunca se guardan **más de 19 votos**: al llegar a 19, la votación pública cierra sola
+1. El votante escribe **su nombre** en "Ingresá tu nombre" y toca **Continuar**.
+2. El nombre se busca en la lista de los 19: acepta nombre y apellido en cualquier orden,
+   mayúsculas/acentos indistintos, abreviaturas de 4+ letras ("Joaq") y los **alias** del JSON
+   ("Joaco", "Gordi", "Sofi"). Si no coincide o hay dos personas con ese nombre, se pide de nuevo.
+3. Con el nombre reconocido se habilita la grilla de los 19 outfits.
+4. Queda **una sola vez por persona**: si ese nombre ya votó, el servidor responde *"Ese nombre ya
+   votó"* (aunque entre desde otro celular).
+5. Nunca se guardan **más de 19 votos**: al llegar a 19, la votación pública cierra sola
    (*"Ya votaron las 19 personas"*).
-4. El dispositivo también se recuerda (cookie `outfit_token` + colección `outfit_votos`), así que no
+6. El dispositivo también se recuerda (cookie `outfit_token` + colección `outfit_votos`), así que no
    se puede votar dos veces desde el mismo celular.
-5. La página pública muestra el **conteo en vivo** (*"X de 19 ya votaron"*) y qué nombres ya votaron,
-   pero **no muestra el ranking**.
+7. La página pública muestra el **conteo en vivo** (*"X de 19 ya votaron"*), pero **no muestra el
+   ranking** ni quién votó a quién.
 
 Los votos viejos (de antes de elegir el nombre de la lista) no tienen `votante`: se reconocen por el
 nombre que se escribió y cuentan igual para el padrón.
