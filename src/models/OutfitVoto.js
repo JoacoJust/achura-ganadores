@@ -7,6 +7,7 @@ const OutfitVotoSchema = new mongoose.Schema(
   {
     token: { type: String, required: true, unique: true },
     invitado: { type: String, required: true, index: true },
+    nombre: { type: String, default: '' },
     ip_address: { type: String },
     user_agent: { type: String },
   },

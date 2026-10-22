@@ -125,6 +125,7 @@ app.get('/api/outfit', async (req, res) => {
 
   let votos = new Map();
   let miVoto = null;
+  let miNombre = '';
   let baseOk = true;
   try {
     await connect();
@@ -132,6 +133,7 @@ app.get('/api/outfit', async (req, res) => {
     if (token) {
       const v = await OutfitVoto.findOne({ token }).lean();
       miVoto = v ? v.invitado : null;
+      miNombre = v ? v.nombre || '' : '';
     }
   } catch (e) {
     baseOk = false;
@@ -147,15 +149,56 @@ app.get('/api/outfit', async (req, res) => {
     total: [...votos.values()].reduce((a, b) => a + b, 0),
     yaVoto: !!miVoto,
     miVoto,
+    miNombre,
   });
+});
+
+// Detalle en vivo para el organizador (incluye quién votó). Requiere la contraseña
+// de la sección privada.
+app.get('/api/outfit/detalle', async (req, res) => {
+  if (!tieneAcceso(req)) return res.status(401).json({ error: 'Necesitás la contraseña' });
+
+  const cfg = leerConfigOutfit();
+  try {
+    await connect();
+    const votos = await OutfitVoto.find({}).sort({ createdAt: -1 }).lean();
+    const ranking = cfg.invitados
+      .map((i) => ({
+        id: i.id,
+        nombre: i.nombre,
+        foto: i.foto || '',
+        votos: votos.filter((v) => v.invitado === i.id).length,
+      }))
+      .sort((a, b) => b.votos - a.votos);
+
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({
+      titulo: cfg.titulo,
+      activo: cfg.activo,
+      total: votos.length,
+      ranking,
+      ultimos: votos.slice(0, 40).map((v) => ({
+        nombre: v.nombre || 'Sin nombre',
+        invitado: v.invitado,
+        fecha: v.createdAt,
+      })),
+    });
+  } catch (e) {
+    res.status(503).json({ error: 'La base no está disponible' });
+  }
 });
 
 app.post('/api/outfit/votar', async (req, res) => {
   const cfg = leerConfigOutfit();
   const id = String((req.body && req.body.id) || '');
+  const nombre = String((req.body && req.body.nombre) || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 40);
 
   if (!cfg.activo) return res.status(400).json({ error: 'La votación de Outfit del día está cerrada' });
   if (!cfg.invitados.some((i) => i.id === id)) return res.status(400).json({ error: 'Invitado inválido' });
+  if (nombre.length < 2) return res.status(400).json({ error: 'Ingresá tu nombre para votar' });
 
   try {
     await connect();
@@ -182,6 +225,7 @@ app.post('/api/outfit/votar', async (req, res) => {
     await OutfitVoto.create({
       token,
       invitado: id,
+      nombre,
       ip_address: req.ip,
       user_agent: String(req.headers['user-agent'] || '').slice(0, 250),
     });
@@ -191,7 +235,7 @@ app.post('/api/outfit/votar', async (req, res) => {
     return res.status(500).json({ error: 'No se pudo guardar el voto' });
   }
 
-  res.json({ ok: true, miVoto: id });
+  res.json({ ok: true, miVoto: id, miNombre: nombre });
 });
 
 // Reset manual (para el organizador). Requiere el header x-admin-password.

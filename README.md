@@ -10,11 +10,13 @@ Reutiliza todo lo de [`JoacoJust/achura-awards`](https://github.com/JoacoJust/ac
 
 | Sección | URL | Quién entra |
 | --- | --- | --- |
-| **Outfit del día** | `/#/` | Público. Cada invitado vota el mejor outfit desde su celular (1 voto por dispositivo). |
+| **Outfit del día** | `/#/` | Público. El invitado **ingresa su nombre** y vota el mejor outfit desde su celular (1 voto por dispositivo). |
 | **Ternas y ganadores** | `/#/ternas` | **Privado.** Solo con la contraseña (`RESULTADOS_PASSWORD`). |
 
-- En la sección privada se ven **todas las ternas con su nombre e imagen**.
-- Al entrar a una terna se ve **el ganador** (foto + nombre + puntos) y **los puestos** completos (podio + tabla).
+- En la sección privada se ven **todas las ternas con su nombre e imagen** (sin spoilers: los
+  ganadores **no** aparecen en la portada).
+- Al entrar a una terna se **revela el ganador** (foto + nombre + puntos) y **los puestos** completos (podio + tabla).
+- Abajo de todo hay un **panel en vivo del Outfit del día** (ranking + quiénes votaron), para el organizador.
 - **Achura del año tiene premio compartido: dos ganadores.** Se configura con `"ganadores": 2` en `web/src/data/categories.json`.
 - Los resultados **no viajan en el JavaScript**: se piden a `GET /api/resultados`, que exige la cookie que se obtiene con la contraseña.
 
@@ -94,6 +96,8 @@ La lista de invitados está en **`data/invitados.json`**:
 - `"activo": false` cierra la votación y deja ver los resultados.
 
 Cada dispositivo vota **una sola vez** (cookie `outfit_token` + colección `outfit_votos`).
+Antes de votar se pide el **nombre** del invitado (se guarda en el dispositivo y queda registrado
+con el voto; el organizador lo ve en el panel *En vivo* de la sección privada).
 Para reiniciar la votación:
 
 ```bash

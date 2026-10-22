@@ -311,7 +311,7 @@ function Ternas({ res, recargar }) {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
               {categorias.map((cat, i) => {
-                const ganadores = ganadoresDe(datos, cat.id)
+                const listoTerna = ganadoresDe(datos, cat.id).length > 0
                 return (
                   <a
                     key={cat.id}
@@ -326,28 +326,25 @@ function Ternas({ res, recargar }) {
                         className="w-full h-full rounded-full object-cover"
                         size={70}
                       />
-                      {ganadores.length > 0 && (
-                        <span className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gold text-black text-sm font-bold flex items-center justify-center shadow-lg">
-                          {ganadores.length > 1 ? ganadores.length : '★'}
-                        </span>
-                      )}
                     </span>
 
                     <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
                       {cat.nombre}
                     </span>
 
-                    {ganadores.length > 0 ? (
-                      <span className="mt-2 text-sm text-gold/90 leading-snug">
-                        {ganadores.map((g) => g.nombre).join(' · ')}
+                    {listoTerna ? (
+                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
+                        Ver ganador →
                       </span>
                     ) : (
-                      <span className="mt-2 text-xs text-white/35 uppercase tracking-widest">En votación</span>
+                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
                     )}
                   </a>
                 )
               })}
             </div>
+
+            <OutfitEnVivo />
 
             <p className="mt-16 text-center text-[11px] text-white/25">
               Cada persona votó 2 veces por terna: el 1º voto vale 2 puntos y el 2º vale 1 punto.
@@ -600,13 +597,128 @@ function FilaPuesto({ puesto, posicion, maximo, esGanador }) {
   )
 }
 
+/* ------------------ outfit del día en vivo (solo organizador) ------------------ */
+
+function OutfitEnVivo() {
+  const [d, setD] = useState(null)
+
+  async function cargar() {
+    try {
+      const r = await fetch('/api/outfit/detalle')
+      if (!r.ok) return
+      setD(await r.json())
+    } catch (e) {
+      // si falla, dejamos lo último que se vio
+    }
+  }
+
+  useEffect(() => {
+    cargar()
+    const t = setInterval(cargar, 6000)
+    return () => clearInterval(t)
+  }, [])
+
+  if (!d) return null
+
+  const maximo = d.ranking[0]?.votos || 1
+
+  return (
+    <section className="mt-20 border-t border-white/10 pt-12">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">En vivo</p>
+          <h2 className="font-serif text-2xl sm:text-3xl mt-2">{d.titulo || 'Outfit del día'}</h2>
+        </div>
+        <p className="text-xs text-white/40">
+          {d.total} {d.total === 1 ? 'voto' : 'votos'} · {d.activo ? 'votación abierta' : 'votación cerrada'}
+        </p>
+      </div>
+
+      <div className="mt-8 grid md:grid-cols-2 gap-8">
+        <div className="space-y-3">
+          {d.ranking.map((inv, i) => (
+            <div
+              key={inv.id}
+              className={`flex items-center gap-3 rounded-xl border px-4 py-2.5 ${
+                i === 0 && inv.votos > 0 ? 'border-gold/40 bg-gold/[0.05]' : 'border-white/5 bg-white/[0.02]'
+              }`}
+            >
+              <span className={`w-6 text-center font-serif text-sm ${i === 0 && inv.votos > 0 ? 'text-gold' : 'text-white/35'}`}>
+                {i + 1}
+              </span>
+              <FotoInvitado invitado={inv} className="w-9 h-9 rounded-full" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className={`truncate text-sm ${i === 0 && inv.votos > 0 ? 'text-gold' : 'text-white/85'}`}>
+                    {inv.nombre}
+                  </p>
+                  <p className="text-xs text-white/45 whitespace-nowrap">
+                    {inv.votos} {inv.votos === 1 ? 'voto' : 'votos'}
+                  </p>
+                </div>
+                <div className="mt-1.5 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${i === 0 && inv.votos > 0 ? 'bg-gold' : 'bg-cyan/60'}`}
+                    style={{ width: `${inv.votos > 0 ? Math.max((inv.votos / maximo) * 100, 6) : 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">Quiénes votaron</p>
+          {d.ultimos.length ? (
+            <ul className="mt-3 space-y-1.5 max-h-64 overflow-auto pr-2">
+              {d.ultimos.map((v, i) => (
+                <li
+                  key={i}
+                  className="flex items-center justify-between gap-3 text-sm text-white/60 border-b border-white/5 pb-1.5"
+                >
+                  <span className="truncate">{v.nombre}</span>
+                  <span className="text-[11px] text-white/30 whitespace-nowrap">
+                    {new Date(v.fecha).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-white/30">Todavía no votó nadie.</p>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ---------------------------- outfit del día (público) ---------------------------- */
+
+const NOMBRE_KEY = 'achura_outfit_nombre'
 
 function Outfit() {
   const [estado, setEstado] = useState(null)
   const [error, setError] = useState('')
   const [elegido, setElegido] = useState(null)
   const [enviando, setEnviando] = useState(false)
+  const [nombre, setNombre] = useState(() => {
+    try {
+      return localStorage.getItem(NOMBRE_KEY) || ''
+    } catch (e) {
+      return ''
+    }
+  })
+  const [nombreTemp, setNombreTemp] = useState('')
+
+  function guardarNombre(e) {
+    e.preventDefault()
+    const limpio = nombreTemp.replace(/\s+/g, ' ').trim()
+    if (limpio.length < 2) return
+    try {
+      localStorage.setItem(NOMBRE_KEY, limpio)
+    } catch (e) {}
+    setNombre(limpio)
+  }
 
   async function cargar() {
     try {
@@ -636,7 +748,7 @@ function Outfit() {
       const r = await fetch('/api/outfit/votar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: invitado.id }),
+        body: JSON.stringify({ id: invitado.id, nombre }),
       })
       const d = await r.json()
       if (!r.ok) throw new Error(d.error || 'No se pudo registrar el voto')
@@ -657,9 +769,10 @@ function Outfit() {
     )
   }
 
-  const { invitados, yaVoto, miVoto, activo, baseOk, titulo } = estado
+  const { invitados, yaVoto, miVoto, miNombre, activo, baseOk, titulo } = estado
   const votado = invitados.find((i) => i.id === miVoto)
   const puedenVotar = activo && baseOk && !yaVoto
+  const necesitaNombre = puedenVotar && !nombre.trim()
   const ranking = [...invitados].sort((a, b) => b.votos - a.votos)
   const maximo = ranking[0]?.votos || 1
 
@@ -672,11 +785,13 @@ function Outfit() {
         </h1>
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
         <p className="mt-5 text-white/55 text-sm max-w-md mx-auto">
-          {puedenVotar
-            ? 'Elegí el mejor outfit de la noche. Un voto por dispositivo.'
-            : yaVoto
-              ? 'Ya registraste tu voto. Estos son los resultados en vivo.'
-              : 'La votación está cerrada. Estos son los resultados.'}
+          {necesitaNombre
+            ? 'Ingresá tu nombre y elegí el mejor outfit de la noche. Un voto por dispositivo.'
+            : puedenVotar
+              ? 'Elegí el mejor outfit de la noche. Un voto por dispositivo.'
+              : yaVoto
+                ? 'Ya registraste tu voto. Estos son los resultados en vivo.'
+                : 'La votación está cerrada. Estos son los resultados.'}
         </p>
       </div>
 
@@ -692,14 +807,60 @@ function Outfit() {
         </p>
       )}
 
+      {necesitaNombre && (
+        <form
+          onSubmit={guardarNombre}
+          className="mt-10 max-w-sm mx-auto rounded-3xl border border-white/10 bg-white/[0.03] p-7 text-center animate-fade-up"
+        >
+          <p className="text-[10px] uppercase tracking-[0.32em] text-cyan/80">Ingresá tu nombre</p>
+          <p className="mt-2 text-sm text-white/45">Para registrar tu voto del outfit.</p>
+          <input
+            autoFocus
+            value={nombreTemp}
+            onChange={(e) => setNombreTemp(e.target.value)}
+            maxLength={40}
+            placeholder="Tu nombre"
+            className="mt-5 w-full rounded-xl bg-white/5 border border-white/15 focus:border-cyan/70 focus:outline-none px-4 py-3 text-center text-lg text-white placeholder:text-white/25"
+          />
+          <button
+            type="submit"
+            disabled={nombreTemp.replace(/\s+/g, ' ').trim().length < 2}
+            className="mt-3 w-full bg-gold text-black font-semibold rounded-full py-3 text-sm hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Continuar
+          </button>
+        </form>
+      )}
+
+      {puedenVotar && nombre.trim() && (
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-2 text-sm text-white/40">
+          <span>
+            Votás como <span className="text-gold">{nombre}</span>
+          </span>
+          <button
+            onClick={() => {
+              try {
+                localStorage.removeItem(NOMBRE_KEY)
+              } catch (e) {}
+              setNombre('')
+              setNombreTemp('')
+            }}
+            className="text-[11px] uppercase tracking-[0.2em] underline hover:text-white transition"
+          >
+            cambiar
+          </button>
+        </div>
+      )}
+
       {yaVoto && (
         <div className="mt-8 rounded-2xl border border-gold/40 bg-gold/[0.06] p-5 text-center">
           <p className="text-gold text-sm uppercase tracking-[0.2em]">✓ Tu voto</p>
           <p className="font-serif text-2xl mt-2">{votado ? votado.nombre : 'Registrado'}</p>
+          {miNombre && <p className="mt-1 text-xs text-white/40">Votó {miNombre}</p>}
         </div>
       )}
 
-      {puedenVotar && (
+      {puedenVotar && !necesitaNombre && (
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {invitados.map((inv, i) => (
             <button
@@ -766,7 +927,9 @@ function Outfit() {
             <FotoInvitado invitado={elegido} className="w-28 h-28 rounded-full mx-auto" />
             <p className="mt-4 text-sm text-white/60">¿Votás el outfit de</p>
             <p className="font-serif text-2xl mt-1">{elegido.nombre}?</p>
-            <p className="text-xs text-white/35 mt-3">Solo podés votar una vez.</p>
+            <p className="text-xs text-white/35 mt-3">
+              Votás como <span className="text-white/70">{nombre}</span> · solo una vez.
+            </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setElegido(null)}
