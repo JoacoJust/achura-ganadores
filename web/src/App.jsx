@@ -885,12 +885,6 @@ function ModalHistoria({ cat, nom, onCerrar }) {
             </div>
           )}
 
-          {!video && !bloques.length && (
-            <p className="text-white/50 text-sm mt-6">
-              Este nominado todavía no tiene historia cargada.
-            </p>
-          )}
-
           <button
             onClick={onCerrar}
             className="mt-8 w-full border border-white/20 hover:border-cyan/60 hover:text-cyan rounded-full py-2.5 text-sm transition"
