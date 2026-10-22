@@ -13,7 +13,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 | Parte | URL | Quién entra | Qué ve |
 | --- | --- | --- | --- |
 | **1 · Votar el Outfit del día** | `/#/` | Público | Ingresa su nombre y vota el mejor outfit (1 voto por dispositivo). Solo se ven **las iniciales** de los 19. **No ve ranking ni ternas.** |
-| **2 · Ternas y ganadores** | `/#/ternas` | **Privado** (contraseña) | Todas las ternas **en vivo**: portada sin nombres, y al entrar a cada terna el ganador + los puestos, actualizándose solos. |
+| **2 · Ternas y ganadores** | `/#/ternas` | **Privado** (contraseña) | Todas las ternas **en vivo**: portada sin nombres, y al entrar a cada terna el ganador + los puestos, actualizándose solos. Incluye la terna del **Outfit del día** con la encuesta en vivo. |
 | **3 · Outfit del día (organizador)** | `/#/outfit-panel` | **Privado** (contraseña) | Ranking del outfit **en vivo** (solo iniciales, sin fotos) + **quiénes votaron** y a qué hora. |
 
 - Los resultados **se calculan contra la base de datos en el momento** (`GET /api/resultados/vivo`,
@@ -26,7 +26,16 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 - Al revelar, la terna queda **marcada como "ya se mostró"** (se anota en el navegador del
   organizador, en `localStorage`, clave `achura_ternas_mostradas`) y aparece un botón
   **Continuar →** que salta a la próxima terna que todavía no se mostró. En la portada se ve
-  *"X de 17 ternas mostradas"* y las ternas ya feitas salen tachadas con un **✓**.
+  *"X de 18 ternas mostradas"* y las ternas ya feitas salen tachadas con un **✓**.
+- **La terna del Outfit del día** vive en la misma lista (`outfit-del-dia` en `categories.json`,
+  `"tipo": "outfit"` y sin nominados) y su encuesta se lee en vivo de `/api/outfit/detalle`:
+  - Muestra la **encuesta en vivo** (votos por invitado y quiénes votaron), solo con **iniciales,
+    sin fotos**. Antes de revelar la lista va en el orden del padrón, sin puestos ni destacados,
+    para no spoilear el podio.
+  - El botón **✦ Revelar al ganador ✦** está **bloqueado hasta que votaron las 19 personas**
+    (`padron` = invitados de `data/invitados.json`); mientras tanto dice *"Faltan N votos"*.
+  - Al revelar se ordena por votos, se destaca el 1º y aparece el **ganador** (o ganadores, si hay
+    empate) con sus votos y porcentaje, más el aviso **✓ Esta terna ya se mostró** y **Continuar →**.
 - La revelación queda accordada por terna en el navegador, así que se puede ir y volver sin perderla.
 - **Achura del año tiene premio compartido: dos ganadores.** Se configura con `"ganadores": 2` en
   `web/src/data/categories.json`.
@@ -57,7 +66,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 | --- | --- |
 | `#/` | Votación pública del Outfit del día. |
 | `#/ternas` | Portada de las ternas (privada). |
-| `#/terna/<id>` | Candidatos + botón de revelar + ganador y puestos (privada). |
+| `#/terna/<id>` | Candidatos + botón de revelar + ganador y puestos (privada). Con `id = outfit-del-dia` muestra la encuesta del outfit en vivo. |
 | `#/outfit-panel` | Ranking en vivo del Outfit (privada). |
 
 ---
@@ -144,6 +153,8 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 | `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. **No se muestra** (la votación es solo con iniciales), pero queda guardada por si se quiere usar. |
 - Todos votan **una sola vez** y el voto vale **1** (las anotaciones `(+2)` / `(+1)` no cuentan).
 - `"activo": false` cierra la votación.
+- El **padrón** son esos 19 invitados: la terna del outfit de la sección privada usa
+  `padron` (19) para saber cuántos faltan, y **el ganador se revela recién cuando hay 19 votos**.
 - Para cambiar los nombres, se edita `data/invitados.json` y se recarga el sitio
   (no hace falta buildear: el backend lo lee en cada request).
 - **La votación pública muestra solo las iniciales** (círculo con las iniciales, sin fotos), en una
@@ -174,7 +185,7 @@ curl -X POST https://TU-SITIO.onrender.com/api/outfit/reset \
 | `GET /api/resultados/vivo` | **Resultados calculados contra la base en el momento** (privado). |
 | `GET /api/outfit` | Datos de la votación pública + si este dispositivo ya votó. |
 | `POST /api/outfit/votar` | Body `{ id, nombre }` → registra el voto. |
-| `GET /api/outfit/detalle` | Ranking + quiénes votaronsolo para el organizador (privado). |
+| `GET /api/outfit/detalle` | Ranking + quiénes votaron solo para el organizador (privado). Incluye `padron`, `total`, `faltan` y `listo` (votaron los 19). |
 | `POST /api/outfit/reset` | Header `x-admin-password` → borra los votos del Outfit. |
 
 ---
@@ -191,6 +202,6 @@ scripts/sync-resultados.js  Genera data/resultados.json (respaldo)
 data/resultados.json        Resultados (privado, se sirve por API; no se versiona)
 data/invitados.json         Lista de invitados del Outfit (19: 9 Achura + 10 Invitados)
 web/src/App.jsx             Outfit público + ternas privadas + panel en vivo del organizador
-web/src/data/categories.json  Copia de las 17 ternas (nombres, fotos, videos)
+web/src/data/categories.json  Copia de las 18 ternas (17 + la del Outfit del día; nombres, fotos, videos)
 web/public/media/           Fotos y videos copiados de achura-awards
 ```

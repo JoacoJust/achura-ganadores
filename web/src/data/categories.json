@@ -832,5 +832,14 @@
         ]
       }
     ]
+  },
+  {
+    "id": "outfit-del-dia",
+    "nombre": "Outfit del día",
+    "tipo": "outfit",
+    "ganadores": 1,
+    "poster": "/media/outfit-del-dia.jpg",
+    "mencion": "",
+    "nominados": []
   }
 ]

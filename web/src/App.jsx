@@ -573,7 +573,10 @@ function Ternas({ res, recargar, mostradas = [] }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
       {(datos) => {
-        const definidas = categorias.filter((c) => ganadoresDe(datos, c.id).length > 0).length
+        // La terna del outfit no sale de resultados.json: su encuesta se lee en vivo
+        // (y el ganador se revela recién cuando votaron los 19).
+        const normales = categorias.filter((c) => c.tipo !== 'outfit')
+        const definidas = normales.filter((c) => ganadoresDe(datos, c.id).length > 0).length
         const pendientes = categorias.filter((c) => !mostradas.includes(c.id))
         const siguiente = pendientes[0]
         return (
@@ -591,7 +594,7 @@ function Ternas({ res, recargar, mostradas = [] }) {
                 Entrá a cada terna para ver el ganador y cómo quedaron los puestos.
               </p>
               <p className="mt-4 text-xs text-white/35">
-                {definidas} de {categorias.length} ternas con votos · se actualiza solo
+                {definidas} de {normales.length} ternas con votos · se actualiza solo
               </p>
             </div>
 
@@ -653,6 +656,8 @@ function Ternas({ res, recargar, mostradas = [] }) {
                       <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-gold/70">
                         Ya se mostró ✓
                       </span>
+                    ) : cat.tipo === 'outfit' ? (
+                      <EstadoOutfit />
                     ) : listoTerna ? (
                       <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
                         Ver ganador →
@@ -693,15 +698,19 @@ function Terna({ id, res, recargar, mostradas = [], marcarMostrada }) {
 
   return (
     <BloquePrivado res={res} recargar={recargar}>
-      {(datos) => (
-        <DetalleTerna
-          key={cat.id}
-          cat={cat}
-          datos={datos}
-          mostradas={mostradas}
-          marcarMostrada={marcarMostrada}
-        />
-      )}
+      {(datos) =>
+        cat.tipo === 'outfit' ? (
+          <DetalleOutfit key={cat.id} cat={cat} mostradas={mostradas} marcarMostrada={marcarMostrada} />
+        ) : (
+          <DetalleTerna
+            key={cat.id}
+            cat={cat}
+            datos={datos}
+            mostradas={mostradas}
+            marcarMostrada={marcarMostrada}
+          />
+        )
+      }
     </BloquePrivado>
   )
 }
@@ -1223,6 +1232,12 @@ function OutfitPanel({ res, recargar }) {
             <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Organizador</p>
             <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">Outfit del día</h1>
             <div className="gold-rule h-px w-40 mx-auto mt-5" />
+            <a
+              href="#/terna/outfit-del-dia"
+              className="mt-5 inline-block text-[11px] uppercase tracking-[0.2em] text-cyan/70 hover:text-cyan transition"
+            >
+              Ver la terna (revelar ganador) →
+            </a>
           </div>
 
           <OutfitEnVivo />
@@ -1232,28 +1247,105 @@ function OutfitPanel({ res, recargar }) {
   )
 }
 
-function OutfitEnVivo() {
+/* ---- datos del outfit EN VIVO: ranking, quiénes votaron y padrón (19) ---- */
+
+function useOutfitVivo(intervalo = 5000) {
   const [d, setD] = useState(null)
 
-  async function cargar() {
-    try {
-      const r = await fetch('/api/outfit/detalle')
-      if (!r.ok) return
-      setD(await r.json())
-    } catch (e) {
-      // nos quedamos con lo último que se vio
-    }
-  }
-
   useEffect(() => {
+    let vivo = true
+    async function cargar() {
+      try {
+        const r = await fetch('/api/outfit/detalle', { headers: { 'Cache-Control': 'no-cache' } })
+        if (!r.ok) return
+        const data = await r.json()
+        if (vivo) setD(data)
+      } catch (e) {
+        // nos quedamos con lo último que se vio
+      }
+    }
     cargar()
-    const t = setInterval(cargar, 5000)
-    return () => clearInterval(t)
-  }, [])
+    const t = setInterval(cargar, intervalo)
+    return () => {
+      vivo = false
+      clearInterval(t)
+    }
+  }, [intervalo])
+
+  return d
+}
+
+const votosTexto = (n) => `${n} ${n === 1 ? 'voto' : 'votos'}`
+
+function RankingOutfit({ ranking = [], maximo = 1, destacar = false, mostrarPuestos = true }) {
+  return (
+    <div className="space-y-3">
+      {ranking.map((inv, i) => {
+        const primero = destacar && i === 0 && inv.votos > 0
+        return (
+          <div
+            key={inv.id}
+            className={`flex items-center gap-3 rounded-xl border px-4 py-2.5 ${
+              primero ? 'border-gold/40 bg-gold/[0.05]' : 'border-white/5 bg-white/[0.02]'
+            }`}
+          >
+            {mostrarPuestos && (
+              <span className={`w-6 text-center font-serif text-sm ${primero ? 'text-gold' : 'text-white/35'}`}>
+                {i + 1}
+              </span>
+            )}
+            <AvatarInvitado invitado={inv} className="w-9 h-9 rounded-full" text="text-[11px]" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline justify-between gap-3">
+                <p className={`truncate text-sm ${primero ? 'text-gold' : 'text-white/85'}`}>{inv.nombre}</p>
+                <p className="text-xs text-white/45 whitespace-nowrap">{votosTexto(inv.votos)}</p>
+              </div>
+              <div className="mt-1.5 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${primero ? 'bg-gold' : 'bg-cyan/60'}`}
+                  style={{ width: `${inv.votos > 0 ? Math.max((inv.votos / maximo) * 100, 6) : 0}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function QuienesVotaron({ ultimos = [] }) {
+  return (
+    <div>
+      <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">Quiénes votaron</p>
+      {ultimos.length ? (
+        <ul className="mt-3 space-y-1.5 max-h-80 overflow-auto pr-2">
+          {ultimos.map((v, i) => (
+            <li
+              key={i}
+              className="flex items-center justify-between gap-3 text-sm text-white/60 border-b border-white/5 pb-1.5"
+            >
+              <span className="truncate">{v.nombre}</span>
+              <span className="text-[11px] text-white/30 whitespace-nowrap">
+                {new Date(v.fecha).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-3 text-sm text-white/30">Todavía no votó nadie.</p>
+      )}
+    </div>
+  )
+}
+
+function OutfitEnVivo() {
+  const d = useOutfitVivo(5000)
 
   if (!d) return <p className="text-center text-white/40 py-16">Cargando…</p>
 
   const maximo = d.ranking[0]?.votos || 1
+  const padron = d.padron || 0
 
   return (
     <div className="mt-10">
@@ -1261,66 +1353,239 @@ function OutfitEnVivo() {
         <div>
           <h2 className="font-serif text-2xl sm:text-3xl">Ranking en vivo</h2>
           <p className="text-xs text-white/40 mt-2">
-            {d.total} {d.total === 1 ? 'voto' : 'votos'} · {d.activo ? 'votación abierta' : 'votación cerrada'}
+            {d.total} de {padron} votaron · {d.activo ? 'votación abierta' : 'votación cerrada'}
+            {d.faltan > 0 ? ` · faltan ${d.faltan}` : ' · ¡ya votaron todos!'}
           </p>
         </div>
         <BadgeEnVivo texto="Se actualiza solo" />
       </div>
 
       <div className="mt-8 grid md:grid-cols-2 gap-8">
-        <div className="space-y-3">
-          {d.ranking.map((inv, i) => (
-            <div
-              key={inv.id}
-              className={`flex items-center gap-3 rounded-xl border px-4 py-2.5 ${
-                i === 0 && inv.votos > 0 ? 'border-gold/40 bg-gold/[0.05]' : 'border-white/5 bg-white/[0.02]'
-              }`}
-            >
-              <span className={`w-6 text-center font-serif text-sm ${i === 0 && inv.votos > 0 ? 'text-gold' : 'text-white/35'}`}>
-                {i + 1}
-              </span>
-              <AvatarInvitado invitado={inv} className="w-9 h-9 rounded-full" text="text-[11px]" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className={`truncate text-sm ${i === 0 && inv.votos > 0 ? 'text-gold' : 'text-white/85'}`}>
-                    {inv.nombre}
-                  </p>
-                  <p className="text-xs text-white/45 whitespace-nowrap">
-                    {inv.votos} {inv.votos === 1 ? 'voto' : 'votos'}
-                  </p>
-                </div>
-                <div className="mt-1.5 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${i === 0 && inv.votos > 0 ? 'bg-gold' : 'bg-cyan/60'}`}
-                    style={{ width: `${inv.votos > 0 ? Math.max((inv.votos / maximo) * 100, 6) : 0}%` }}
+        <RankingOutfit ranking={d.ranking} maximo={maximo} destacar />
+        <QuienesVotaron ultimos={d.ultimos} />
+      </div>
+    </div>
+  )
+}
+
+// Estado corto para la tarjeta del outfit en la portada de las ternas
+function EstadoOutfit() {
+  const d = useOutfitVivo(6000)
+
+  if (!d) {
+    return <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25 group-hover:text-cyan transition">En vivo →</span>
+  }
+
+  const padron = d.padron || 0
+  const faltan = Math.max(0, padron - (d.total || 0))
+
+  return (
+    <span
+      className={`mt-2 text-[11px] uppercase tracking-[0.2em] ${
+        faltan === 0 ? 'text-gold/80' : 'text-white/30 group-hover:text-cyan transition'
+      }`}
+    >
+      {faltan === 0 ? 'Ver ganador →' : `${d.total} de ${padron} votaron`}
+    </span>
+  )
+}
+
+/* ---------- la terna del Outfit del día: encuesta en vivo y ganador ---------- */
+
+function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
+  const d = useOutfitVivo(4000)
+  const [revelado, setRevelado] = useState(() => {
+    try {
+      return sessionStorage.getItem('revelado_' + cat.id) === '1'
+    } catch (e) {
+      return false
+    }
+  })
+
+  const yaMostrada = mostradas.includes(cat.id)
+  const mostrarGanador = revelado || yaMostrada
+  const siguiente = siguienteTerna(cat.id, mostradas)
+
+  function revelar() {
+    setRevelado(true)
+    try {
+      sessionStorage.setItem('revelado_' + cat.id, '1')
+    } catch (e) {}
+    if (marcarMostrada) marcarMostrada(cat.id)
+    setTimeout(() => {
+      const el = document.getElementById('ganador')
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 150)
+  }
+
+  const total = (d && d.total) || 0
+  const padron = (d && d.padron) || 0
+  const faltan = Math.max(0, padron - total)
+  const listo = padron > 0 && total >= padron
+  const ranking = (d && d.ranking) || []
+
+  // Antes de revelar no se ordena por votos: se muestran en el orden del padrón
+  // para no spoilear el podio. Después del reveal sí, con el 1º en dorado.
+  const porOrden = [...ranking].sort((a, b) => (a.orden || 0) - (b.orden || 0))
+  const ordenado = [...ranking].sort((a, b) => b.votos - a.votos || (a.orden || 0) - (b.orden || 0))
+  const maximo = Math.max(1, ...ranking.map((r) => r.votos || 0))
+  const conVotos = ordenado.filter((p) => p.votos > 0)
+  const ganadores = conVotos.length ? conVotos.filter((p) => p.votos === conVotos[0].votos) : []
+
+  return (
+    <div className="max-w-5xl mx-auto px-5 pt-8 pb-20">
+      <a href="#/ternas" className="text-sm text-white/50 hover:text-white transition">
+        ← Volver a las ternas
+      </a>
+
+      <div className="mt-6 text-center">
+        <div className="flex justify-center mb-4">
+          <BadgeEnVivo />
+        </div>
+        <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Terna</p>
+        <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">{cat.nombre}</h1>
+        <div className="gold-rule h-px w-40 mx-auto mt-5" />
+        <p className="mt-5 text-white/55 text-sm max-w-md mx-auto">
+          La encuesta del outfit, en vivo. El ganador se revela cuando votaron los {padron || 'invitados'}.
+        </p>
+      </div>
+
+      {!d ? (
+        <p className="text-center text-white/40 py-16">Cargando la encuesta…</p>
+      ) : (
+        <>
+          <section className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.3em] text-cyan/80">Encuesta en vivo</p>
+                <h2 className="font-serif text-2xl sm:text-3xl mt-2">
+                  {total} de {padron} {total === 1 ? 'voto' : 'votos'}
+                </h2>
+                <p className="mt-2 text-xs text-white/40">
+                  {faltan > 0 ? `Faltan ${faltan} para que voten todos.` : '¡Ya votaron todos!'}
+                </p>
+              </div>
+              <BadgeEnVivo texto="Se actualiza solo" />
+            </div>
+
+            <div className="mt-5 h-2 rounded-full bg-white/5 overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${listo ? 'bg-gold' : 'bg-cyan/70'}`}
+                style={{ width: `${padron ? Math.min(100, Math.round((total / padron) * 100)) : 0}%` }}
+              />
+            </div>
+
+            <div className="mt-8 grid md:grid-cols-2 gap-8">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">
+                  {mostrarGanador ? 'Resultado' : 'Votos por invitado'}
+                </p>
+                <div className="mt-3">
+                  <RankingOutfit
+                    ranking={mostrarGanador ? ordenado : porOrden}
+                    maximo={maximo}
+                    destacar={mostrarGanador}
+                    mostrarPuestos={mostrarGanador}
                   />
                 </div>
               </div>
+              <QuienesVotaron ultimos={d.ultimos} />
             </div>
-          ))}
-        </div>
+          </section>
 
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">Quiénes votaron</p>
-          {d.ultimos.length ? (
-            <ul className="mt-3 space-y-1.5 max-h-80 overflow-auto pr-2">
-              {d.ultimos.map((v, i) => (
-                <li
-                  key={i}
-                  className="flex items-center justify-between gap-3 text-sm text-white/60 border-b border-white/5 pb-1.5"
-                >
-                  <span className="truncate">{v.nombre}</span>
-                  <span className="text-[11px] text-white/30 whitespace-nowrap">
-                    {new Date(v.fecha).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-3 text-sm text-white/30">Todavía no votó nadie.</p>
+          {/* El botón para revelar: sólo cuando votaron los 19 */}
+          {!mostrarGanador && (
+            <div className="mt-12 text-center animate-fade-up">
+              <button
+                onClick={revelar}
+                disabled={!listo}
+                className={`inline-flex items-center gap-3 font-bold uppercase text-xs tracking-[0.22em] px-8 py-4 rounded-full transition ${
+                  listo
+                    ? 'bg-gold text-black hover:brightness-110 shadow-goldglow'
+                    : 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed'
+                }`}
+              >
+                <span>✦</span>
+                {listo
+                  ? 'Revelar al ganador'
+                  : !padron
+                    ? 'Sin invitados'
+                    : faltan === 1
+                      ? 'Falta 1 voto'
+                      : `Faltan ${faltan} votos`}
+                <span>✦</span>
+              </button>
+              <p className="mt-4 text-[11px] text-white/30">
+                {listo
+                  ? `Ya votaron los ${padron}. Es el momento.`
+                  : `El ganador se revela recién cuando los ${padron} hayan votado.`}
+              </p>
+            </div>
           )}
-        </div>
-      </div>
+
+          {/* El ganador (después de revelar) */}
+          {mostrarGanador && (
+            <section id="ganador" className="mt-16 scroll-mt-24">
+              <div className="text-center">
+                <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Resultado</p>
+                <h2 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">
+                  {ganadores.length > 1 ? 'Los ganadores' : 'El ganador'}
+                </h2>
+                <div className="gold-rule h-px w-40 mx-auto mt-5" />
+              </div>
+
+              {ganadores.length > 0 ? (
+                <div className="mt-10 rounded-3xl border border-gold/25 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-transparent shadow-goldglow p-8 sm:p-10 text-center animate-reveal">
+                  <div className={`grid gap-8 ${ganadores.length > 1 ? 'sm:grid-cols-2' : ''}`}>
+                    {ganadores.map((g) => (
+                      <div key={g.id}>
+                        <AvatarInvitado invitado={g} className="w-28 h-28 rounded-full mx-auto" text="text-4xl" />
+                        <p className="mt-5 inline-flex items-center gap-2 bg-gold text-black text-[11px] font-bold tracking-[0.22em] px-4 py-1.5 rounded-full">
+                          ★ {ganadores.length > 1 ? 'GANADORES' : 'GANADOR'}
+                        </p>
+                        <h3 className="font-serif text-3xl sm:text-4xl mt-4 leading-tight">{g.nombre}</h3>
+                        <p className="mt-1.5 text-white/50 text-xs">
+                          {votosTexto(g.votos)} · {total ? Math.round((g.votos / total) * 1000) / 10 : 0}%
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-7 text-xs text-white/35">
+                    {ganadores.length > 1
+                      ? 'Empate en el primer puesto: el premio es compartido.'
+                      : 'El outfit más votado de la noche.'}
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center">
+                  <p className="text-4xl">🕒</p>
+                  <h3 className="font-serif text-2xl sm:text-3xl mt-4">Sin votos todavía</h3>
+                  <p className="text-white/50 mt-3 max-w-md mx-auto">
+                    Cuando voten los {padron}, acá aparece el ganador.
+                  </p>
+                </div>
+              )}
+
+              <div className="mt-16 rounded-3xl border border-gold/25 bg-gold/[0.04] p-6 sm:p-7 text-center animate-fade-up">
+                <p className="text-[11px] uppercase tracking-[0.3em] text-gold">
+                  ✓ Esta terna ya se mostró
+                </p>
+                <p className="mt-2 text-white/55 text-sm max-w-md mx-auto">
+                  {siguiente === '#/ternas'
+                    ? 'No la vuelvas a presentar. Ya mostraste todas las ternas.'
+                    : 'No la vuelvas a presentar. Seguí con la próxima terna que falta.'}
+                </p>
+                <a
+                  href={siguiente}
+                  className="mt-5 inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
+                >
+                  {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
+                </a>
+              </div>
+            </section>
+          )}
+        </>
+      )}
     </div>
   )
 }

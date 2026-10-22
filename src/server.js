@@ -185,11 +185,12 @@ app.get('/api/outfit/detalle', async (req, res) => {
     await connect();
     const votos = await OutfitVoto.find({}).sort({ createdAt: -1 }).lean();
     const ranking = cfg.invitados
-      .map((i) => ({
+      .map((i, orden) => ({
         id: i.id,
         nombre: i.nombre,
         foto: i.foto || '',
         grupo: i.grupo || 'invitado',
+        orden,
         votos: votos.filter((v) => v.invitado === i.id).length,
       }))
       .sort((a, b) => b.votos - a.votos);
@@ -199,6 +200,11 @@ app.get('/api/outfit/detalle', async (req, res) => {
       titulo: cfg.titulo,
       activo: cfg.activo,
       total: votos.length,
+      // Padrón: los invitados del outfit (hoy 19). El ganador se revela
+      // recién cuando votaron todos.
+      padron: cfg.invitados.length,
+      faltan: Math.max(0, cfg.invitados.length - votos.length),
+      listo: cfg.invitados.length > 0 && votos.length >= cfg.invitados.length,
       ranking,
       ultimos: votos.slice(0, 40).map((v) => ({
         nombre: v.nombre || 'Sin nombre',
