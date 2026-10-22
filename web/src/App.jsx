@@ -91,30 +91,7 @@ function siguienteTerna(idActual, mostradas) {
   return sig ? `#/terna/${encodeURIComponent(sig.id)}` : '#/ternas'
 }
 
-/* ------------- los invitados del outfit, agrupados ------------- */
-
-const GRUPOS_INVITADOS = [
-  { key: 'achura', titulo: 'Achura' },
-  { key: 'invitado', titulo: 'Invitados' },
-]
-
-function agruparInvitados(invitados) {
-  const lista = invitados || []
-  const grupos = GRUPOS_INVITADOS.map((g) => ({
-    ...g,
-    lista: lista.filter((i) => (i.grupo || 'invitado') === g.key),
-  }))
-  const conocidos = new Set(GRUPOS_INVITADOS.map((g) => g.key))
-  const otros = lista.filter((i) => !conocidos.has(i.grupo))
-  if (otros.length) grupos.push({ key: 'otros', titulo: 'Otros', lista: otros })
-  return grupos.filter((g) => g.lista.length)
-}
-
-function etiquetaGrupo(grupo) {
-  if (grupo === 'achura') return 'Achura'
-  if (grupo === 'invitado') return 'Invitado'
-  return 'Invitado'
-}
+/* ------------- los invitados del outfit (todos juntos) ------------- */
 
 /* ---------------- ruteo por hash (#/, #/ternas, #/terna/:id, #/outfit-panel) ---------------- */
 
@@ -1048,11 +1025,6 @@ function OutfitEnVivo() {
                     {inv.votos} {inv.votos === 1 ? 'voto' : 'votos'}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 border border-white/10 rounded-full px-1.5 py-0.5">
-                    {etiquetaGrupo(inv.grupo)}
-                  </span>
-                </div>
                 <div className="mt-1.5 h-1.5 rounded-full bg-white/5 overflow-hidden">
                   <div
                     className={`h-full rounded-full ${i === 0 && inv.votos > 0 ? 'bg-gold' : 'bg-cyan/60'}`}
@@ -1261,34 +1233,18 @@ function Outfit() {
       )}
 
       {puedenVotar && !necesitaNombre && (
-        <div className="mt-12">
-          {agruparInvitados(invitados).map((g, gi) => (
-            <section key={g.key} className={gi === 0 ? '' : 'mt-14'}>
-              <div className="flex items-center gap-4">
-                <h2 className="text-[11px] uppercase tracking-[0.4em] text-gold whitespace-nowrap">
-                  {g.titulo}
-                </h2>
-                <div className="gold-rule h-px flex-1" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-white/25">
-                  {g.lista.length}
-                </span>
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-                {g.lista.map((inv, i) => (
-                  <button
-                    key={inv.id}
-                    onClick={() => setElegido(inv)}
-                    className="group text-left rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-cyan/60 hover:bg-white/[0.06] transition animate-fade-up"
-                    style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
-                  >
-                    <FotoInvitado invitado={inv} className="w-full aspect-[4/5] rounded-xl" />
-                    <p className="mt-3 text-sm text-white/85 group-hover:text-white truncate">{inv.nombre}</p>
-                    <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-cyan/70 group-hover:text-cyan">Votar →</p>
-                  </button>
-                ))}
-              </div>
-            </section>
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+          {invitados.map((inv, i) => (
+            <button
+              key={inv.id}
+              onClick={() => setElegido(inv)}
+              className="group text-left rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-cyan/60 hover:bg-white/[0.06] transition animate-fade-up"
+              style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
+            >
+              <FotoInvitado invitado={inv} className="w-full aspect-[4/5] rounded-xl" />
+              <p className="mt-3 text-sm text-white/85 group-hover:text-white truncate">{inv.nombre}</p>
+              <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-cyan/70 group-hover:text-cyan">Votar →</p>
+            </button>
           ))}
         </div>
       )}

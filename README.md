@@ -105,7 +105,7 @@ Si queda un empate en el 1º puesto de un premio individual, el sitio lo avisa.
 ## Outfit del día
 
 La lista de invitados está en **`data/invitados.json`**. Hay **19 personas** (9 de Achura + 10
-Invitados), con un campo `grupo` para que la grilla salga dividida en dos secciones:
+Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 
 ```json
 {
@@ -122,9 +122,10 @@ Invitados), con un campo `grupo` para que la grilla salga dividida en dos seccio
 | --- | --- |
 | `id` | Identificador del voto (no se repite). |
 | `nombre` | Cómo se muestra y cómo queda registrado el voto. |
-| `grupo` | `achura` o `invitado`: define la sección de la grilla y la etiqueta del ranking. |
+| `grupo` | Solo informativo (`achura` o `invitado`). No separa la lista. |
 | `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. Si está vacía, la tarjeta muestra las iniciales. |
 
+- Todos votan **una sola vez** y el voto vale **1** (las anotaciones `(+2)` / `(+1)` no cuentan).
 - `"activo": false` cierra la votación.
 - Para cambiar los nombres o agregar fotos, se edita `data/invitados.json` y se recarga el sitio
   (no hace falta buildear: el backend lo lee en cada request).
