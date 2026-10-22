@@ -464,7 +464,7 @@ function DetalleTerna({ cat, datos }) {
         <div className="flex justify-center mb-4">
           {abierta ? <BadgeEnVivo /> : <span className="text-[10px] uppercase tracking-[0.25em] text-white/35">Cerrada</span>}
         </div>
-        <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">{cat.nombre}</p>
+        <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Terna</p>
         <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">{cat.nombre}</h1>
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
       </div>
