@@ -195,6 +195,35 @@ app.get('/api/outfit/detalle', async (req, res) => {
       }))
       .sort((a, b) => b.votos - a.votos);
 
+    // Quiénes votaron y quiénes faltan (se comparan los nombres normalizados
+    // porque el votante escribe su nombre a mano).
+    const clave = (s) =>
+      String(s || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const votaron = [];
+    const vistos = new Set();
+    for (const v of votos) {
+      const k = clave(v.nombre);
+      if (!k || vistos.has(k)) continue;
+      vistos.add(k);
+      votaron.push({ nombre: v.nombre || 'Sin nombre', fecha: v.createdAt });
+    }
+    const faltantes = cfg.invitados
+      .filter((i) => {
+        const k = clave(i.nombre);
+        if (!k) return false;
+        for (const v of vistos) {
+          if (v === k || v.startsWith(k + ' ') || k.startsWith(v + ' ')) return false;
+        }
+        return true;
+      })
+      .map((i) => ({ id: i.id, nombre: i.nombre, grupo: i.grupo || 'invitado' }));
+
     res.setHeader('Cache-Control', 'no-store');
     res.json({
       titulo: cfg.titulo,
@@ -206,6 +235,8 @@ app.get('/api/outfit/detalle', async (req, res) => {
       faltan: Math.max(0, cfg.invitados.length - votos.length),
       listo: cfg.invitados.length > 0 && votos.length >= cfg.invitados.length,
       ranking,
+      votantes: votaron.slice(0, 40),
+      faltantes,
       ultimos: votos.slice(0, 40).map((v) => ({
         nombre: v.nombre || 'Sin nombre',
         invitado: v.invitado,

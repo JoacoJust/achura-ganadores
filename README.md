@@ -32,10 +32,14 @@ nombres, fotos y videos. No hay que volver a cargar nada.
   - Muestra la **encuesta en vivo** (votos por invitado y quiénes votaron), solo con **iniciales,
     sin fotos**. Antes de revelar la lista va en el orden del padrón, sin puestos ni destacados,
     para no spoilear el podio.
-  - El botón **✦ Revelar al ganador ✦** está **bloqueado hasta que votaron las 19 personas**
-    (`padron` = invitados de `data/invitados.json`); mientras tanto dice *"Faltan N votos"*.
-  - Al revelar se ordena por votos, se destaca el 1º y aparece el **ganador** (o ganadores, si hay
-    empate) con sus votos y porcentaje, más el aviso **✓ Esta terna ya se mostró** y **Continuar →**.
+  - **✦ Revelar al ganador ✦** abre primero **La votación**: **✓ Votaron (N)** con la hora de cada
+    voto y **⏳ Faltaron (M)** con los invitados del padrón que todavía no votaron (se comparan los
+    nombres normalizados, porque cada uno escribe su nombre al votar).
+  - Abajo de esas listas aparece **✦ Mostrar al ganador ✦**, **bloqueado hasta que votaron las 19
+    personas** (`padron` = invitados de `data/invitados.json`); mientras tanto dice *"Faltan N votos"*.
+  - Recién ahí se ordena por votos, se destaca el 1º y aparece la tarjeta del **ganador** (o
+    ganadores, si hay empate) con sus votos y porcentaje, más el aviso **✓ Esta terna ya se mostró**
+    y **Continuar →**.
 - La revelación queda accordada por terna en el navegador, así que se puede ir y volver sin perderla.
 - **Achura del año tiene premio compartido: dos ganadores.** Se configura con `"ganadores": 2` en
   `web/src/data/categories.json`.
@@ -185,7 +189,7 @@ curl -X POST https://TU-SITIO.onrender.com/api/outfit/reset \
 | `GET /api/resultados/vivo` | **Resultados calculados contra la base en el momento** (privado). |
 | `GET /api/outfit` | Datos de la votación pública + si este dispositivo ya votó. |
 | `POST /api/outfit/votar` | Body `{ id, nombre }` → registra el voto. |
-| `GET /api/outfit/detalle` | Ranking + quiénes votaron solo para el organizador (privado). Incluye `padron`, `total`, `faltan` y `listo` (votaron los 19). |
+| `GET /api/outfit/detalle` | Ranking + quiénes votaron (`votantes`) y quiénes faltan (`faltantes`) solo para el organizador (privado). Incluye `padron`, `total`, `faltan` y `listo` (votaron los 19). |
 | `POST /api/outfit/reset` | Header `x-admin-password` → borra los votos del Outfit. |
 
 ---
