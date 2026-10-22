@@ -427,9 +427,31 @@ function DetalleTerna({ cat, datos }) {
   const conVotos = puestos.filter((p) => p.votos > 0)
   const abierta = r.permitido !== false
 
+  // El ganador se revela a mano (es el momento de la noche). Queda revelado
+  // mientras el organizador navegue entre ternas.
+  const [revelado, setRevelado] = useState(() => {
+    try {
+      return sessionStorage.getItem('revelado_' + cat.id) === '1'
+    } catch (e) {
+      return false
+    }
+  })
+  const [historia, setHistoria] = useState(null)
+
   function irAPuestos() {
     const el = document.getElementById('puestos')
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function revelar() {
+    setRevelado(true)
+    try {
+      sessionStorage.setItem('revelado_' + cat.id, '1')
+    } catch (e) {}
+    setTimeout(() => {
+      const el = document.getElementById('ganador')
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 150)
   }
 
   return (
@@ -443,140 +465,284 @@ function DetalleTerna({ cat, datos }) {
           {abierta ? <BadgeEnVivo /> : <span className="text-[10px] uppercase tracking-[0.25em] text-white/35">Cerrada</span>}
         </div>
         <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">{cat.nombre}</p>
-        <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">
-          {varios ? 'Los ganadores' : 'El ganador'}
-        </h1>
+        <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">{cat.nombre}</h1>
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
       </div>
 
-      {ganadores.length > 0 ? (
-        <div className="mt-10 animate-reveal">
-          <div className="relative rounded-3xl overflow-hidden border border-gold/25 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-transparent shadow-goldglow">
-            <div className="grid md:grid-cols-[minmax(0,400px)_1fr]">
-              <div className={`grid ${varios ? 'grid-cols-2' : 'grid-cols-1'} gap-px bg-white/10`}>
-                {ganadores.map((g) => (
-                  <div key={g.id} className="relative h-64 md:h-auto md:min-h-[400px]">
-                    <Foto
-                      src={g.foto}
-                      alt={g.nombre}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      size={90}
-                    />
-                  </div>
-                ))}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent via-transparent to-ink/90 md:to-ink/95" />
-              </div>
+      {/* 1) los candidatos y sus historias */}
+      <Candidatos cat={cat} onAbrir={setHistoria} />
 
-              <div className="relative p-7 sm:p-10 flex flex-col justify-center items-center md:items-start text-center md:text-left">
-                <span className="text-[10px] uppercase tracking-[0.35em] text-white/40">{cat.nombre}</span>
-
-                <span className="mt-5 inline-flex items-center gap-2 bg-gold text-black text-[11px] font-bold tracking-[0.22em] px-4 py-1.5 rounded-full">
-                  ★ {varios ? 'GANADORES' : 'GANADOR'}
-                </span>
-
-                {varios && (
-                  <p className="mt-4 text-[10px] uppercase tracking-[0.25em] text-cyan/70">Premio compartido</p>
-                )}
-
-                {ganadores.map((g) => (
-                  <div key={g.id} className="mt-4 md:mt-3">
-                    <h2 className="font-serif text-3xl sm:text-5xl leading-[1.05]">{g.nombre}</h2>
-                    <p className="mt-1.5 text-white/50 text-xs">
-                      {g.votos} puntos · {g.pct}% de los votos
-                    </p>
-                  </div>
-                ))}
-
-                {!varios && r.empate && (r.empatados || []).length > 1 && (
-                  <p className="mt-3 text-xs text-cyan/70">
-                    Empate en puntos con {r.empatados.filter((n) => n !== ganadores[0].nombre).join(' y ')}
-                  </p>
-                )}
-
-                {conVotos.length > 1 && (
-                  <button
-                    onClick={irAPuestos}
-                    className="mt-7 inline-flex items-center gap-2 border border-white/20 hover:border-cyan/60 hover:text-cyan px-5 py-2.5 rounded-full text-sm transition"
-                  >
-                    Ver los puestos ↓
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center animate-reveal">
-          <p className="text-4xl">🕒</p>
-          <h2 className="font-serif text-2xl sm:text-3xl mt-4">Votación en curso</h2>
-          <p className="text-white/50 mt-3 max-w-md mx-auto">
-            Todavía no hay votos cargados en esta terna. Cuando se cierre la votación, acá aparece el ganador.
+      {/* 2) el botón para revelar */}
+      {!revelado && (
+        <div className="mt-14 text-center animate-fade-up">
+          <button
+            onClick={revelar}
+            className="inline-flex items-center gap-3 bg-gold text-black font-bold uppercase text-xs tracking-[0.22em] px-8 py-4 rounded-full hover:brightness-110 shadow-goldglow transition"
+          >
+            <span>✦</span> Revelar al ganador <span>✦</span>
+          </button>
+          <p className="mt-4 text-[11px] text-white/30">
+            Nadie ve los resultados hasta que vos los revelás.
           </p>
         </div>
       )}
 
-      {cat.mencion && cat.mencion.trim() && (
-        <div className="mt-8 rounded-2xl border border-gold/30 bg-gold/[0.04] p-5 sm:p-6">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-gold">🎖 Mención honorífica</p>
-          <p className="mt-2 text-white/75">{cat.mencion}</p>
-        </div>
+      {/* 3) los ganadores (después de revelar) */}
+      {revelado && (
+        <section id="ganador" className="mt-16 scroll-mt-24">
+          <div className="text-center">
+            <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Resultado</p>
+            <h2 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">
+              {varios ? 'Los ganadores' : 'El ganador'}
+            </h2>
+            <div className="gold-rule h-px w-40 mx-auto mt-5" />
+          </div>
+
+          {ganadores.length > 0 ? (
+            <div className="mt-10 animate-reveal">
+              <div className="relative rounded-3xl overflow-hidden border border-gold/25 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-transparent shadow-goldglow">
+                <div className="grid md:grid-cols-[minmax(0,400px)_1fr]">
+                  <div className={`grid ${varios ? 'grid-cols-2' : 'grid-cols-1'} gap-px bg-white/10`}>
+                    {ganadores.map((g) => (
+                      <div key={g.id} className="relative h-64 md:h-auto md:min-h-[400px]">
+                        <Foto
+                          src={g.foto}
+                          alt={g.nombre}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          size={90}
+                        />
+                      </div>
+                    ))}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent via-transparent to-ink/90 md:to-ink/95" />
+                  </div>
+
+                  <div className="relative p-7 sm:p-10 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+                    <span className="text-[10px] uppercase tracking-[0.35em] text-white/40">{cat.nombre}</span>
+
+                    <span className="mt-5 inline-flex items-center gap-2 bg-gold text-black text-[11px] font-bold tracking-[0.22em] px-4 py-1.5 rounded-full">
+                      ★ {varios ? 'GANADORES' : 'GANADOR'}
+                    </span>
+
+                    {varios && (
+                      <p className="mt-4 text-[10px] uppercase tracking-[0.25em] text-cyan/70">Premio compartido</p>
+                    )}
+
+                    {ganadores.map((g) => (
+                      <div key={g.id} className="mt-4 md:mt-3">
+                        <h3 className="font-serif text-3xl sm:text-5xl leading-[1.05]">{g.nombre}</h3>
+                        <p className="mt-1.5 text-white/50 text-xs">
+                          {g.votos} puntos · {g.pct}% de los votos
+                        </p>
+                      </div>
+                    ))}
+
+                    {!varios && r.empate && (r.empatados || []).length > 1 && (
+                      <p className="mt-3 text-xs text-cyan/70">
+                        Empate en puntos con {r.empatados.filter((n) => n !== ganadores[0].nombre).join(' y ')}
+                      </p>
+                    )}
+
+                    {conVotos.length > 1 && (
+                      <button
+                        onClick={irAPuestos}
+                        className="mt-7 inline-flex items-center gap-2 border border-white/20 hover:border-cyan/60 hover:text-cyan px-5 py-2.5 rounded-full text-sm transition"
+                      >
+                        Ver los puestos ↓
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-10 text-center animate-reveal">
+              <p className="text-4xl">🕒</p>
+              <h3 className="font-serif text-2xl sm:text-3xl mt-4">Votación en curso</h3>
+              <p className="text-white/50 mt-3 max-w-md mx-auto">
+                Todavía no hay votos cargados en esta terna. Cuando se cierre la votación, acá aparece el ganador.
+              </p>
+            </div>
+          )}
+
+          {cat.mencion && cat.mencion.trim() && (
+            <div className="mt-8 rounded-2xl border border-gold/30 bg-gold/[0.04] p-5 sm:p-6">
+              <p className="text-[11px] uppercase tracking-[0.3em] text-gold">🎖 Mención honorífica</p>
+              <p className="mt-2 text-white/75">{cat.mencion}</p>
+            </div>
+          )}
+
+          <div id="puestos" className="mt-20 scroll-mt-24">
+            <div className="text-center">
+              <div className="flex justify-center mb-3">
+                <BadgeEnVivo texto="Puestos en vivo" />
+              </div>
+              <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Puestos</p>
+              <h3 className="font-serif text-2xl sm:text-3xl mt-3">
+                {r.total > 0 ? 'Así quedó la terna' : 'Los candidatos'}
+              </h3>
+              {varios && r.total > 0 && (
+                <p className="mt-3 text-xs text-cyan/70">Premio compartido: los dos primeros puestos son ganadores.</p>
+              )}
+              {r.total > 0 && (
+                <p className="text-xs text-white/40 mt-3">
+                  {Array.isArray(r.pesos) && r.pesos.length === 1
+                    ? 'En esta terna cada persona vota una sola vez: 2 puntos.'
+                    : 'Cada persona votó 2 veces: el 1º voto vale 2 puntos y el 2º vale 1 punto.'}
+                </p>
+              )}
+              <div className="gold-rule h-px w-32 mx-auto mt-5" />
+            </div>
+
+            {conVotos.length > 0 ? (
+              <>
+                {!varios && <Podio puestos={conVotos.slice(0, 3)} />}
+
+                <div className="mt-14 space-y-3">
+                  {puestos.map((p, i) => (
+                    <FilaPuesto
+                      key={p.id}
+                      puesto={p}
+                      posicion={i + 1}
+                      maximo={puestos[0]?.votos || 1}
+                      esGanador={ganadores.some((g) => g.id === p.id)}
+                      lider={!varios && i === 0 && abierta}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="mt-10 text-center text-white/40">Todavía no hay votos en esta terna.</p>
+            )}
+          </div>
+        </section>
       )}
 
-      <section id="puestos" className="mt-24 scroll-mt-24">
-        <div className="text-center">
-          <div className="flex justify-center mb-3">
-            <BadgeEnVivo texto="Puestos en vivo" />
-          </div>
-          <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Puestos</p>
-          <h2 className="font-serif text-2xl sm:text-3xl mt-3">
-            {r.total > 0 ? 'Así quedó la terna' : 'Los candidatos'}
-          </h2>
-          {varios && r.total > 0 && (
-            <p className="mt-3 text-xs text-cyan/70">Premio compartido: los dos primeros puestos son ganadores.</p>
+      {historia && <ModalHistoria cat={cat} nom={historia} onCerrar={() => setHistoria(null)} />}
+    </div>
+  )
+}
+
+/* --------------------- los candidatos y sus historias --------------------- */
+
+function tieneHistoria(n) {
+  return (n.story || []).some((b) => (b.contenido || '').trim())
+}
+
+function Candidatos({ cat, onAbrir }) {
+  return (
+    <section id="candidatos" className="mt-12">
+      <div className="text-center">
+        <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">La terna</p>
+        <h2 className="font-serif text-2xl sm:text-3xl mt-3">Los candidatos</h2>
+        <p className="mt-3 text-xs text-white/40">Tocá a un candidato para ver su historia.</p>
+        <div className="gold-rule h-px w-32 mx-auto mt-5" />
+      </div>
+
+      <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6">
+        {(cat.nominados || []).map((n, i) => (
+          <button
+            key={n.id}
+            onClick={() => onAbrir(n)}
+            className="group text-left animate-fade-up"
+            style={{ animationDelay: `${Math.min(i * 60, 400)}ms` }}
+          >
+            <span className="relative block">
+              <Foto
+                src={fotoDe(n)}
+                alt={n.nombre}
+                className="w-full h-48 sm:h-56 object-cover rounded-xl border border-white/10 group-hover:border-gold/50 transition"
+                size={60}
+              />
+              {esVideo(n.media) && (
+                <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm">
+                    ▶
+                  </span>
+                </span>
+              )}
+              {tieneHistoria(n) && (
+                <span className="absolute bottom-2 right-2 bg-black/70 text-white rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide">
+                  📖 Historia
+                </span>
+              )}
+            </span>
+            <span className="block mt-3 text-center font-semibold text-white/85 group-hover:text-gold transition">
+              {n.nombre}
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ModalHistoria({ cat, nom, onCerrar }) {
+  const bloques = (nom.story || []).filter((b) => (b.contenido || '').trim())
+  const video = esVideo(nom.media)
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCerrar()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onCerrar])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-5"
+      onClick={onCerrar}
+    >
+      <div
+        className="bg-ink border border-white/15 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-auto animate-reveal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 sm:p-8">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-cyan/80">{cat.nombre}</p>
+          <h3 className="font-serif text-2xl sm:text-3xl mt-1">{nom.nombre}</h3>
+          <div className="gold-rule h-px w-24 mt-4" />
+
+          {video ? (
+            <video src={nom.media} poster={nom.poster} controls autoPlay className="w-full rounded-xl mt-6" />
+          ) : (
+            <Foto
+              src={fotoDe(nom)}
+              alt={nom.nombre}
+              className="w-full max-h-80 object-cover rounded-xl mt-6"
+              size={60}
+            />
           )}
-          {r.total > 0 && (
-            <p className="text-xs text-white/40 mt-3">
-              {Array.isArray(r.pesos) && r.pesos.length === 1
-                ? 'En esta terna cada persona vota una sola vez: 2 puntos.'
-                : 'Cada persona votó 2 veces: el 1º voto vale 2 puntos y el 2º vale 1 punto.'}
+
+          {bloques.length > 0 && (
+            <div className="text-white/90 space-y-4 mt-6">
+              {bloques.map((b, i) =>
+                b.tipo === 'titulo' ? (
+                  <p key={i} className="font-serif text-xl text-gold">
+                    {b.contenido}
+                  </p>
+                ) : (
+                  <p key={i} className="leading-relaxed whitespace-pre-line">
+                    {b.contenido}
+                  </p>
+                )
+              )}
+            </div>
+          )}
+
+          {!video && !bloques.length && (
+            <p className="text-white/50 text-sm mt-6">
+              Este nominado todavía no tiene historia cargada.
             </p>
           )}
-          <div className="gold-rule h-px w-32 mx-auto mt-5" />
+
+          <button
+            onClick={onCerrar}
+            className="mt-8 w-full border border-white/20 hover:border-cyan/60 hover:text-cyan rounded-full py-2.5 text-sm transition"
+          >
+            Cerrar
+          </button>
         </div>
-
-        {conVotos.length > 0 ? (
-          <>
-            {!varios && <Podio puestos={conVotos.slice(0, 3)} />}
-
-            <div className="mt-14 space-y-3">
-              {puestos.map((p, i) => (
-                <FilaPuesto
-                  key={p.id}
-                  puesto={p}
-                  posicion={i + 1}
-                  maximo={puestos[0]?.votos || 1}
-                  esGanador={ganadores.some((g) => g.id === p.id)}
-                  lider={!varios && i === 0 && abierta}
-                />
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {(cat.nominados || []).map((n) => (
-              <div key={n.id} className="text-center">
-                <Foto
-                  src={fotoDe(n)}
-                  alt={n.nombre}
-                  className="w-full h-40 object-cover rounded-xl border border-white/10"
-                  size={60}
-                />
-                <p className="mt-3 text-sm text-white/80">{n.nombre}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      </div>
     </div>
   )
 }

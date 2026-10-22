@@ -20,6 +20,10 @@ nombres, fotos y videos. No hay que volver a cargar nada.
   cache de 4 s) y el sitio los refresca cada 8 s: los puestos y el ganador se ven **en vivo**.
 - La portada de las ternas **no muestra nombres de ganadores** ("VER GANADOR →"); el ganador se
   revela al entrar a la terna.
+- Al entrar a una terna se ve **la terna completa**: primero los **candidatos con sus historias**
+  (tocá a un candidato para abrirla), después un botón **✦ Revelar al ganador** y recién ahí el
+  ganador (foto + nombre + puntos) con los **puestos** (podio + tabla), que se siguen actualizando en vivo.
+- La revelation queda accordada por terna en el navegador, así que se puede ir y volver sin perderla.
 - **Achura del año tiene premio compartido: dos ganadores.** Se configura con `"ganadores": 2` en
   `web/src/data/categories.json`.
 - Los resultados **no viajan en el JavaScript**: se piden a la API, que exige la cookie que se obtiene
@@ -31,7 +35,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 | --- | --- |
 | `#/` | Votación pública del Outfit del día. |
 | `#/ternas` | Portada de las ternas (privada). |
-| `#/terna/<id>` | Ganador + puestos de una terna (privada). |
+| `#/terna/<id>` | Candidatos + botón de revelar + ganador y puestos (privada). |
 | `#/outfit-panel` | Ranking en vivo del Outfit (privada). |
 
 ---
