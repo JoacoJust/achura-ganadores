@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const { calcularResultados } = require('../src/resultados');
 
 const ROOT = path.join(__dirname, '..');
@@ -31,7 +32,12 @@ const OUT_FILE = path.join(ROOT, 'data', 'resultados.json');
       }`
     );
   });
-})().catch((e) => {
-  console.error('⚠  No se pudieron leer los votos:', e.message);
-  console.error('   Se mantiene el resultados.json actual.');
-});
+})()
+  .catch((e) => {
+    console.error('⚠  No se pudieron leer los votos:', e.message);
+    console.error('   Se mantiene el resultados.json actual.');
+  })
+  .finally(async () => {
+    // Cierra la conexión: si no, el proceso queda esperando y nunca termina
+    await mongoose.disconnect().catch(() => {});
+  });
