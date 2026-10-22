@@ -40,7 +40,10 @@ nombres, fotos y videos. No hay que volver a cargar nada.
     Funciona en la historia de cada candidato y en la foto del ganador.
   - **Videos**: el botón **▶** de la grilla de candidatos abre el video en grande, y dentro de la
     historia el botón **⛶ Ver en pantalla completa** lo abre con un reproductor grande que tiene el
-    botón **⛶ Pantalla completa** (también con doble clic sobre el video).
+    botón **⛶ Pantalla completa** (también con doble clic sobre el video). El botón nativo de pantalla
+    completa del propio video **también funciona** (los modales no tienen `transform` ni
+    `backdrop-filter`, que es lo que rompe la pantalla completa en Chrome). Si el navegador igual la
+    bloquea, el botón **⛶ Pantalla completa** agranda el video a toda la pantalla igual.
 - **La Gordiada del año** anuncia que el premio se entrega y quién cuenta las historias: antes de
   revelar aparece el bloque **🏆 El premio** ("Este premio sera entregado por el mismisimo Franco
   Bernardi (alias Gordi) al ganador"), arriba de los candidatos dice *"Las historias las cuenta

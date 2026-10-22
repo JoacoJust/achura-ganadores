@@ -330,7 +330,7 @@ function ModalImagen({ src, alt, onCerrar }) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-reveal"
+      className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 animate-fade"
       onClick={(e) => {
         e.stopPropagation()
         onCerrar()
@@ -357,10 +357,20 @@ function ModalImagen({ src, alt, onCerrar }) {
 /* El video EN GRANDE, con botón de pantalla completa */
 function ModalVideo({ src, poster, onCerrar }) {
   const ref = useRef(null)
+  // Pantalla completa "a mano" (por si el navegador bloquea la nativa)
+  const [expandido, setExpandido] = useState(false)
+  const expandidoRef = useRef(false)
+  expandidoRef.current = expandido
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') onCerrar()
+      if (e.key !== 'Escape') return
+      if (document.fullscreenElement) return
+      if (expandidoRef.current) {
+        setExpandido(false)
+        return
+      }
+      onCerrar()
     }
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
@@ -370,37 +380,76 @@ function ModalVideo({ src, poster, onCerrar }) {
     }
   }, [onCerrar])
 
+  // Si el navegador entra en pantalla completa de verdad, apagamos la de mentira.
+  useEffect(() => {
+    const onChange = () => {
+      if (document.fullscreenElement) setExpandido(false)
+    }
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [])
+
   async function pantallaCompleta() {
     const v = ref.current
     if (!v) return
-    try {
-      if (document.fullscreenElement) {
+    if (document.fullscreenElement) {
+      try {
         await document.exitFullscreen()
-        return
-      }
-      if (v.requestFullscreen) await v.requestFullscreen()
-      else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen()
-      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen()
+      } catch (e) {}
+      return
+    }
+    if (expandido) {
+      setExpandido(false)
+      return
+    }
+    // iOS / Safari viejos: el reproductor nativo del video
+    if (!v.requestFullscreen && v.webkitEnterFullscreen) {
+      v.webkitEnterFullscreen()
+      return
+    }
+    // Chrome / Edge / Firefox / Safari nuevos: pantalla completa de verdad
+    try {
+      const pedido = v.requestFullscreen
+        ? v.requestFullscreen()
+        : Promise.resolve(v.webkitRequestFullscreen())
+      await Promise.race([
+        Promise.resolve(pedido),
+        new Promise((_, rechazar) => setTimeout(() => rechazar(new Error('sin respuesta')), 900)),
+      ])
+      if (document.fullscreenElement) return
     } catch (e) {}
+    // Si el navegador la bloquea, agrandamos el video igual
+    setExpandido(true)
   }
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-reveal"
+      className={`fixed inset-0 z-[60] flex flex-col items-center justify-center ${
+        expandido ? 'bg-black p-0' : 'bg-black/95 p-4'
+      }`}
       onClick={(e) => {
         e.stopPropagation()
         onCerrar()
       }}
     >
-      <button
-        onClick={onCerrar}
-        aria-label="Cerrar"
-        className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-cyan/60 transition text-lg z-10"
-      >
-        ✕
-      </button>
+      {!expandido && (
+        <button
+          onClick={onCerrar}
+          aria-label="Cerrar"
+          className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-cyan/60 transition text-lg z-10"
+        >
+          ✕
+        </button>
+      )}
 
-      <div className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+      <div
+        className={
+          expandido
+            ? 'fixed inset-0 z-[70] bg-black flex flex-col p-2'
+            : 'w-full max-w-5xl'
+        }
+        onClick={(e) => e.stopPropagation()}
+      >
         <video
           ref={ref}
           src={src}
@@ -409,14 +458,24 @@ function ModalVideo({ src, poster, onCerrar }) {
           autoPlay
           playsInline
           onDoubleClick={pantallaCompleta}
-          className="w-full max-h-[78vh] rounded-2xl bg-black"
+          className={
+            expandido
+              ? 'flex-1 min-h-0 w-full object-contain bg-black'
+              : 'w-full max-h-[78vh] rounded-2xl bg-black'
+          }
         />
-        <div className="mt-4 flex items-center justify-center gap-3">
+        <div
+          className={
+            expandido
+              ? 'py-3 flex items-center justify-center gap-3'
+              : 'mt-4 flex items-center justify-center gap-3'
+          }
+        >
           <button
             onClick={pantallaCompleta}
             className="inline-flex items-center gap-2 border border-cyan/50 hover:bg-cyan/10 hover:text-cyan text-cyan/90 rounded-full px-5 py-2.5 text-sm transition"
           >
-            ⛶ Pantalla completa
+            {expandido ? '✕ Salir de pantalla completa' : '⛶ Pantalla completa'}
           </button>
           <button
             onClick={onCerrar}
@@ -425,9 +484,11 @@ function ModalVideo({ src, poster, onCerrar }) {
             Cerrar
           </button>
         </div>
-        <p className="mt-3 text-center text-[11px] text-white/35">
-          Doble clic en el video para ponerlo en pantalla completa.
-        </p>
+        {!expandido && (
+          <p className="mt-3 text-center text-[11px] text-white/35">
+            Doble clic en el video para ponerlo en pantalla completa.
+          </p>
+        )}
       </div>
     </div>
   )
@@ -1016,11 +1077,11 @@ function ModalHistoria({ cat, nom, onCerrar }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-5"
+      className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-5"
       onClick={onCerrar}
     >
       <div
-        className="bg-ink border border-white/15 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-auto animate-reveal"
+        className="bg-ink border border-white/15 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 sm:p-8">

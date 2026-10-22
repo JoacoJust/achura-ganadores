@@ -18,6 +18,12 @@ export default {
         goldglow: '0 0 60px rgba(212,175,55,.25)',
       },
       keyframes: {
+        // Solo opacidad: si animamos transform en un contenedor, la pantalla
+        // completa nativa del video deja de andar.
+        fade: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
         'fade-up': {
           '0%': { opacity: '0', transform: 'translateY(18px)' },
           '100%': { opacity: '1', transform: 'none' },
@@ -32,6 +38,7 @@ export default {
         },
       },
       animation: {
+        fade: 'fade .25s ease-out both',
         'fade-up': 'fade-up .6s ease-out both',
         reveal: 'reveal .8s cubic-bezier(.2,.7,.3,1) both',
         shine: 'shine 6s linear infinite',
