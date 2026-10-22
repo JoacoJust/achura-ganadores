@@ -12,7 +12,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 
 | Parte | URL | Quién entra | Qué ve |
 | --- | --- | --- | --- |
-| **1 · Votar el Outfit del día** | `/#/` | Público | Ingresa su nombre y vota el mejor outfit (1 voto por dispositivo). Solo se ven **las iniciales** de los 19. **No ve ranking ni ternas.** |
+| **1 · Votar el Outfit del día** | `/#/` | Público | Elige **su nombre** de la lista de 19 y vota el mejor outfit (**una persona = un voto**, máximo 19). Solo se ven **las iniciales** de los 19. **No ve ranking ni ternas.** |
 | **2 · Ternas y ganadores** | `/#/ternas` | **Privado** (contraseña) | Todas las ternas **en vivo**: portada sin nombres, y al entrar a cada terna el ganador + los puestos, actualizándose solos. Incluye la terna del **Outfit del día** con la encuesta en vivo. |
 | **3 · Outfit del día (organizador)** | `/#/outfit-panel` | **Privado** (contraseña) | Ranking del outfit **en vivo** (solo iniciales, sin fotos) + **quiénes votaron** y a qué hora. |
 
@@ -26,17 +26,17 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 - Al revelar, la terna queda **marcada como "ya se mostró"** (se anota en el navegador del
   organizador, en `localStorage`, clave `achura_ternas_mostradas`) y aparece un botón
   **Continuar →** que salta a la próxima terna que todavía no se mostró. En la portada se ve
-  *"X de 18 ternas mostradas"* y las ternas ya feitas salen tachadas con un **✓**.
+  *"X de 18 ternas mostradas"* y las ternas ya reveladas salen tachadas con un **✓**.
 - **La terna del Outfit del día** vive en la misma lista (`outfit-del-dia` en `categories.json`,
   `"tipo": "outfit"` y sin nominados) y su encuesta se lee en vivo de `/api/outfit/detalle`:
   - Muestra la **encuesta en vivo** (votos por invitado y quiénes votaron), solo con **iniciales,
     sin fotos**. Antes de revelar la lista va en el orden del padrón, sin puestos ni destacados,
     para no spoilear el podio.
   - **✦ Revelar al ganador ✦** abre primero **La votación**: **✓ Votaron (N)** con la hora de cada
-    voto y **⏳ Faltaron (M)** con los invitados del padrón que todavía no votaron (se comparan los
-    nombres normalizados, porque cada uno escribe su nombre al votar).
-  - Abajo de esas listas aparece **✦ Mostrar al ganador ✦**, **bloqueado hasta que votaron las 19
-    personas** (`padron` = invitados de `data/invitados.json`); mientras tanto dice *"Faltan N votos"*.
+    voto y **⏳ Faltaron (M)** con los invitados del padrón que todavía no votaron (cada uno elige
+    su nombre de la lista: **una persona, un voto**).
+  - Abajo de esas listas aparece **✦ Mostrar al ganador ✦**, **bloqueado hasta que votaron los 19
+    del padrón** (`padron` = invitados de `data/invitados.json`); mientras tanto dice *"Faltan N votos"*.
   - Recién ahí se ordena por votos, se destaca el 1º y aparece la tarjeta del **ganador** (o
     ganadores, si hay empate) con sus votos y porcentaje, más el aviso **✓ Esta terna ya se mostró**
     y **Continuar →**.
@@ -151,14 +151,14 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 
 | Campo | Qué es |
 | --- | --- |
-| `id` | Identificador del voto (no se repite). |
-| `nombre` | Cómo se muestra y cómo queda registrado el voto. |
+| `id` | Identificador del invitado **y de su voto** (no se repite). |
+| `nombre` | Cómo se muestra en la lista y cómo queda registrado el voto. |
 | `grupo` | Solo informativo (`achura` o `invitado`). No separa la lista. |
 | `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. **No se muestra** (la votación es solo con iniciales), pero queda guardada por si se quiere usar. |
 - Todos votan **una sola vez** y el voto vale **1** (las anotaciones `(+2)` / `(+1)` no cuentan).
 - `"activo": false` cierra la votación.
 - El **padrón** son esos 19 invitados: la terna del outfit de la sección privada usa
-  `padron` (19) para saber cuántos faltan, y **el ganador se revela recién cuando hay 19 votos**.
+  `padron` (19) para saber cuántos faltan, y **el ganador se revela recién cuando votaron los 19**.
 - Para cambiar los nombres, se edita `data/invitados.json` y se recarga el sitio
   (no hace falta buildear: el backend lo lee en cada request).
 - **La votación pública muestra solo las iniciales** (círculo con las iniciales, sin fotos), en una
@@ -166,9 +166,20 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 - **En el ranking en vivo del organizador tampoco se muestran fotos**, solo las iniciales (lo mismo
   para los 19).
 
-Cada dispositivo vota **una sola vez** (cookie `outfit_token` + colección `outfit_votos`).
-Antes de votar se pide el **nombre** del invitado (se guarda en el dispositivo y queda registrado
-con el voto; el organizador lo ve en el panel *En vivo*).
+### Cómo se vota
+
+1. El votante elige **su nombre** de la lista de los 19 (¿Quién sos?). No se escribe a mano.
+2. Vota el outfit que quiera. Queda **una sola vez por persona**: si el nombre ya votó, el servidor
+   responde *"Ese nombre ya votó"* (aunque entre desde otro celular).
+3. Nunca se guardan **más de 19 votos**: al llegar a 19, la votación pública cierra sola
+   (*"Ya votaron las 19 personas"*).
+4. El dispositivo también se recuerda (cookie `outfit_token` + colección `outfit_votos`), así que no
+   se puede votar dos veces desde el mismo celular.
+5. La página pública muestra el **conteo en vivo** (*"X de 19 ya votaron"*) y qué nombres ya votaron,
+   pero **no muestra el ranking**.
+
+Los votos viejos (de antes de elegir el nombre de la lista) no tienen `votante`: se reconocen por el
+nombre que se escribió y cuentan igual para el padrón.
 
 Para reiniciar la votación:
 
@@ -187,9 +198,9 @@ curl -X POST https://TU-SITIO.onrender.com/api/outfit/reset \
 | `POST /api/salir` | Borra la cookie de acceso. |
 | `GET /api/resultados` | Resultados del último `npm run sync` (privado). |
 | `GET /api/resultados/vivo` | **Resultados calculados contra la base en el momento** (privado). |
-| `GET /api/outfit` | Datos de la votación pública + si este dispositivo ya votó. |
-| `POST /api/outfit/votar` | Body `{ id, nombre }` → registra el voto. |
-| `GET /api/outfit/detalle` | Ranking + quiénes votaron (`votantes`) y quiénes faltan (`faltantes`) solo para el organizador (privado). Incluye `padron`, `total`, `faltan` y `listo` (votaron los 19). |
+| `GET /api/outfit` | Datos de la votación pública + si este dispositivo ya votó. Devuelve `padron`, `votantes` (ids de los que ya votaron) y `total` (votos guardados). |
+| `POST /api/outfit/votar` | Body `{ id, votante }` → registra el voto (`votante` = id del invitado que vota). Una persona = un voto; máximo 19. |
+| `GET /api/outfit/detalle` | Ranking + quiénes votaron (`votantes`) y quiénes faltan (`faltantes`) solo para el organizador (privado). Incluye `padron`, `total`, `votaronTotal`, `faltan` y `listo` (votaron los 19). |
 | `POST /api/outfit/reset` | Header `x-admin-password` → borra los votos del Outfit. |
 
 ---

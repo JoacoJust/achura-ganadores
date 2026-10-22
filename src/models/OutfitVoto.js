@@ -7,11 +7,19 @@ const OutfitVotoSchema = new mongoose.Schema(
   {
     token: { type: String, required: true, unique: true },
     invitado: { type: String, required: true, index: true },
+    // Quién vota: el id del invitado del padrón (una persona = un voto).
+    votante: { type: String },
     nombre: { type: String, default: '' },
     ip_address: { type: String },
     user_agent: { type: String },
   },
   { timestamps: true, collection: 'outfit_votos' }
+);
+
+// Una persona no puede votar dos veces (los votos viejos, sin `votante`, no entran)
+OutfitVotoSchema.index(
+  { votante: 1 },
+  { unique: true, partialFilterExpression: { votante: { $type: 'string' } } }
 );
 
 module.exports = mongoose.model('OutfitVoto', OutfitVotoSchema);

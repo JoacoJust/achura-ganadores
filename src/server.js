@@ -57,11 +57,37 @@ function tieneAcceso(req) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-async function conteosOutfit() {
-  const rows = await OutfitVoto.aggregate([{ $group: { _id: '$invitado', votos: { $sum: 1 } } }]);
-  const map = new Map();
-  rows.forEach((r) => map.set(r._id, r.votos));
-  return map;
+// Normaliza un nombre para comparar (los votos viejos no tienen id de votante)
+const claveNombre = (s) =>
+  String(s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+// A qué invitado del padrón corresponde un voto.
+// Los votos nuevos traen `votante` (id); los viejos se reconocen por el nombre.
+function idDeVoto(cfg, v) {
+  if (v.votante && cfg.invitados.some((i) => i.id === v.votante)) return v.votante;
+  const k = claveNombre(v.nombre);
+  if (!k) return null;
+  const inv = cfg.invitados.find((i) => {
+    const n = claveNombre(i.nombre);
+    return n && (k === n || k.startsWith(n + ' ') || n.startsWith(k + ' '));
+  });
+  return inv ? inv.id : null;
+}
+
+// Ids del padrón que ya votaron (cada persona cuenta una sola vez)
+function votantesDelPadron(cfg, votos) {
+  const ids = new Set();
+  for (const v of votos) {
+    const id = idDeVoto(cfg, v);
+    if (id) ids.add(id);
+  }
+  return ids;
 }
 
 // Límite simple para no permitir fuerza bruta contra la contraseña
@@ -146,12 +172,18 @@ app.get('/api/outfit', async (req, res) => {
   const token = leerCookies(req).outfit_token;
 
   let votos = new Map();
+  let votantes = [];
+  let totalVotos = 0;
   let miVoto = null;
   let miNombre = '';
   let baseOk = true;
   try {
     await connect();
-    votos = await conteosOutfit();
+    const rows = await OutfitVoto.find({}, { invitado: 1, votante: 1, nombre: 1 }).lean();
+    totalVotos = rows.length;
+    votos = new Map();
+    for (const r of rows) votos.set(r.invitado, (votos.get(r.invitado) || 0) + 1);
+    votantes = [...votantesDelPadron(cfg, rows)];
     if (token) {
       const v = await OutfitVoto.findOne({ token }).lean();
       miVoto = v ? v.invitado : null;
@@ -163,12 +195,16 @@ app.get('/api/outfit', async (req, res) => {
   }
 
   const invitados = cfg.invitados.map((i) => ({ ...i, votos: votos.get(i.id) || 0 }));
+  res.setHeader('Cache-Control', 'no-store');
   res.json({
     titulo: cfg.titulo,
     activo: cfg.activo,
     baseOk,
     invitados,
-    total: [...votos.values()].reduce((a, b) => a + b, 0),
+    padron: cfg.invitados.length,
+    // Ids de los invitados que ya votaron (para el conteo X de 19)
+    votantes,
+    total: totalVotos,
     yaVoto: !!miVoto,
     miVoto,
     miNombre,
@@ -195,33 +231,32 @@ app.get('/api/outfit/detalle', async (req, res) => {
       }))
       .sort((a, b) => b.votos - a.votos);
 
-    // Quiénes votaron y quiénes faltan (se comparan los nombres normalizados
-    // porque el votante escribe su nombre a mano).
-    const clave = (s) =>
-      String(s || '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    // Quiénes votaron y quiénes faltan: el voto va atado al id del invitado
+    // (una persona = un voto). Los votos viejos se reconocen por el nombre.
+    const porId = new Map(cfg.invitados.map((i) => [i.id, i]));
+    const fechas = new Map();
     const votaron = [];
-    const vistos = new Set();
+    const vistosSueltos = new Set();
     for (const v of votos) {
-      const k = clave(v.nombre);
-      if (!k || vistos.has(k)) continue;
-      vistos.add(k);
-      votaron.push({ nombre: v.nombre || 'Sin nombre', fecha: v.createdAt });
+      const id = idDeVoto(cfg, v);
+      if (id) {
+        if (!fechas.has(id)) fechas.set(id, v.createdAt);
+        continue;
+      }
+      const k = claveNombre(v.nombre);
+      if (k && !vistosSueltos.has(k)) {
+        vistosSueltos.add(k);
+        votaron.push({ nombre: v.nombre || 'Sin nombre', fecha: v.createdAt });
+      }
     }
+    for (const [id, fecha] of fechas) {
+      const inv = porId.get(id);
+      if (inv) votaron.push({ nombre: inv.nombre, fecha });
+    }
+    votaron.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
     const faltantes = cfg.invitados
-      .filter((i) => {
-        const k = clave(i.nombre);
-        if (!k) return false;
-        for (const v of vistos) {
-          if (v === k || v.startsWith(k + ' ') || k.startsWith(v + ' ')) return false;
-        }
-        return true;
-      })
+      .filter((i) => !fechas.has(i.id))
       .map((i) => ({ id: i.id, nombre: i.nombre, grupo: i.grupo || 'invitado' }));
 
     res.setHeader('Cache-Control', 'no-store');
@@ -232,8 +267,9 @@ app.get('/api/outfit/detalle', async (req, res) => {
       // Padrón: los invitados del outfit (hoy 19). El ganador se revela
       // recién cuando votaron todos.
       padron: cfg.invitados.length,
-      faltan: Math.max(0, cfg.invitados.length - votos.length),
-      listo: cfg.invitados.length > 0 && votos.length >= cfg.invitados.length,
+      votaronTotal: votaron.length,
+      faltan: faltantes.length,
+      listo: cfg.invitados.length > 0 && faltantes.length === 0,
       ranking,
       votantes: votaron.slice(0, 40),
       faltantes,
@@ -251,14 +287,14 @@ app.get('/api/outfit/detalle', async (req, res) => {
 app.post('/api/outfit/votar', async (req, res) => {
   const cfg = leerConfigOutfit();
   const id = String((req.body && req.body.id) || '');
-  const nombre = String((req.body && req.body.nombre) || '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 40);
+  const votanteId = String((req.body && req.body.votante) || '').trim();
 
   if (!cfg.activo) return res.status(400).json({ error: 'La votación de Outfit del día está cerrada' });
   if (!cfg.invitados.some((i) => i.id === id)) return res.status(400).json({ error: 'Invitado inválido' });
-  if (nombre.length < 2) return res.status(400).json({ error: 'Ingresá tu nombre para votar' });
+
+  // Quién vota: tiene que ser uno de los invitados del padrón
+  const votante = cfg.invitados.find((i) => i.id === votanteId);
+  if (!votante) return res.status(400).json({ error: 'Elegí tu nombre de la lista para votar' });
 
   try {
     await connect();
@@ -281,21 +317,38 @@ app.post('/api/outfit/votar', async (req, res) => {
   const previo = await OutfitVoto.findOne({ token }).lean();
   if (previo) return res.status(409).json({ error: 'Ya votaste tu outfit del día', miVoto: previo.invitado });
 
+  // Una persona = un voto (aunque entre desde otro celular)
+  const yaVoto = await OutfitVoto.findOne({ votante: votante.id }).lean();
+  if (yaVoto) return res.status(409).json({ error: 'Ese nombre ya votó', yaVoto: true });
+
+  // Nunca puede haber más votos que invitados (19)
+  const total = await OutfitVoto.countDocuments({});
+  if (total >= cfg.invitados.length) {
+    return res.status(409).json({ error: 'Ya votaron las 19 personas', completo: true });
+  }
+
   try {
     await OutfitVoto.create({
       token,
       invitado: id,
-      nombre,
+      votante: votante.id,
+      nombre: votante.nombre,
       ip_address: req.ip,
       user_agent: String(req.headers['user-agent'] || '').slice(0, 250),
     });
   } catch (e) {
-    if (e.code === 11000) return res.status(409).json({ error: 'Ya votaste tu outfit del día' });
+    if (e.code === 11000) {
+      const porPersona = e.keyPattern && e.keyPattern.votante;
+      return res.status(409).json({
+        error: porPersona ? 'Ese nombre ya votó' : 'Ya votaste tu outfit del día',
+        yaVoto: !!porPersona,
+      });
+    }
     console.error('Outfit: error al guardar el voto:', e.message);
     return res.status(500).json({ error: 'No se pudo guardar el voto' });
   }
 
-  res.json({ ok: true, miVoto: id, miNombre: nombre });
+  res.json({ ok: true, miVoto: id, miNombre: votante.nombre });
 });
 
 // Reset manual (para el organizador). Requiere el header x-admin-password.

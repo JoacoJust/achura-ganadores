@@ -1386,7 +1386,7 @@ function ListaVotacion({ votaron = [], faltaron = [], padron = 0 }) {
       </div>
 
       <p className="sm:col-span-2 text-center text-[11px] text-white/25">
-        Los que faltan se calculan con el nombre que escribió cada uno al votar.
+        Cada invitado elige su nombre de la lista: una persona, un voto.
       </p>
     </div>
   )
@@ -1406,7 +1406,7 @@ function OutfitEnVivo() {
         <div>
           <h2 className="font-serif text-2xl sm:text-3xl">Ranking en vivo</h2>
           <p className="text-xs text-white/40 mt-2">
-            {d.total} de {padron} votaron · {d.activo ? 'votación abierta' : 'votación cerrada'}
+            {d.votaronTotal ?? d.total} de {padron} votaron · {d.activo ? 'votación abierta' : 'votación cerrada'}
             {d.faltan > 0 ? ` · faltan ${d.faltan}` : ' · ¡ya votaron todos!'}
           </p>
         </div>
@@ -1430,7 +1430,8 @@ function EstadoOutfit() {
   }
 
   const padron = d.padron || 0
-  const faltan = Math.max(0, padron - (d.total || 0))
+  const votaronTotal = d.votaronTotal ?? d.total ?? 0
+  const faltan = typeof d.faltan === 'number' ? d.faltan : Math.max(0, padron - votaronTotal)
 
   return (
     <span
@@ -1438,7 +1439,7 @@ function EstadoOutfit() {
         faltan === 0 ? 'text-gold/80' : 'text-white/30 group-hover:text-cyan transition'
       }`}
     >
-      {faltan === 0 ? 'Ver ganador →' : `${d.total} de ${padron} votaron`}
+      {faltan === 0 ? 'Ver ganador →' : `${votaronTotal} de ${padron} votaron`}
     </span>
   )
 }
@@ -1483,10 +1484,10 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
     irA(2, 'ganador')
   }
 
-  const total = (d && d.total) || 0
+  const total = (d && (d.votaronTotal ?? d.total)) || 0
   const padron = (d && d.padron) || 0
-  const faltan = Math.max(0, padron - total)
-  const listo = padron > 0 && total >= padron
+  const faltan = d && typeof d.faltan === 'number' ? d.faltan : Math.max(0, padron - total)
+  const listo = !!(d && d.listo)
   const ranking = (d && d.ranking) || []
 
   // Antes de revelar no se ordena por votos: se muestran en el orden del padrón
@@ -1524,7 +1525,7 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
               <div>
                 <p className="text-[11px] uppercase tracking-[0.3em] text-cyan/80">Encuesta en vivo</p>
                 <h2 className="font-serif text-2xl sm:text-3xl mt-2">
-                  {total} de {padron} {total === 1 ? 'voto' : 'votos'}
+                  {total} de {padron} ya votaron
                 </h2>
                 <p className="mt-2 text-xs text-white/40">
                   {faltan > 0 ? `Faltan ${faltan} para que voten todos.` : '¡Ya votaron todos!'}
@@ -1697,30 +1698,35 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
 
 /* ---------------------------- outfit del día (público) ---------------------------- */
 
-const NOMBRE_KEY = 'achura_outfit_nombre'
+const VOTANTE_KEY = 'achura_outfit_votante'
 
 function Outfit() {
   const [estado, setEstado] = useState(null)
   const [error, setError] = useState('')
   const [elegido, setElegido] = useState(null)
   const [enviando, setEnviando] = useState(false)
-  const [nombre, setNombre] = useState(() => {
+  const [votanteId, setVotanteId] = useState(() => {
     try {
-      return localStorage.getItem(NOMBRE_KEY) || ''
+      return localStorage.getItem(VOTANTE_KEY) || ''
     } catch (e) {
       return ''
     }
   })
-  const [nombreTemp, setNombreTemp] = useState('')
 
-  function guardarNombre(e) {
-    e.preventDefault()
-    const limpio = nombreTemp.replace(/\s+/g, ' ').trim()
-    if (limpio.length < 2) return
+  function elegirVotante(id) {
     try {
-      localStorage.setItem(NOMBRE_KEY, limpio)
+      localStorage.setItem(VOTANTE_KEY, id)
     } catch (e) {}
-    setNombre(limpio)
+    setVotanteId(id)
+    setError('')
+  }
+
+  function cambiarVotante() {
+    try {
+      localStorage.removeItem(VOTANTE_KEY)
+    } catch (e) {}
+    setVotanteId('')
+    setElegido(null)
   }
 
   async function cargar() {
@@ -1736,7 +1742,7 @@ function Outfit() {
 
   useEffect(() => {
     cargar()
-    const t = setInterval(cargar, 15000)
+    const t = setInterval(cargar, 8000)
     return () => clearInterval(t)
   }, [])
 
@@ -1747,10 +1753,14 @@ function Outfit() {
       const r = await fetch('/api/outfit/votar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: invitado.id, nombre }),
+        body: JSON.stringify({ id: invitado.id, votante: votanteId }),
       })
       const d = await r.json()
-      if (!r.ok) throw new Error(d.error || 'No se pudo registrar el voto')
+      if (!r.ok) {
+        // Ese nombre ya votó: que elija el suyo
+        if (d.yaVoto) cambiarVotante()
+        throw new Error(d.error || 'No se pudo registrar el voto')
+      }
       setElegido(null)
       await cargar()
     } catch (e) {
@@ -1769,9 +1779,15 @@ function Outfit() {
   }
 
   const { invitados, yaVoto, miVoto, miNombre, activo, baseOk, titulo } = estado
+  const votantes = estado.votantes || []
+  const padron = estado.padron || invitados.length
+  const votaron = votantes.length
+  const completo = padron > 0 && votaron >= padron
   const votado = invitados.find((i) => i.id === miVoto)
   const puedenVotar = activo && baseOk && !yaVoto
-  const necesitaNombre = puedenVotar && !nombre.trim()
+  // El nombre elegido no vale si ya votó (desde otro celular)
+  const votante = votantes.includes(votanteId) ? null : invitados.find((i) => i.id === votanteId) || null
+  const necesitaNombre = puedenVotar && !votante && !completo
 
   return (
     <div className="max-w-5xl mx-auto px-5 pt-12 pb-20">
@@ -1781,13 +1797,31 @@ function Outfit() {
         <div className="gold-rule h-px w-40 mx-auto mt-5" />
         <p className="mt-5 text-white/55 text-sm max-w-md mx-auto">
           {necesitaNombre
-            ? 'Ingresá tu nombre y elegí el mejor outfit de la noche. Un voto por dispositivo.'
-            : puedenVotar
-              ? 'Elegí el mejor outfit de la noche. Un voto por dispositivo.'
-              : yaVoto
-                ? '¡Gracias por votar!'
-                : 'La votación está cerrada.'}
+            ? 'Elegí tu nombre de la lista y votá el mejor outfit de la noche. Cada uno vota una sola vez.'
+            : completo && puedenVotar
+              ? '¡Ya votaron las 19 personas!'
+              : puedenVotar
+                ? 'Elegí el mejor outfit de la noche. Un voto por persona.'
+                : yaVoto
+                  ? '¡Gracias por votar!'
+                  : 'La votación está cerrada.'}
         </p>
+
+        {/* Conteo en vivo: los nombres que ya votaron, sin pasar de 19 */}
+        <div className="mt-7 max-w-sm mx-auto">
+          <div className="flex items-baseline justify-between text-[11px] uppercase tracking-[0.2em]">
+            <span className="text-white/40">Ya votaron</span>
+            <span className={completo ? 'text-gold' : 'text-cyan/80'}>
+              {votaron} de {padron}
+            </span>
+          </div>
+          <div className="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${completo ? 'bg-gold' : 'bg-cyan/70'}`}
+              style={{ width: `${padron ? Math.min(100, Math.round((votaron / padron) * 100)) : 0}%` }}
+            />
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -1803,43 +1837,48 @@ function Outfit() {
       )}
 
       {necesitaNombre && (
-        <form
-          onSubmit={guardarNombre}
-          className="mt-10 max-w-sm mx-auto rounded-3xl border border-white/10 bg-white/[0.03] p-7 text-center animate-fade-up"
-        >
-          <p className="text-[10px] uppercase tracking-[0.32em] text-cyan/80">Ingresá tu nombre</p>
-          <p className="mt-2 text-sm text-white/45">Para registrar tu voto del outfit.</p>
-          <input
-            autoFocus
-            value={nombreTemp}
-            onChange={(e) => setNombreTemp(e.target.value)}
-            maxLength={40}
-            placeholder="Tu nombre"
-            className="mt-5 w-full rounded-xl bg-white/5 border border-white/15 focus:border-cyan/70 focus:outline-none px-4 py-3 text-center text-lg text-white placeholder:text-white/25"
-          />
-          <button
-            type="submit"
-            disabled={nombreTemp.replace(/\s+/g, ' ').trim().length < 2}
-            className="mt-3 w-full bg-gold text-black font-semibold rounded-full py-3 text-sm hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Continuar
-          </button>
-        </form>
+        <div className="mt-10 max-w-3xl mx-auto rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-7 animate-fade-up">
+          <p className="text-[10px] uppercase tracking-[0.32em] text-cyan/80 text-center">¿Quién sos?</p>
+          <p className="mt-2 text-sm text-white/45 text-center">
+            Elegí tu nombre para votar. Hay {padron} invitados y cada uno vota una sola vez.
+          </p>
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {invitados.map((inv) => {
+              const yaVotoEse = votantes.includes(inv.id)
+              return (
+                <button
+                  key={inv.id}
+                  disabled={yaVotoEse}
+                  onClick={() => elegirVotante(inv.id)}
+                  className={`flex items-center gap-2.5 rounded-xl border px-3 py-2 text-left transition ${
+                    yaVotoEse
+                      ? 'border-white/5 bg-white/[0.01] text-white/25 cursor-not-allowed'
+                      : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-cyan/60 hover:bg-white/[0.06]'
+                  }`}
+                >
+                  <AvatarInvitado
+                    invitado={inv}
+                    className={`w-7 h-7 rounded-full shrink-0 ${yaVotoEse ? 'opacity-40' : ''}`}
+                    text="text-[10px]"
+                  />
+                  <span className="truncate text-sm">{inv.nombre}</span>
+                  {yaVotoEse && (
+                    <span className="ml-auto text-[10px] uppercase tracking-[0.15em]">✓ votó</span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
       )}
 
-      {puedenVotar && nombre.trim() && (
+      {puedenVotar && votante && (
         <div className="mt-10 flex flex-wrap items-center justify-center gap-2 text-sm text-white/40">
           <span>
-            Votás como <span className="text-gold">{nombre}</span>
+            Votás como <span className="text-gold">{votante.nombre}</span>
           </span>
           <button
-            onClick={() => {
-              try {
-                localStorage.removeItem(NOMBRE_KEY)
-              } catch (e) {}
-              setNombre('')
-              setNombreTemp('')
-            }}
+            onClick={cambiarVotante}
             className="text-[11px] uppercase tracking-[0.2em] underline hover:text-white transition"
           >
             cambiar
@@ -1852,7 +1891,10 @@ function Outfit() {
           <p className="text-4xl">✓</p>
           <p className="font-serif text-3xl mt-4">{votado ? votado.nombre : 'Voto registrado'}</p>
           {miNombre && <p className="text-sm text-white/50 mt-3">Tu voto quedó registrado como {miNombre}.</p>}
-          <p className="text-xs text-white/35 mt-5">
+          <p className="text-xs text-white/35 mt-4">
+            Ya votaron {votaron} de {padron}.
+          </p>
+          <p className="text-xs text-white/35 mt-1">
             Los resultados se dan en la noche de los premios.
           </p>
         </div>
@@ -1866,7 +1908,15 @@ function Outfit() {
         </div>
       )}
 
-      {puedenVotar && !necesitaNombre && (
+      {puedenVotar && completo && (
+        <div className="mt-10 max-w-md mx-auto rounded-3xl border border-gold/30 bg-gold/[0.05] p-7 text-center animate-fade-up">
+          <p className="text-2xl">✓</p>
+          <p className="font-serif text-2xl mt-3">Ya votaron los {padron}</p>
+          <p className="text-sm text-white/50 mt-2">Gracias, equipo. Los resultados se dan en la noche.</p>
+        </div>
+      )}
+
+      {puedenVotar && votante && (
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {invitados.map((inv, i) => (
             <div
@@ -1913,7 +1963,7 @@ function Outfit() {
             <p className="mt-4 text-sm text-white/60">¿Votás el outfit de</p>
             <p className="font-serif text-2xl mt-1">{elegido.nombre}?</p>
             <p className="text-xs text-white/35 mt-3">
-              Votás como <span className="text-white/70">{nombre}</span> · solo una vez.
+              Votás como <span className="text-white/70">{votante ? votante.nombre : miNombre}</span> · solo una vez.
             </p>
             <div className="mt-6 flex gap-3">
               <button
