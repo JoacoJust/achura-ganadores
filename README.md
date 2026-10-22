@@ -53,7 +53,9 @@ PORT=3003
 | `RESULTADOS_PASSWORD` | Contraseña de la sección privada de ternas. |
 | `ADMIN_PASSWORD` | Para borrar los votos de Outfit (`POST /api/outfit/reset`). |
 
-> Si en el deploy no hay `MONGO_URI`, el build usa el `data/resultados.json` que está en el repo.
+> Los resultados **no están en el repo** (para que no se filtren). `npm run sync` los genera
+> durante el build leyendo la base: por eso `MONGO_URI` tiene que estar disponible también
+> en el build. Si falta, la sección privada muestra un aviso hasta que se vuelva a deployar.
 
 ---
 
