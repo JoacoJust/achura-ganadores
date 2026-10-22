@@ -1069,6 +1069,7 @@ function Outfit() {
   const [estado, setEstado] = useState(null)
   const [error, setError] = useState('')
   const [elegido, setElegido] = useState(null)
+  const [foto, setFoto] = useState(null)
   const [enviando, setEnviando] = useState(false)
   const [nombre, setNombre] = useState(() => {
     try {
@@ -1235,16 +1236,34 @@ function Outfit() {
       {puedenVotar && !necesitaNombre && (
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {invitados.map((inv, i) => (
-            <button
+            <div
               key={inv.id}
-              onClick={() => setElegido(inv)}
-              className="group text-left rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-cyan/60 hover:bg-white/[0.06] transition animate-fade-up"
+              className="group relative rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-cyan/60 hover:bg-white/[0.06] transition animate-fade-up"
               style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
             >
-              <FotoInvitado invitado={inv} className="w-full aspect-[4/5] rounded-xl" />
+              <button
+                onClick={() => setFoto(inv)}
+                aria-label={`Ver la foto completa de ${inv.nombre}`}
+                className="relative block w-full rounded-xl overflow-hidden cursor-zoom-in"
+              >
+                <FotoInvitado invitado={inv} className="w-full aspect-[3/4]" />
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <span className="pointer-events-none absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/55 border border-white/20 flex items-center justify-center text-white/80 group-hover:text-white group-hover:border-cyan/60 transition">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M20 20l-3.5-3.5M11 8v6M8 11h6" />
+                  </svg>
+                </span>
+              </button>
+
               <p className="mt-3 text-sm text-white/85 group-hover:text-white truncate">{inv.nombre}</p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-cyan/70 group-hover:text-cyan">Votar →</p>
-            </button>
+              <button
+                onClick={() => setElegido(inv)}
+                className="mt-1 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-cyan/70 hover:text-cyan transition"
+              >
+                Votar →
+              </button>
+            </div>
           ))}
         </div>
       )}
@@ -1262,7 +1281,24 @@ function Outfit() {
             className="bg-ink border border-white/15 rounded-2xl p-6 max-w-sm w-full text-center animate-reveal"
             onClick={(e) => e.stopPropagation()}
           >
-            <FotoInvitado invitado={elegido} className="w-28 h-28 rounded-full mx-auto" />
+            <button
+              onClick={() => setFoto(elegido)}
+              className="relative block w-full rounded-xl overflow-hidden bg-black/40 cursor-zoom-in"
+              aria-label={`Ver la foto completa de ${elegido.nombre}`}
+            >
+              <FotoInvitado
+                invitado={elegido}
+                fit="contain"
+                className="w-full max-h-[52vh] object-contain"
+              />
+              <span className="pointer-events-none absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/55 border border-white/20 flex items-center justify-center text-white/80">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M20 20l-3.5-3.5M11 8v6M8 11h6" />
+                </svg>
+              </span>
+            </button>
+
             <p className="mt-4 text-sm text-white/60">¿Votás el outfit de</p>
             <p className="font-serif text-2xl mt-1">{elegido.nombre}?</p>
             <p className="text-xs text-white/35 mt-3">
@@ -1287,6 +1323,14 @@ function Outfit() {
           </div>
         </div>
       )}
+
+      {foto && (
+        <ModalFoto
+          invitado={foto}
+          onCerrar={() => setFoto(null)}
+          onVotar={puedenVotar ? () => { setElegido(foto); setFoto(null) } : null}
+        />
+      )}
     </div>
   )
 }
@@ -1301,15 +1345,18 @@ function iniciales(nombre) {
     .toUpperCase()
 }
 
-function FotoInvitado({ invitado, className = '' }) {
+function FotoInvitado({ invitado, className = '', fit = 'cover' }) {
   const [error, setError] = useState(false)
 
   if (!invitado.foto || error) {
     return (
       <div
-        className={`${className} bg-gradient-to-br from-teal2 to-ink border border-white/10 flex items-center justify-center`}
+        className={`${className} relative bg-gradient-to-br from-white/[0.07] via-teal2/60 to-ink border border-white/10 flex items-center justify-center overflow-hidden`}
       >
-        <span className="font-serif text-3xl text-cyan/70">{iniciales(invitado.nombre)}</span>
+        <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(18,199,228,.18),transparent_65%)]" />
+        <span className="relative font-serif text-3xl text-cyan/70 tracking-[0.08em]">
+          {iniciales(invitado.nombre)}
+        </span>
       </div>
     )
   }
@@ -1317,9 +1364,72 @@ function FotoInvitado({ invitado, className = '' }) {
     <img
       src={invitado.foto}
       alt={invitado.nombre}
-      className={`${className} object-cover`}
+      className={`${className} ${fit === 'contain' ? 'object-contain' : 'object-cover object-top'}`}
       loading="lazy"
       onError={() => setError(true)}
     />
+  )
+}
+
+/* --------- ver la foto completa (a pantalla completa) --------- */
+
+function ModalFoto({ invitado, onCerrar, onVotar }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCerrar()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onCerrar])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 animate-reveal"
+      onClick={onCerrar}
+    >
+      <button
+        onClick={onCerrar}
+        aria-label="Cerrar"
+        className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-cyan/60 transition text-lg"
+      >
+        ✕
+      </button>
+
+      <div
+        className="flex flex-col items-center max-w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="max-h-[72vh] max-w-[94vw] flex items-center justify-center">
+          <FotoInvitado
+            invitado={invitado}
+            fit="contain"
+            className="max-h-[72vh] max-w-[94vw] object-contain rounded-xl"
+          />
+        </div>
+
+        <p className="mt-5 font-serif text-2xl sm:text-3xl text-center">{invitado.nombre}</p>
+
+        <div className="mt-5 flex items-center gap-3">
+          <button
+            onClick={onCerrar}
+            className="border border-white/20 rounded-full px-5 py-2.5 text-sm text-white/70 hover:bg-white/5 transition"
+          >
+            Cerrar
+          </button>
+          {onVotar && (
+            <button
+              onClick={onVotar}
+              className="bg-gold text-black font-semibold rounded-full px-6 py-2.5 text-sm hover:brightness-110 shadow-goldglow transition"
+            >
+              Votar →
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }

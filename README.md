@@ -129,6 +129,12 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 - `"activo": false` cierra la votación.
 - Para cambiar los nombres o agregar fotos, se edita `data/invitados.json` y se recarga el sitio
   (no hace falta buildear: el backend lo lee en cada request).
+- **Las fotos**: 16 de los 19 ya tienen una (las que había en el repo de `achura-awards`). A los
+  que faltan (Alma Pedernera, Male Rabanal y Rosario Bogo) hay que pasarles la foto y ponerla en
+  `data/invitados.json` + `web/public/media/`.
+- **Ver la foto completa**: en la grilla, el toque sobre la foto abre la foto **entera** (sin
+  recorte, a pantalla completa, con ✕ o `Esc` para cerrar y un botón para votar desde ahí).
+  En la ventana de confirmación del voto también se ve la foto completa.
 
 Cada dispositivo vota **una sola vez** (cookie `outfit_token` + colección `outfit_votos`).
 Antes de votar se pide el **nombre** del invitado (se guarda en el dispositivo y queda registrado
