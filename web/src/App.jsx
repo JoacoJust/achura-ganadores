@@ -389,37 +389,11 @@ function ModalVideo({ src, poster, onCerrar }) {
     return () => document.removeEventListener('fullscreenchange', onChange)
   }, [])
 
-  async function pantallaCompleta() {
-    const v = ref.current
-    if (!v) return
-    if (document.fullscreenElement) {
-      try {
-        await document.exitFullscreen()
-      } catch (e) {}
-      return
-    }
-    if (expandido) {
-      setExpandido(false)
-      return
-    }
-    // iOS / Safari viejos: el reproductor nativo del video
-    if (!v.requestFullscreen && v.webkitEnterFullscreen) {
-      v.webkitEnterFullscreen()
-      return
-    }
-    // Chrome / Edge / Firefox / Safari nuevos: pantalla completa de verdad
-    try {
-      const pedido = v.requestFullscreen
-        ? v.requestFullscreen()
-        : Promise.resolve(v.webkitRequestFullscreen())
-      await Promise.race([
-        Promise.resolve(pedido),
-        new Promise((_, rechazar) => setTimeout(() => rechazar(new Error('sin respuesta')), 900)),
-      ])
-      if (document.fullscreenElement) return
-    } catch (e) {}
-    // Si el navegador la bloquea, agrandamos el video igual
-    setExpandido(true)
+  // Instantáneo: agrandamos el video a toda la pantalla nosotros mismos.
+  // (A pedir la pantalla completa del navegador se tarda ~1 seg en algunos
+  // navegadores, así que ese camino queda sólo para el botón nativo del video.)
+  function pantallaCompleta() {
+    setExpandido((prev) => !prev)
   }
 
   return (
