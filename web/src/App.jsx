@@ -1015,7 +1015,7 @@ function OutfitEnVivo() {
               <span className={`w-6 text-center font-serif text-sm ${i === 0 && inv.votos > 0 ? 'text-gold' : 'text-white/35'}`}>
                 {i + 1}
               </span>
-              <FotoInvitado invitado={inv} className="w-9 h-9 rounded-full" />
+              <AvatarInvitado invitado={inv} className="w-9 h-9 rounded-full" text="text-[11px]" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline justify-between gap-3">
                   <p className={`truncate text-sm ${i === 0 && inv.votos > 0 ? 'text-gold' : 'text-white/85'}`}>
@@ -1345,6 +1345,28 @@ function iniciales(nombre) {
     .toUpperCase()
 }
 
+function Iniciales({ nombre, className = 'text-3xl' }) {
+  return (
+    <>
+      <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(18,199,228,.18),transparent_65%)]" />
+      <span className={`relative font-serif text-cyan/70 tracking-[0.08em] ${className}`}>
+        {iniciales(nombre)}
+      </span>
+    </>
+  )
+}
+
+// Avatar con SOLO las iniciales (sin fotos): se usa en el ranking en vivo
+function AvatarInvitado({ invitado, className = '', text = 'text-3xl' }) {
+  return (
+    <div
+      className={`${className} relative bg-gradient-to-br from-white/[0.07] via-teal2/60 to-ink border border-white/10 flex items-center justify-center overflow-hidden`}
+    >
+      <Iniciales nombre={invitado.nombre} className={text} />
+    </div>
+  )
+}
+
 function FotoInvitado({ invitado, className = '', fit = 'cover' }) {
   const [error, setError] = useState(false)
 
@@ -1353,10 +1375,7 @@ function FotoInvitado({ invitado, className = '', fit = 'cover' }) {
       <div
         className={`${className} relative bg-gradient-to-br from-white/[0.07] via-teal2/60 to-ink border border-white/10 flex items-center justify-center overflow-hidden`}
       >
-        <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(18,199,228,.18),transparent_65%)]" />
-        <span className="relative font-serif text-3xl text-cyan/70 tracking-[0.08em]">
-          {iniciales(invitado.nombre)}
-        </span>
+        <Iniciales nombre={invitado.nombre} />
       </div>
     )
   }

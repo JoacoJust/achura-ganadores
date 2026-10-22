@@ -14,7 +14,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 | --- | --- | --- | --- |
 | **1 · Votar el Outfit del día** | `/#/` | Público | Ingresa su nombre y vota el mejor outfit (1 voto por dispositivo). **No ve ranking ni ternas.** |
 | **2 · Ternas y ganadores** | `/#/ternas` | **Privado** (contraseña) | Todas las ternas **en vivo**: portada sin nombres, y al entrar a cada terna el ganador + los puestos, actualizándose solos. |
-| **3 · Outfit del día (organizador)** | `/#/outfit-panel` | **Privado** (contraseña) | Ranking del outfit **en vivo** + **quiénes votaron** y a qué hora. |
+| **3 · Outfit del día (organizador)** | `/#/outfit-panel` | **Privado** (contraseña) | Ranking del outfit **en vivo** (solo iniciales, sin fotos) + **quiénes votaron** y a qué hora. |
 
 - Los resultados **se calculan contra la base de datos en el momento** (`GET /api/resultados/vivo`,
   cache de 4 s) y el sitio los refresca cada 8 s: los puestos y el ganador se ven **en vivo**.
@@ -135,6 +135,8 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 - **Ver la foto completa**: en la grilla, el toque sobre la foto abre la foto **entera** (sin
   recorte, a pantalla completa, con ✕ o `Esc` para cerrar y un botón para votar desde ahí).
   En la ventana de confirmación del voto también se ve la foto completa.
+- **En el ranking en vivo del organizador no se muestran fotos**, solo las iniciales (lo mismo
+  para los 19). Las fotos son únicamente de la voting pública.
 
 Cada dispositivo vota **una sola vez** (cookie `outfit_token` + colección `outfit_votos`).
 Antes de votar se pide el **nombre** del invitado (se guarda en el dispositivo y queda registrado
