@@ -1,0 +1,10 @@
+{
+  "titulo": "Outfit del día",
+  "activo": true,
+  "invitados": [
+    { "id": "invitado-1", "nombre": "Invitado 1", "foto": "" },
+    { "id": "invitado-2", "nombre": "Invitado 2", "foto": "" },
+    { "id": "invitado-3", "nombre": "Invitado 3", "foto": "" },
+    { "id": "invitado-4", "nombre": "Invitado 4", "foto": "" }
+  ]
+}

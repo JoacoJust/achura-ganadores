@@ -1,0 +1,22 @@
+{
+  "name": "achura-ganadores",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Achura Awards - Ganadores y puestos de cada terna + voto de Outfit del día",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "sync": "node scripts/sync-resultados.js",
+    "build": "node scripts/sync-resultados.js && cd web && npm install && npm run build",
+    "build:web": "cd web && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}
