@@ -12,7 +12,7 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 
 | Parte | URL | Quién entra | Qué ve |
 | --- | --- | --- | --- |
-| **1 · Votar el Outfit del día** | `/#/` | Público | Ingresa su nombre y vota el mejor outfit (1 voto por dispositivo). **No ve ranking ni ternas.** |
+| **1 · Votar el Outfit del día** | `/#/` | Público | Ingresa su nombre y vota el mejor outfit (1 voto por dispositivo). Solo se ven **las iniciales** de los 19. **No ve ranking ni ternas.** |
 | **2 · Ternas y ganadores** | `/#/ternas` | **Privado** (contraseña) | Todas las ternas **en vivo**: portada sin nombres, y al entrar a cada terna el ganador + los puestos, actualizándose solos. |
 | **3 · Outfit del día (organizador)** | `/#/outfit-panel` | **Privado** (contraseña) | Ranking del outfit **en vivo** (solo iniciales, sin fotos) + **quiénes votaron** y a qué hora. |
 
@@ -32,6 +32,9 @@ nombres, fotos y videos. No hay que volver a cargar nada.
   `web/src/data/categories.json`.
 - Los resultados **no viajan en el JavaScript**: se piden a la API, que exige la cookie que se obtiene
   con la contraseña (`RESULTADOS_PASSWORD`).
+- **Las fotos de las ternas se ven completas**: los candidatos, la historia y el ganador muestran la
+  foto **entera** (sin recortes) sobre un fondo desenfocado de la misma foto. En los círculos
+  pequeños (portada, podio, tabla de puestos) se recorta desde arriba para que no se corte la cara.
 
 ### Rutas
 
@@ -123,20 +126,16 @@ Invitados) y **la grilla las muestra a todas juntas**, sin separarlas:
 | `id` | Identificador del voto (no se repite). |
 | `nombre` | Cómo se muestra y cómo queda registrado el voto. |
 | `grupo` | Solo informativo (`achura` o `invitado`). No separa la lista. |
-| `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. Si está vacía, la tarjeta muestra las iniciales. |
+| `foto` | Ruta de `/media` (archivos en `web/public/media/`) o URL. **No se muestra** (la votación es solo con iniciales), pero queda guardada por si se quiere usar. |
 
 - Todos votan **una sola vez** y el voto vale **1** (las anotaciones `(+2)` / `(+1)` no cuentan).
 - `"activo": false` cierra la votación.
-- Para cambiar los nombres o agregar fotos, se edita `data/invitados.json` y se recarga el sitio
+- Para cambiar los nombres, se edita `data/invitados.json` y se recarga el sitio
   (no hace falta buildear: el backend lo lee en cada request).
-- **Las fotos**: 16 de los 19 ya tienen una (las que había en el repo de `achura-awards`). A los
-  que faltan (Alma Pedernera, Male Rabanal y Rosario Bogo) hay que pasarles la foto y ponerla en
-  `data/invitados.json` + `web/public/media/`.
-- **Ver la foto completa**: en la grilla, el toque sobre la foto abre la foto **entera** (sin
-  recorte, a pantalla completa, con ✕ o `Esc` para cerrar y un botón para votar desde ahí).
-  En la ventana de confirmación del voto también se ve la foto completa.
-- **En el ranking en vivo del organizador no se muestran fotos**, solo las iniciales (lo mismo
-  para los 19). Las fotos son únicamente de la voting pública.
+- **La votación pública muestra solo las iniciales** (círculo con las iniciales, sin fotos), en una
+  sola grilla con los 19 juntos.
+- **En el ranking en vivo del organizador tampoco se muestran fotos**, solo las iniciales (lo mismo
+  para los 19).
 
 Cada dispositivo vota **una sola vez** (cookie `outfit_token` + colección `outfit_votos`).
 Antes de votar se pide el **nombre** del invitado (se guarda en el dispositivo y queda registrado
