@@ -921,6 +921,9 @@ function tieneHistoria(n) {
 
 function Candidatos({ cat, onAbrir }) {
   const [videoAbierto, setVideoAbierto] = useState(null)
+  // Cuando la terna tiene 3 candidatos (las 3 parejas de "Achura mas gobernado")
+  // no se dejan pegados a la izquierda: se centran.
+  const sonTres = (cat.nominados || []).length === 3
 
   return (
     <section id="candidatos" className="mt-12">
@@ -934,12 +937,22 @@ function Candidatos({ cat, onAbrir }) {
         <div className="gold-rule h-px w-32 mx-auto mt-5" />
       </div>
 
-      <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6">
+      <div
+        className={`mt-10 grid gap-5 sm:gap-6 ${
+          sonTres
+            ? 'grid-cols-2 sm:grid-cols-3 max-w-4xl mx-auto'
+            : 'grid-cols-2 sm:grid-cols-4'
+        }`}
+      >
         {(cat.nominados || []).map((n, i) => (
           <button
             key={n.id}
             onClick={() => onAbrir(n)}
-            className="group text-left animate-fade-up"
+            className={`group text-left animate-fade-up ${
+              sonTres && i === 2
+                ? 'col-span-2 sm:col-span-1 w-[calc(50%_-_0.625rem)] sm:w-full mx-auto sm:mx-0'
+                : ''
+            }`}
             style={{ animationDelay: `${Math.min(i * 60, 400)}ms` }}
           >
             <span className="relative block">
