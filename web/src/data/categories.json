@@ -551,84 +551,114 @@
   ]
  },
  {
-  "id": "achura-del-a-o",
-  "nombre": "Achura del año",
-  "tipo": "imagen",
-  "ganadores": 2,
-  "poster": "/media/grupo-achura.jpg",
-  "mencion": "Para todos los miembros de ACHURA que forman parte de este grupo día a día.",
+  "id": "mejores-momentos-gordi",
+  "nombre": "Mejores momentos Gordi",
+  "tipo": "video-solo",
+  "poster": "/media/mejores-momentos-gordi.jpg",
+  "video": "/media/mejores-momentos-gordi.mp4",
+  "mencion": "",
+  "nominados": []
+ },
+ {
+  "id": "gordiada-del-a-o",
+  "nombre": "Gordiada del año",
+  "tipo": "story",
+  "poster": "/media/gordiada-del-ano.jpg",
+  "mencion": "Este premio sera entregado por el mismisimo Franco Bernardi (alias Gordi) al ganador.",
+  "mencion_titulo": "🏆 El premio",
+  "narrador": "Franco Bernardi (alias Gordi)",
   "nominados": [
    {
-    "id": "n1",
+    "id": "n69",
     "nombre": "Mateo Guagliardi",
     "descripcion": "",
     "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
     "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-    "story": []
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "EL GORDI PERDIENDO LOS CELULARES(UNO PRESTADO)"
+     }
+    ]
    },
    {
-    "id": "n2",
-    "nombre": "Guido Olmo",
-    "descripcion": "",
-    "media": "/media/achura-del-ano-guido-olmo.jpg",
-    "poster": "/media/achura-del-ano-guido-olmo.jpg",
-    "story": []
-   },
-   {
-    "id": "n3",
-    "nombre": "Jesús Quiero",
-    "descripcion": "",
-    "media": "/media/achura-del-ano-jesus-quiero.jpg",
-    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-    "story": []
-   },
-   {
-    "id": "n4",
-    "nombre": "Joaquín Just",
-    "descripcion": "",
-    "media": "/media/achura-del-ano-joaquin-just.jpg",
-    "poster": "/media/achura-del-ano-joaquin-just.jpg",
-    "story": []
-   }
-  ]
- },
- {
-  "id": "achura-revelacion",
-  "nombre": "Achura revelacion",
-  "tipo": "imagen",
-  "poster": "/media/achura-revelacion.jpg",
-  "mencion": "",
-  "nominados": [
-   {
-    "id": "n5",
+    "id": "n70",
     "nombre": "Ramiro Domínguez",
     "descripcion": "",
     "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
     "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
-    "story": []
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "EL BERRINCHE EN LA CANCHA DE ITO(SE TIRA Y SE PUTEA CON SU EQUIPO)"
+     }
+    ]
    },
    {
-    "id": "n6",
+    "id": "n71",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/media/franco-bernardi.jpg",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "LA CAIDA DE CARA EN LA PLAZA"
+     }
+    ]
+   },
+   {
+    "id": "n72",
     "nombre": "Joaquín Just",
     "descripcion": "",
     "media": "/media/achura-del-ano-joaquin-just.jpg",
     "poster": "/media/achura-del-ano-joaquin-just.jpg",
-    "story": []
-   },
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "REMERAS IMPRESAS CON LOS NOMBRES MAL"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fail-del-a-o",
+  "nombre": "Fail del año",
+  "tipo": "video",
+  "poster": "/media/fail-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
    {
-    "id": "n7",
-    "nombre": "Juan Martín Leyes",
+    "id": "n53",
+    "nombre": "Jesús Quiero",
     "descripcion": "",
-    "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
-    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "media": "/media/fail-ano-jesus-quiero.mp4",
+    "poster": "/media/fail-ano-jesus-quiero.jpg",
     "story": []
    },
    {
-    "id": "n8",
+    "id": "n54",
+    "nombre": "Franco Da Resurreicao",
+    "descripcion": "",
+    "media": "/media/fail-ano-franco-da-resurreicao.mp4",
+    "poster": "/media/fail-ano-franco-da-resurreicao.jpg",
+    "story": []
+   },
+   {
+    "id": "n55",
     "nombre": "Mateo Guagliardi",
     "descripcion": "",
-    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "media": "/media/fail-ano-mateo-guagliardi.jpg",
+    "poster": "/media/fail-ano-mateo-guagliardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n56",
+    "nombre": "Nicolás Tiscornia (Rosenz cut)",
+    "descripcion": "",
+    "media": "/media/fail-ano-nicolas-tiscornia.jpg",
+    "poster": "/media/fail-ano-nicolas-tiscornia.jpg",
     "story": []
    }
   ]
@@ -739,110 +769,6 @@
   ]
  },
  {
-  "id": "fail-del-a-o",
-  "nombre": "Fail del año",
-  "tipo": "video",
-  "poster": "/media/fail-del-ano.jpg",
-  "mencion": "",
-  "nominados": [
-   {
-    "id": "n53",
-    "nombre": "Jesús Quiero",
-    "descripcion": "",
-    "media": "/media/fail-ano-jesus-quiero.mp4",
-    "poster": "/media/fail-ano-jesus-quiero.jpg",
-    "story": []
-   },
-   {
-    "id": "n54",
-    "nombre": "Franco Da Resurreicao",
-    "descripcion": "",
-    "media": "/media/fail-ano-franco-da-resurreicao.mp4",
-    "poster": "/media/fail-ano-franco-da-resurreicao.jpg",
-    "story": []
-   },
-   {
-    "id": "n55",
-    "nombre": "Mateo Guagliardi",
-    "descripcion": "",
-    "media": "/media/fail-ano-mateo-guagliardi.jpg",
-    "poster": "/media/fail-ano-mateo-guagliardi.jpg",
-    "story": []
-   },
-   {
-    "id": "n56",
-    "nombre": "Nicolás Tiscornia (Rosenz cut)",
-    "descripcion": "",
-    "media": "/media/fail-ano-nicolas-tiscornia.jpg",
-    "poster": "/media/fail-ano-nicolas-tiscornia.jpg",
-    "story": []
-   }
-  ]
- },
- {
-  "id": "gordiada-del-a-o",
-  "nombre": "Gordiada del año",
-  "tipo": "story",
-  "poster": "/media/gordiada-del-ano.jpg",
-  "mencion": "Este premio sera entregado por el mismisimo Franco Bernardi (alias Gordi) al ganador.",
-  "mencion_titulo": "🏆 El premio",
-  "narrador": "Franco Bernardi (alias Gordi)",
-  "nominados": [
-   {
-    "id": "n69",
-    "nombre": "Mateo Guagliardi",
-    "descripcion": "",
-    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-    "story": [
-     {
-      "tipo": "titulo",
-      "contenido": "EL GORDI PERDIENDO LOS CELULARES(UNO PRESTADO)"
-     }
-    ]
-   },
-   {
-    "id": "n70",
-    "nombre": "Ramiro Domínguez",
-    "descripcion": "",
-    "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
-    "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
-    "story": [
-     {
-      "tipo": "titulo",
-      "contenido": "EL BERRINCHE EN LA CANCHA DE ITO(SE TIRA Y SE PUTEA CON SU EQUIPO)"
-     }
-    ]
-   },
-   {
-    "id": "n71",
-    "nombre": "Franco Bernardi",
-    "descripcion": "",
-    "media": "/media/franco-bernardi.jpg",
-    "poster": "/media/franco-bernardi.jpg",
-    "story": [
-     {
-      "tipo": "titulo",
-      "contenido": "LA CAIDA DE CARA EN LA PLAZA"
-     }
-    ]
-   },
-   {
-    "id": "n72",
-    "nombre": "Joaquín Just",
-    "descripcion": "",
-    "media": "/media/achura-del-ano-joaquin-just.jpg",
-    "poster": "/media/achura-del-ano-joaquin-just.jpg",
-    "story": [
-     {
-      "tipo": "titulo",
-      "contenido": "REMERAS IMPRESAS CON LOS NOMBRES MAL"
-     }
-    ]
-   }
-  ]
- },
- {
   "id": "outfit-del-dia",
   "nombre": "Outfit del día",
   "tipo": "outfit",
@@ -850,5 +776,88 @@
   "poster": "/media/outfit-del-dia.jpg",
   "mencion": "",
   "nominados": []
+ },
+ {
+  "id": "achura-revelacion",
+  "nombre": "Achura revelacion",
+  "tipo": "imagen",
+  "poster": "/media/achura-revelacion.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n5",
+    "nombre": "Ramiro Domínguez",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "story": []
+   },
+   {
+    "id": "n6",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": []
+   },
+   {
+    "id": "n7",
+    "nombre": "Juan Martín Leyes",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   },
+   {
+    "id": "n8",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-del-a-o",
+  "nombre": "Achura del año",
+  "tipo": "imagen",
+  "ganadores": 2,
+  "poster": "/media/grupo-achura.jpg",
+  "mencion": "Para todos los miembros de ACHURA que forman parte de este grupo día a día.",
+  "nominados": [
+   {
+    "id": "n1",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n2",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": []
+   },
+   {
+    "id": "n3",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n4",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": []
+   }
+  ]
  }
 ]
