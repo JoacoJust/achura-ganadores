@@ -533,7 +533,7 @@ function Ternas({ res, recargar }) {
       {(datos) => {
         // La terna del outfit no sale de resultados.json: su encuesta se lee en vivo
         // (y el ganador se revela recién cuando votaron los 19).
-        const normales = categorias.filter((c) => c.tipo !== 'outfit')
+        const normales = categorias.filter((c) => c.tipo !== 'outfit' && c.tipo !== 'video-solo')
         const definidas = normales.filter((c) => ganadoresDe(datos, c.id).length > 0).length
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
@@ -577,7 +577,11 @@ function Ternas({ res, recargar }) {
                       {cat.nombre}
                     </span>
 
-                    {cat.tipo === 'outfit' ? (
+                    {cat.tipo === 'video-solo' ? (
+                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
+                        Ver video →
+                      </span>
+                    ) : cat.tipo === 'outfit' ? (
                       <EstadoOutfit />
                     ) : listoTerna ? (
                       <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
@@ -622,6 +626,8 @@ function Terna({ id, res, recargar }) {
       {(datos) =>
         cat.tipo === 'outfit' ? (
           <DetalleOutfit key={cat.id} cat={cat} />
+        ) : cat.tipo === 'video-solo' ? (
+          <DetalleVideoSolo key={cat.id} cat={cat} />
         ) : (
           <DetalleTerna key={cat.id} cat={cat} datos={datos} />
         )

@@ -1,845 +1,854 @@
 [
-  {
-    "id": "achura-del-a-o",
-    "nombre": "Achura del año",
-    "tipo": "imagen",
-    "ganadores": 2,
-    "poster": "/media/grupo-achura.jpg",
-    "mencion": "Para todos los miembros de ACHURA que forman parte de este grupo día a día.",
-    "nominados": [
-      {
-        "id": "n1",
-        "nombre": "Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n2",
-        "nombre": "Guido Olmo",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-guido-olmo.jpg",
-        "poster": "/media/achura-del-ano-guido-olmo.jpg",
-        "story": []
-      },
-      {
-        "id": "n3",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-jesus-quiero.jpg",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n4",
-        "nombre": "Joaquín Just",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-joaquin-just.jpg",
-        "poster": "/media/achura-del-ano-joaquin-just.jpg",
-        "story": []
-      }
+ {
+  "id": "achura-mas-gobernado",
+  "nombre": "Achura mas gobernado",
+  "tipo": "imagen",
+  "poster": "/media/achura-mas-gobernado.webp",
+  "mencion": "",
+  "pesos_voto": [
+   2
+  ],
+  "nominados": [
+   {
+    "id": "n57",
+    "nombre": "Juan Martín Leyes y Catalina Bogo",
+    "descripcion": "",
+    "media": "/media/gobernado-juan-martin-leyes-catalina-bogo.jpg",
+    "poster": "/media/gobernado-juan-martin-leyes-catalina-bogo.jpg",
+    "story": []
+   },
+   {
+    "id": "n58",
+    "nombre": "Jesús Quiero y Guadalupe Pedernera",
+    "descripcion": "",
+    "media": "/media/gobernado-jesus-quiero-guadalupe-pedernera.jpg",
+    "poster": "/media/gobernado-jesus-quiero-guadalupe-pedernera.jpg",
+    "story": []
+   },
+   {
+    "id": "n59",
+    "nombre": "Pablo Agustín Damino y Sofía Cevasco",
+    "descripcion": "",
+    "media": "/media/gobernado-pablo-damino-sofia-cevasco.jpg",
+    "poster": "/media/gobernado-pablo-damino-sofia-cevasco.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "jugador-de-futbol-del-a-o",
+  "nombre": "Jugador de futbol del año",
+  "tipo": "imagen",
+  "poster": "/media/futbol-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n41",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": []
+   },
+   {
+    "id": "n42",
+    "nombre": "Juan Martín Leyes",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   },
+   {
+    "id": "n43",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n44",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-mas-gay-del-a-o",
+  "nombre": "Achura mas gay del año",
+  "tipo": "imagen",
+  "poster": "/media/bandera-gay.png",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n21",
+    "nombre": "Ramiro Domínguez",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "story": []
+   },
+   {
+    "id": "n22",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/media/franco-bernardi.jpg",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n23",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": []
+   },
+   {
+    "id": "n24",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "jugador-de-cs-del-a-o",
+  "nombre": "Jugador de CS del año",
+  "tipo": "video",
+  "poster": "/media/cs-logo.webp",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n17",
+    "nombre": "Juan Martín Leyes",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   },
+   {
+    "id": "n18",
+    "nombre": "Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/achura-gamer-nicolas-tiscornia.jpg",
+    "story": []
+   },
+   {
+    "id": "n19",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n20",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-mas-quebrado",
+  "nombre": "Achura mas quebrado",
+  "tipo": "imagen",
+  "poster": "/media/quebrado-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n49",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n50",
+    "nombre": "Pablo Agustín Damino",
+    "descripcion": "",
+    "media": "/media/outfit-ano-pablo-damino.jpg",
+    "poster": "/media/outfit-ano-pablo-damino.jpg",
+    "story": []
+   },
+   {
+    "id": "n51",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/media/franco-bernardi.jpg",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n52",
+    "nombre": "Juan Martín Leyes",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-promesa-fuera-de-achura-",
+  "nombre": "Achura promesa (fuera de Achura)",
+  "tipo": "imagen",
+  "poster": "/media/achura-promesa.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n9",
+    "nombre": "Ignacio Guagliardi",
+    "descripcion": "",
+    "media": "/media/promesa-ignacio-guagliardi.jpg",
+    "poster": "/media/promesa-ignacio-guagliardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n10",
+    "nombre": "Francisco Estigarribia",
+    "descripcion": "",
+    "media": "/media/promesa-francisco-estigarribia.jpg",
+    "poster": "/media/promesa-francisco-estigarribia.jpg",
+    "story": []
+   },
+   {
+    "id": "n11",
+    "nombre": "Nazareno Borda",
+    "descripcion": "",
+    "media": "/media/promesa-nazareno-borda.jpg",
+    "poster": "/media/promesa-nazareno-borda.jpg",
+    "story": []
+   },
+   {
+    "id": "n12",
+    "nombre": "Delfina Scoccimarro",
+    "descripcion": "",
+    "media": "/media/promesa-delfina-scoccimarro.jpg",
+    "poster": "/media/promesa-delfina-scoccimarro.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "momentos-pad-10",
+  "nombre": "Momentos Pad 10",
+  "tipo": "video-solo",
+  "poster": "/media/momentos-pad-10.jpg",
+  "video": "/media/momentos-pad-10.mp4",
+  "mencion": "",
+  "nominados": []
+ },
+ {
+  "id": "mejor-momento-mdt",
+  "nombre": "Mejor momento MDT",
+  "tipo": "story",
+  "poster": "/media/momento-mdt.png",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n73",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "LA OUIJA(el espíritu que poseyó a Marto y el tablero al otro día)"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "La noche, como las bebidas, siguieron pasando. Pero se volvió inminente la llegada del miembro número 11 de achura. “Lucho”. Aunque esta vez, no era una ocasión normal. Se hizo la cápsula en el baño. Este método hace que los efectos de luciano sean aún mayores. Lo vuelve mucho más fuerte. Para dar un contexto aún no eran ni las 12 de la noche y todo achura estaba totalmente quebrado."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Guido durante todo el viaje estaba muy molesto con jugar a la ouija. Siempre el resto de los miembros se negaban pero luego de lo ocurrido con Gianna, achura creía que era el momento perfecto.(Achura fue echado de esa habitación por empeorar su estado de malviaje, y tenía prohibido la vuelta a la planta alta) El juego comenzó, el espíritu no hablaba. Nadie entendía cómo se movía. Pero no solo tenía control del vaso.. Sino que también tomó control de Marto. Marto estaba completamente poseído. Hablaba un idioma extraño que nadie podía entender. Pero solo nuestros seguidores podían ayudarnos. Con sus donaciones pudimos traerlo de vuelta. La historia que nos contó sobre lo que pasaría con Pablo fue muy asombrosa."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Pero todas estas cosas son solo lo que quedó captado en cámara. Ya que al despertarnos nadie recordaba que pasó, hasta que vieron en la mesa, ese trozo de papel…"
+     }
     ]
-  },
-  {
-    "id": "achura-revelacion",
-    "nombre": "Achura revelacion",
-    "tipo": "imagen",
-    "poster": "/media/achura-revelacion.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n5",
-        "nombre": "Ramiro Domínguez",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
-        "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
-        "story": []
-      },
-      {
-        "id": "n6",
-        "nombre": "Joaquín Just",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-joaquin-just.jpg",
-        "poster": "/media/achura-del-ano-joaquin-just.jpg",
-        "story": []
-      },
-      {
-        "id": "n7",
-        "nombre": "Juan Martín Leyes",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "story": []
-      },
-      {
-        "id": "n8",
-        "nombre": "Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n74",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/media/franco-bernardi.jpg",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "PABLO CONVERTIDO EN AGUSTIN ( BONDIOLA, TOP 1 - TOP 0)"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Nos remontamos al segundo día de achura en el último mdt. Se inició la espera a la mejor comida que alguna vez hicieron en esa casa. La bondiola era un plato que achura jamás podría haber imaginado comer en los viajes anteriores. Luego de una tarde llena de playa, mates y muchos cambios de frentes, achura se vio en la necesidad de aumentar el goce de esa noche. Mateo y Joaquin tuvieron la idea de crear un trago, lleno de sabor frutal y gin"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "El mayor problema de esto es que no fue el trago, sino que los creadores no tenían los utensilios necesarios para poder crearlo. Ya que gastaron todo el paquete de azúcar y jamás se pudo revolver,  entonces fue un gasto enorme por un gusto insignificante. Pero este no era el único trago de la noche. Ya que Paul, Franco y Guido se dieron el gusto de poder comprarse 2 jaggers para esa noche. Aunque la noche ya se tornaba y daba forma para una noche de anécdotas, jamás creímos que desembocará en lo que terminó siendo. A la espera de que la bondiola llegue a desmenuzarse en su disco achura siguió bebiendo. De un momento a otro el jagger se fue terminando. Pero la botella no se fue por sí sola…"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Empezamos a notar la ausencia de un achura,¿Dónde está Pablo? ¿Alguien lo vio?"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "A lo que chucho recuerda un evento que había pasado hace aproximadamente 30 minutos."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Lo que pasó es que se dio un encuentro entre 4 miembros de achura que realizaron una medición corporal captada en cámara. Y él nunca había visto bajar a Pablo de esa habitación. Entonces con el sanguche de bondiola que le corresponde a Pablo, sube y se lo pone en la nariz. A lo que paul sin abrir los ojos usa su sentido del olfato y le empieza a dar mordiscos. Chucho no podía creer que estaba viendo la transformación hacia lo que ellos llamaban, “Agustín”"
+     }
     ]
-  },
-  {
-    "id": "achura-promesa-fuera-de-achura-",
-    "nombre": "Achura promesa (fuera de Achura)",
-    "tipo": "imagen",
-    "poster": "/media/achura-promesa.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n9",
-        "nombre": "Ignacio Guagliardi",
-        "descripcion": "",
-        "media": "/media/promesa-ignacio-guagliardi.jpg",
-        "poster": "/media/promesa-ignacio-guagliardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n10",
-        "nombre": "Francisco Estigarribia",
-        "descripcion": "",
-        "media": "/media/promesa-francisco-estigarribia.jpg",
-        "poster": "/media/promesa-francisco-estigarribia.jpg",
-        "story": []
-      },
-      {
-        "id": "n11",
-        "nombre": "Nazareno Borda",
-        "descripcion": "",
-        "media": "/media/promesa-nazareno-borda.jpg",
-        "poster": "/media/promesa-nazareno-borda.jpg",
-        "story": []
-      },
-      {
-        "id": "n12",
-        "nombre": "Delfina Scoccimarro",
-        "descripcion": "",
-        "media": "/media/promesa-delfina-scoccimarro.jpg",
-        "poster": "/media/promesa-delfina-scoccimarro.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n75",
+    "nombre": "Pablo Agustín Damino",
+    "descripcion": "",
+    "media": "/media/outfit-ano-pablo-damino.jpg",
+    "poster": "/media/outfit-ano-pablo-damino.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "PASTA TUTTI"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Recuerdo el gran momento donde todo achura y la grieta se encontraba en el garaje de la casa de mdt aproximadamentea las 13hs, comiendo sobre dos grandes mesas a lo largo del garaje, achura se encontraba en la mesa del lado derecho y la grieta estaba mas bien cerca de la parrilla por el lado izquierdo. Recuerdo tener un gran parlante en el grupo, el charge de camilo, un parlante con buen sonido y que llenaba toda la habitación, tal parlante sonaba siempre a lo largo de los dias de vacaciones, sobre la mesa habia muchos platos de fideos, uno para cada uno y dos grandes ollas con la pasta y la salsa dentro, recuerdo que todos estábamos comiendo tranquilos hasta que alguien puso la canción \"Tarantella Napoletana\" de Gli Italiani di leri, mítica canción italiana relacionada a la cocina y las pastas de la tierra de la bota, al escuchar la canción en ese contexto todo achura comenzó a reírse por unos segundos, pero al instante, los 10 miembros de achura comenzaron a realizar un baile sinceridad el cual consistía en pinchar los ravioles y fideos que habia en cada uno de nuestros platos, luego el baile y los pinchazos fueron mutando, pasamos de pinchar únicamente en nuestros platos super sincronizados a pinchar cualquier fideo que haya en la mesa, luego algunos empezamos a comer esos fideos y mojarlos en salsa sin salir del tentador y jocoso baile, comiendo, pinchando y mojando fideos en salsa al ritmo, el próximo paso de algunos fue empezar a dirigir los tenedores llenos de pasta a la boca de otros mientras todos seguían bailando, a su vez otros mojaban los fideos y las pastas en vasos llenos y bebidas ajenas dándoles de comer a otros miembros de achura mientras todos bailábamos al mítico ritmo de \"Tarantella Napoletana\" sonando en el gran charger five."
+     }
     ]
-  },
-  {
-    "id": "achura-gamer-del-a-o",
-    "nombre": "Achura gamer del año",
-    "tipo": "video",
-    "poster": "/media/achura-gamer.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n13",
-        "nombre": "Marto",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "story": []
-      },
-      {
-        "id": "n14",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n15",
-        "nombre": "Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/achura-gamer-nicolas-tiscornia.jpg",
-        "story": []
-      },
-      {
-        "id": "n16",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n76",
+    "nombre": "Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/media/mdt-nicolas-tiscornia.mp4",
+    "poster": "/media/mdt-nicolas-tiscornia.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "CHARLA SEXUAL MDT"
+     }
     ]
-  },
-  {
-    "id": "jugador-de-cs-del-a-o",
-    "nombre": "Jugador de CS del año",
-    "tipo": "video",
-    "poster": "/media/cs-logo.webp",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n17",
-        "nombre": "Juan Martín Leyes",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "story": []
-      },
-      {
-        "id": "n18",
-        "nombre": "Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/achura-gamer-nicolas-tiscornia.jpg",
-        "story": []
-      },
-      {
-        "id": "n19",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n20",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      }
+   }
+  ]
+ },
+ {
+  "id": "achura-mas-compa-ero",
+  "nombre": "Achura mas compañero",
+  "tipo": "imagen",
+  "poster": "/media/companero-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n33",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": []
+   },
+   {
+    "id": "n34",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/media/franco-bernardi.jpg",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n35",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": []
+   },
+   {
+    "id": "n36",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "mejor-outfit-del-a-o-con-foto-",
+  "nombre": "Mejor outfit del Año (con foto)",
+  "tipo": "imagen",
+  "poster": "/media/outfit-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n29",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/outfit-ano-jesus-quiero.jpg",
+    "poster": "/media/outfit-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n30",
+    "nombre": "Ramiro Domínguez",
+    "descripcion": "",
+    "media": "/media/outfit-ano-ramiro-dominguez.jpg",
+    "poster": "/media/outfit-ano-ramiro-dominguez.jpg",
+    "story": []
+   },
+   {
+    "id": "n31",
+    "nombre": "Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/media/outfit-ano-nicolas-tiscornia.jpg",
+    "poster": "/media/outfit-ano-nicolas-tiscornia.jpg",
+    "story": []
+   },
+   {
+    "id": "n32",
+    "nombre": "Pablo Agustín Damino",
+    "descripcion": "",
+    "media": "/media/outfit-ano-pablo-damino.jpg",
+    "poster": "/media/outfit-ano-pablo-damino.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "cumplea-os-del-a-o",
+  "nombre": "Cumpleaños del año",
+  "tipo": "imagen",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n61",
+    "nombre": "Juan Martín Leyes",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   },
+   {
+    "id": "n62",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": []
+   },
+   {
+    "id": "n63",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n64",
+    "nombre": "Franco Da Resurreicao",
+    "descripcion": "",
+    "media": "/media/franco-da-resurreicao.jpg",
+    "poster": "/media/franco-da-resurreicao.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-gamer-del-a-o",
+  "nombre": "Achura gamer del año",
+  "tipo": "video",
+  "poster": "/media/achura-gamer.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n13",
+    "nombre": "Marto",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   },
+   {
+    "id": "n14",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n15",
+    "nombre": "Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/achura-gamer-nicolas-tiscornia.jpg",
+    "story": []
+   },
+   {
+    "id": "n16",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "dupla-del-a-o",
+  "nombre": "Dupla del año",
+  "tipo": "video",
+  "poster": "/media/dupla-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n37",
+    "nombre": "Guido Olmo y Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/dupla-ano-guido-olmo-mateo-guagliardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n38",
+    "nombre": "Franco Bernardi y Pablo Agustín Damino",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/dupla-ano-franco-bernardi-pablo-damino.jpg",
+    "story": []
+   },
+   {
+    "id": "n39",
+    "nombre": "Franco Bernardi y Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/dupla-ano-franco-bernardi-nicolas-tiscornia.jpg",
+    "story": []
+   },
+   {
+    "id": "n40",
+    "nombre": "Joaquín Just y Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/placeholder.mp4",
+    "poster": "/media/dupla-ano-joaquin-just-nicolas-tiscornia.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-del-a-o",
+  "nombre": "Achura del año",
+  "tipo": "imagen",
+  "ganadores": 2,
+  "poster": "/media/grupo-achura.jpg",
+  "mencion": "Para todos los miembros de ACHURA que forman parte de este grupo día a día.",
+  "nominados": [
+   {
+    "id": "n1",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n2",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": []
+   },
+   {
+    "id": "n3",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n4",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "achura-revelacion",
+  "nombre": "Achura revelacion",
+  "tipo": "imagen",
+  "poster": "/media/achura-revelacion.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n5",
+    "nombre": "Ramiro Domínguez",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "story": []
+   },
+   {
+    "id": "n6",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": []
+   },
+   {
+    "id": "n7",
+    "nombre": "Juan Martín Leyes",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
+    "story": []
+   },
+   {
+    "id": "n8",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "secuencia-del-a-o",
+  "nombre": "Secuencia del año",
+  "tipo": "imagen",
+  "poster": "/media/secuencia-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n45",
+    "nombre": "Guido Olmo",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-guido-olmo.jpg",
+    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "Evil Pablo"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Esto es así, fuimos al cumple de marto. y apareció por primera vez la figura del lápiz, ese lápiz que toda hoja escribe, que todo destino predice, y Pablo se dejó llevar por su llamado incesante, a pocas horas de que el cumpleaños haya comenzado se podía ver como Pablo ya no era el mismo que hace unas horas. El suele ser una persona que mucho dice en infimas palabras que salen de su boca, yo, que soy bastante observador me percate de que Pablo a la hora de jugar al famoso juego \"la H\" estaba hablando de más, por lo que mi conclusión junto a mis compañeros fue que el se encontraba seducido por el alcohol, yo a todo esto no sabía de la existencia del lápiz debido a que no contaba con su existencia. después de conocer al lápiz supe los motivos del comportamiento de Pablo, se había convertido en un ser salvaje, gritaba, insultaba sin cesar, las mujeres que estaban sentadas en la mesa lo miraban extrañadas por su comportamiento fuera de lo habitual, mis amigos junto a Pablo fueron a comprar algo (no se que) y al rato llegaron, con un anuncio, muy emocionados y entre risas nos dijeron que Pablo subió al positron a la plaza y nos mostraron imágenes que parecían sacadas de esos vídeos de Twitter en los que pasan cosas no tan buenas. A la hora de la vuelta del cumpleaños de marto, nos encontramos con que Pablo estaba sentado en la mesa derrotado, no podía mediar palabras con ninguno de los presentes, ni siquiera pudo saludar a male Rabanal, imaginen al nivel al que había llegado que ni siquiera pudo despedir a esa bomba atómica. Finalmente logramos mover el cuerpo de Pablo, el cual parecía una babosa arrastrándose a cada paso, se subió a su auto y gracias a dios nos dimos cuenta de que no estaba en condiciones de conducir, por lo que lo retiramos de su asiento y lo colocamos en la parte trasera. el tute tomo el mando del positron y zarpamos viaje hasta la casa de Pablo en Temperley, a la hora de llegar nos encontramos con que había un vehículo de policía patrullando la zona, nosotros por supuesto habíamos tomado alcohol y consumido marihuana, por lo que no tuvimos más remedio que bajar rápido a Pablo para que abra su portón y poder pasar todos juntos y esperar el rescate del señor just, que a todo esto conducía el auto del tute. finalmente depositamos a Pablo en su puerta esperando poder entrar, abrio el portón, con cierta timidez, y nosotros al ver que el portón se abrió y se cerró en un parpadeo, intuímos que fue un error inintencionado, pero al ver la expresión que Pablo tenía en su rostro, supimos al instante que habíamos Sido traicionados, al no poder contener a Pablo en su portón intentando convencerlo para que nos deje pasar, suplicándole por poco, entro a su casa sin mediar palabra con ninguno de los presentes, por lo que en ese momento la única opción era comenzar a caminar e intentar hacer tiempo para que just rescate al grupo. al cabo de un par de cuadras en círculos creyendo que perdimos a la policía, por suerte just rescato al grupo, excepto a mi, al gordi, al que los problemas lo persiguen, por lo que yo considere caminar por al lado del vehículo de la policía pensando que quizás si yo pasaba por al lado demostraba que no tenía ningún problema con ellos, por lo que ellos quizas no lo tendrian conmigo, pero bueno, no fue asi, apenas hice 2 pasos quizás 1 paso nada más, oi una voz decir ¡\"caballero, venga por favor!', y ahi ya supe en ese momento que estaba en problemas, mientras veía que el Tiida doblaba en una esquina no muy cerca de donde yo estaba parado con 2 patrulleros y 3 policías, pensaba en mi cabeza, \"la puta madre que me pario, por que siempre yo\", pero bueno, deje las quejas para otro momento mas oportuno e infle el pecho y dije, \"hola oficial que tal, dígame\" intentado quizás una suerte de complicidad con el policia que al instante se destruyó cuando el policia me pidio que ponga las manos sobre el patrullero y separe las piernas, mientras me cacheaban pensé, yo mañana tengo la seju, no me pueden llevar a ningún lado, si me llegan a querer llevar tengo que escapar o algo, no puedo tener tanta mala suerte de vivir a dos cuadras de lo de Pablo, como nos va a traicionar asi, no lo puedo entender, el no es asi, el es mi hermano, no haria esto yo si fuese el que estuviese del otro lado de ese porton. preferí dejar los pensamientos de lado y al momento de que el policía terminase de cachearme me pidió mi documento el cual yo obviamente no tenía, a lo que también sugirió que le muestre mi cuenta dni y yo respondí con sinceridad, \"no tengo datos moviles tampoco\", al ver que hubo un par de segundos interminables de silencio pregunté: \"¿cuál es el motivo de esta detención oficial?\" a lo que me respondió: \"mira flaco, estabas con tus amigos, salieron de un auto que yo no se si es suyo, esperaron un rato ahi y despues salieron caminando apurados mientras nos miraban y empezaron a dar vueltas\" y en ese momento dije bueno, me toca cerrar el orto porque el oficial tiene razón, somos muy boludos, más boludos fuimos por confiar en el bobo de Pablo, pero bueno, por suerte, después de tantas decepciones, la vida me sonrió y salí ileso de la posibilidad de ir a la comisaría. Nunca olvidaré ese rostro, nunca olvidaré al EVIL PABLO."
+     }
     ]
-  },
-  {
-    "id": "achura-mas-gay-del-a-o",
-    "nombre": "Achura mas gay del año",
-    "tipo": "imagen",
-    "poster": "/media/bandera-gay.png",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n21",
-        "nombre": "Ramiro Domínguez",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
-        "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
-        "story": []
-      },
-      {
-        "id": "n22",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/media/franco-bernardi.jpg",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n23",
-        "nombre": "Joaquín Just",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-joaquin-just.jpg",
-        "poster": "/media/achura-del-ano-joaquin-just.jpg",
-        "story": []
-      },
-      {
-        "id": "n24",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-jesus-quiero.jpg",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n46",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-jesus-quiero.jpg",
+    "poster": "/media/achura-del-ano-jesus-quiero.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "El Pola, Alumni y la Policia"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Al ser uno de los vividos en primera plana contare la anécdota del pola Era una de las primeras noches frías de abril, Marto y Guido como buena dupla fueron a vivir una experiencia de futbol en el club alumni. Chucho por su parte estaba en una cena familiar. La juntada era algo efímero y sin mucha vuelta, un lucho en anfiteatro. Pero la noche no fue lo que ellos esperaban.. Luego de haber finalizado con el lucho la noche se pone tensa. Ese día se había jugado un partido donde los espectadores y jugadores no eran personas muy inteligentes. Luego del encuentro se juntaron enfrente al club, en un banco de la plaza con un auto a escuchar música y beber, beber mucho. Cuando de repente se empiezan a oír gritos, como si se fueran a golpear. Nosotros en nuestro estado mas imbecil no podíamos entender que estaba pasando. De un momento a otro llega un patrullero donde en la esquina frena y acelera de 0 a 100 sin dudas. A esto una persona al grito de “que se paren de manos” “se están llevando a mi compañero” . Empieza una persona irse por una calle y volverse para escapar de la policía. Para estos simple achuritas la vida parecía una pelicula. Donde no entediamos nada. De la nada una persona le dice a marto que lo busca bruno y entramos. Al mometo de llegar a la puerta chucho, sin duda alguna ve una cara conocida. Era él, nuestro angel, el pola. Cuando nos ve el se empieza a preocupar por la asistencia de achura en este momento de la noche. Y nos dice la siguiente frase: -Tio, mira la hora que es y vos con la moto. Quédense aca, tomen algo. Cualquier cosa me avisan. Marto y guido se quedan atónitos ante semejante presencia. Donde marto cree que podíamos chupar gratis, porque el pola pagaría.(Cosa que no era cierta) No pasan ni dos minutos que el pola dice que nos llevaba, que nos teníamos que ir. Donde el procede a buscar su camioneta AMAROK AG, con el comentario de guido de “alta nave”, el responde “ya esta vieja”. El camino de vuelta parecía el de Odiseo. Aquí la historia se divide en dos. Para chucho toda la vuelta fue el juego del subway surfers, el creía que por su estado estaba malviajando que el pola iba rápido hasta que doblaba de una forma muy riesgosa. En un momento hasta casi sintió el calor del motor de la chata en su nuca. Al llegar de marto pudo despejar todas sus dudas. Los chicos confirmaron que el pola puso cumbia al palo, pidió un tema y al poner justo lo que el quería escuchar, grito como nunca antes “ Aa re gede el polaco”. Marto y guido nunca habían creído que la noche tuviera el rumbo que tuvo. El pola no tenia limites, ni de semáforos, ni de velocidad ni de integridad física. Al llegar subió la camioneta a la vereda como escudo protector de los chicos. Al poder entrar y dar por finalizada la noche los 3 achuritas solo podían reirse de poder decir que vivieron eso."
+     }
     ]
-  },
-  {
-    "id": "mejor-outfit-del-a-o-con-foto-",
-    "nombre": "Mejor outfit del Año (con foto)",
-    "tipo": "imagen",
-    "poster": "/media/outfit-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n29",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/outfit-ano-jesus-quiero.jpg",
-        "poster": "/media/outfit-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n30",
-        "nombre": "Ramiro Domínguez",
-        "descripcion": "",
-        "media": "/media/outfit-ano-ramiro-dominguez.jpg",
-        "poster": "/media/outfit-ano-ramiro-dominguez.jpg",
-        "story": []
-      },
-      {
-        "id": "n31",
-        "nombre": "Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/media/outfit-ano-nicolas-tiscornia.jpg",
-        "poster": "/media/outfit-ano-nicolas-tiscornia.jpg",
-        "story": []
-      },
-      {
-        "id": "n32",
-        "nombre": "Pablo Agustín Damino",
-        "descripcion": "",
-        "media": "/media/outfit-ano-pablo-damino.jpg",
-        "poster": "/media/outfit-ano-pablo-damino.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n47",
+    "nombre": "Nicolás Tiscornia",
+    "descripcion": "",
+    "media": "/media/secuencia-ano-nicolas-tiscornia.jpg",
+    "poster": "/media/secuencia-ano-nicolas-tiscornia.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "Japón - República Checa en lo de Pad 10, con policía"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Primer día del mundial,achura completamente manija por cómo iba a ser el desenlace de este evento tan ansiado por achura. Pero no es lo que nos interesa, ya que lo que nos pasó esa noche es el plato fuerte. Luego de vivir uno de los mejores goles del mundial, ya que era un partido entre dos selecciones que tenían mucho para sorprendernos. El partido fue un partido muy parejo, terminando 2-2. Pablo, que ya a esta altura del año estaba queriendo alejarse de lucho. Le cede una tuca que tenía guardada a chucho. Chucho y Guido ya tenían todo un plan en la cabeza. Se comprarían un chocolate y lo comerían re locos en el auto. Pero la vida tenía otros planes para ellos. Cuando estaban saliendo Mateo se logra meter en su auto. Pero en el momento donde Guido, Nico y Chucho  se querían subir a sus autos, aparece un patrullero que los intercepta y les pide su documentación. Los pone contra el capot del patrullero. Les consultan si tienen algo que los comprometa a lo que chucho dice que tiene una tuca y la deja en el capot. Pero el policía no se los había quitado aún la tuca seguía ahí. Mientras seguían haciendo el rastreo de la documentación Guido y Chucho siguen esperanzados de que se lo devuelvan y seguir con su plan. Pero de la nada otro oficial de otro patrullero llega y se la guarda en los bolsillos. Rompiendo no solo las expectativas de la noche, sino también la esperanza de buena fe de esta oficial."
+     }
     ]
-  },
-  {
-    "id": "achura-mas-compa-ero",
-    "nombre": "Achura mas compañero",
-    "tipo": "imagen",
-    "poster": "/media/companero-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n33",
-        "nombre": "Guido Olmo",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-guido-olmo.jpg",
-        "poster": "/media/achura-del-ano-guido-olmo.jpg",
-        "story": []
-      },
-      {
-        "id": "n34",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/media/franco-bernardi.jpg",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n35",
-        "nombre": "Joaquín Just",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-joaquin-just.jpg",
-        "poster": "/media/achura-del-ano-joaquin-just.jpg",
-        "story": []
-      },
-      {
-        "id": "n36",
-        "nombre": "Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n48",
+    "nombre": "Pablo Agustín Damino",
+    "descripcion": "",
+    "media": "/media/outfit-ano-pablo-damino.jpg",
+    "poster": "/media/outfit-ano-pablo-damino.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "La Ouija"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Nos remontamos al segundo día de achura en el último mdt. Se inició la espera a la mejor comida que alguna vez hicieron en esa casa. La bondiola era un plato que achura jamás podría haber imaginado comer en los viajes anteriores. Luego de una tarde llena de playa, mates y muchos cambios de frentes, achura se vio en la necesidad de aumentar el goce de esa noche. Mateo y Joaquin tuvieron la idea de crear un trago, lleno de sabor frutal y gin"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "El mayor problema de esto es que no fue el trago, sino que los creadores no tenían los utensilios necesarios para poder crearlo. Ya que gastaron todo el paquete de azúcar y jamás se pudo revolver,  entonces fue un gasto enorme por un gusto insignificante. Pero este no era el único trago de la noche. Ya que Paul, Franco y Guido se dieron el gusto de poder comprarse 2 jaggers para esa noche. Aunque la noche ya se tornaba y daba forma para una noche de anécdotas, jamás creímos que desembocará en lo que terminó siendo. A la espera de que la bondiola llegue a desmenuzarse en su disco achura siguió bebiendo. De un momento a otro el jagger se fue terminando. Pero la botella no se fue por sí sola…"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Empezamos a notar la ausencia de un achura,¿Dónde está Pablo? ¿Alguien lo vio?"
+     },
+     {
+      "tipo": "texto",
+      "contenido": "A lo que chucho recuerda un evento que había pasado hace aproximadamente 30 minutos."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Lo que pasó es que se dio un encuentro entre 4 miembros de achura que realizaron una medición corporal captada en cámara. Y él nunca había visto bajar a Pablo de esa habitación. Entonces con el sanguche de bondiola que le corresponde a Pablo, sube y se lo pone en la nariz. A lo que paul sin abrir los ojos usa su sentido del olfato y le empieza a dar mordiscos. Chucho no podía creer que estaba viendo la transformación hacia lo que ellos llamaban, “Agustín”."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "La noche, como las bebidas, siguieron pasando. Pero se volvió inminente la llegada del miembro número 11 de achura. “Lucho”. Aunque esta vez, no era una ocasión normal. Se hizo la cápsula en el baño. Este método hace que los efectos de luciano sean aún mayores. Lo vuelve mucho más fuerte. Para dar un contexto aún no eran ni las 12 de la noche y todo achura estaba totalmente quebrado."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Guido durante todo el viaje estaba muy molesto con jugar a la ouija. Siempre el resto de los miembros se negaban pero luego de lo ocurrido con Gianna, achura creía que era el momento perfecto.(Achura fue echado de esa habitación por empeorar su estado de malviaje, y tenía prohibido la vuelta a la planta alta) El juego comenzó, el espíritu no hablaba. Nadie entendía cómo se movía. Pero no solo tenía control del vaso.. Sino que también tomó control de Marto. Marto estaba completamente poseído. Hablaba un idioma extraño que nadie podía entender. Pero solo nuestros seguidores podían ayudarnos. Con sus donaciones pudimos traerlo de vuelta. La historia que nos contó sobre lo que pasaría con Pablo fue muy asombrosa."
+     },
+     {
+      "tipo": "texto",
+      "contenido": "Pero todas estas cosas son solo lo que quedó captado en cámara. Ya que al despertarnos nadie recordaba que pasó, hasta que vieron en la mesa, ese trozo de papel…"
+     }
     ]
-  },
-  {
-    "id": "dupla-del-a-o",
-    "nombre": "Dupla del año",
-    "tipo": "video",
-    "poster": "/media/dupla-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n37",
-        "nombre": "Guido Olmo y Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/dupla-ano-guido-olmo-mateo-guagliardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n38",
-        "nombre": "Franco Bernardi y Pablo Agustín Damino",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/dupla-ano-franco-bernardi-pablo-damino.jpg",
-        "story": []
-      },
-      {
-        "id": "n39",
-        "nombre": "Franco Bernardi y Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/dupla-ano-franco-bernardi-nicolas-tiscornia.jpg",
-        "story": []
-      },
-      {
-        "id": "n40",
-        "nombre": "Joaquín Just y Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/placeholder.mp4",
-        "poster": "/media/dupla-ano-joaquin-just-nicolas-tiscornia.jpg",
-        "story": []
-      }
+   }
+  ]
+ },
+ {
+  "id": "fail-del-a-o",
+  "nombre": "Fail del año",
+  "tipo": "video",
+  "poster": "/media/fail-del-ano.jpg",
+  "mencion": "",
+  "nominados": [
+   {
+    "id": "n53",
+    "nombre": "Jesús Quiero",
+    "descripcion": "",
+    "media": "/media/fail-ano-jesus-quiero.mp4",
+    "poster": "/media/fail-ano-jesus-quiero.jpg",
+    "story": []
+   },
+   {
+    "id": "n54",
+    "nombre": "Franco Da Resurreicao",
+    "descripcion": "",
+    "media": "/media/fail-ano-franco-da-resurreicao.mp4",
+    "poster": "/media/fail-ano-franco-da-resurreicao.jpg",
+    "story": []
+   },
+   {
+    "id": "n55",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/fail-ano-mateo-guagliardi.jpg",
+    "poster": "/media/fail-ano-mateo-guagliardi.jpg",
+    "story": []
+   },
+   {
+    "id": "n56",
+    "nombre": "Nicolás Tiscornia (Rosenz cut)",
+    "descripcion": "",
+    "media": "/media/fail-ano-nicolas-tiscornia.jpg",
+    "poster": "/media/fail-ano-nicolas-tiscornia.jpg",
+    "story": []
+   }
+  ]
+ },
+ {
+  "id": "gordiada-del-a-o",
+  "nombre": "Gordiada del año",
+  "tipo": "story",
+  "poster": "/media/gordiada-del-ano.jpg",
+  "mencion": "Este premio sera entregado por el mismisimo Franco Bernardi (alias Gordi) al ganador.",
+  "mencion_titulo": "🏆 El premio",
+  "narrador": "Franco Bernardi (alias Gordi)",
+  "nominados": [
+   {
+    "id": "n69",
+    "nombre": "Mateo Guagliardi",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "EL GORDI PERDIENDO LOS CELULARES(UNO PRESTADO)"
+     }
     ]
-  },
-  {
-    "id": "jugador-de-futbol-del-a-o",
-    "nombre": "Jugador de futbol del año",
-    "tipo": "imagen",
-    "poster": "/media/futbol-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n41",
-        "nombre": "Guido Olmo",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-guido-olmo.jpg",
-        "poster": "/media/achura-del-ano-guido-olmo.jpg",
-        "story": []
-      },
-      {
-        "id": "n42",
-        "nombre": "Juan Martín Leyes",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "story": []
-      },
-      {
-        "id": "n43",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-jesus-quiero.jpg",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n44",
-        "nombre": "Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n70",
+    "nombre": "Ramiro Domínguez",
+    "descripcion": "",
+    "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "EL BERRINCHE EN LA CANCHA DE ITO(SE TIRA Y SE PUTEA CON SU EQUIPO)"
+     }
     ]
-  },
-  {
-    "id": "secuencia-del-a-o",
-    "nombre": "Secuencia del año",
-    "tipo": "imagen",
-    "poster": "/media/secuencia-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n45",
-        "nombre": "Guido Olmo",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-guido-olmo.jpg",
-        "poster": "/media/achura-del-ano-guido-olmo.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "Evil Pablo"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Esto es así, fuimos al cumple de marto. y apareció por primera vez la figura del lápiz, ese lápiz que toda hoja escribe, que todo destino predice, y Pablo se dejó llevar por su llamado incesante, a pocas horas de que el cumpleaños haya comenzado se podía ver como Pablo ya no era el mismo que hace unas horas. El suele ser una persona que mucho dice en infimas palabras que salen de su boca, yo, que soy bastante observador me percate de que Pablo a la hora de jugar al famoso juego \"la H\" estaba hablando de más, por lo que mi conclusión junto a mis compañeros fue que el se encontraba seducido por el alcohol, yo a todo esto no sabía de la existencia del lápiz debido a que no contaba con su existencia. después de conocer al lápiz supe los motivos del comportamiento de Pablo, se había convertido en un ser salvaje, gritaba, insultaba sin cesar, las mujeres que estaban sentadas en la mesa lo miraban extrañadas por su comportamiento fuera de lo habitual, mis amigos junto a Pablo fueron a comprar algo (no se que) y al rato llegaron, con un anuncio, muy emocionados y entre risas nos dijeron que Pablo subió al positron a la plaza y nos mostraron imágenes que parecían sacadas de esos vídeos de Twitter en los que pasan cosas no tan buenas. A la hora de la vuelta del cumpleaños de marto, nos encontramos con que Pablo estaba sentado en la mesa derrotado, no podía mediar palabras con ninguno de los presentes, ni siquiera pudo saludar a male Rabanal, imaginen al nivel al que había llegado que ni siquiera pudo despedir a esa bomba atómica. Finalmente logramos mover el cuerpo de Pablo, el cual parecía una babosa arrastrándose a cada paso, se subió a su auto y gracias a dios nos dimos cuenta de que no estaba en condiciones de conducir, por lo que lo retiramos de su asiento y lo colocamos en la parte trasera. el tute tomo el mando del positron y zarpamos viaje hasta la casa de Pablo en Temperley, a la hora de llegar nos encontramos con que había un vehículo de policía patrullando la zona, nosotros por supuesto habíamos tomado alcohol y consumido marihuana, por lo que no tuvimos más remedio que bajar rápido a Pablo para que abra su portón y poder pasar todos juntos y esperar el rescate del señor just, que a todo esto conducía el auto del tute. finalmente depositamos a Pablo en su puerta esperando poder entrar, abrio el portón, con cierta timidez, y nosotros al ver que el portón se abrió y se cerró en un parpadeo, intuímos que fue un error inintencionado, pero al ver la expresión que Pablo tenía en su rostro, supimos al instante que habíamos Sido traicionados, al no poder contener a Pablo en su portón intentando convencerlo para que nos deje pasar, suplicándole por poco, entro a su casa sin mediar palabra con ninguno de los presentes, por lo que en ese momento la única opción era comenzar a caminar e intentar hacer tiempo para que just rescate al grupo. al cabo de un par de cuadras en círculos creyendo que perdimos a la policía, por suerte just rescato al grupo, excepto a mi, al gordi, al que los problemas lo persiguen, por lo que yo considere caminar por al lado del vehículo de la policía pensando que quizás si yo pasaba por al lado demostraba que no tenía ningún problema con ellos, por lo que ellos quizas no lo tendrian conmigo, pero bueno, no fue asi, apenas hice 2 pasos quizás 1 paso nada más, oi una voz decir ¡\"caballero, venga por favor!', y ahi ya supe en ese momento que estaba en problemas, mientras veía que el Tiida doblaba en una esquina no muy cerca de donde yo estaba parado con 2 patrulleros y 3 policías, pensaba en mi cabeza, \"la puta madre que me pario, por que siempre yo\", pero bueno, deje las quejas para otro momento mas oportuno e infle el pecho y dije, \"hola oficial que tal, dígame\" intentado quizás una suerte de complicidad con el policia que al instante se destruyó cuando el policia me pidio que ponga las manos sobre el patrullero y separe las piernas, mientras me cacheaban pensé, yo mañana tengo la seju, no me pueden llevar a ningún lado, si me llegan a querer llevar tengo que escapar o algo, no puedo tener tanta mala suerte de vivir a dos cuadras de lo de Pablo, como nos va a traicionar asi, no lo puedo entender, el no es asi, el es mi hermano, no haria esto yo si fuese el que estuviese del otro lado de ese porton. preferí dejar los pensamientos de lado y al momento de que el policía terminase de cachearme me pidió mi documento el cual yo obviamente no tenía, a lo que también sugirió que le muestre mi cuenta dni y yo respondí con sinceridad, \"no tengo datos moviles tampoco\", al ver que hubo un par de segundos interminables de silencio pregunté: \"¿cuál es el motivo de esta detención oficial?\" a lo que me respondió: \"mira flaco, estabas con tus amigos, salieron de un auto que yo no se si es suyo, esperaron un rato ahi y despues salieron caminando apurados mientras nos miraban y empezaron a dar vueltas\" y en ese momento dije bueno, me toca cerrar el orto porque el oficial tiene razón, somos muy boludos, más boludos fuimos por confiar en el bobo de Pablo, pero bueno, por suerte, después de tantas decepciones, la vida me sonrió y salí ileso de la posibilidad de ir a la comisaría. Nunca olvidaré ese rostro, nunca olvidaré al EVIL PABLO."
-          }
-        ]
-      },
-      {
-        "id": "n46",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-jesus-quiero.jpg",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "El Pola, Alumni y la Policia"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Al ser uno de los vividos en primera plana contare la anécdota del pola Era una de las primeras noches frías de abril, Marto y Guido como buena dupla fueron a vivir una experiencia de futbol en el club alumni. Chucho por su parte estaba en una cena familiar. La juntada era algo efímero y sin mucha vuelta, un lucho en anfiteatro. Pero la noche no fue lo que ellos esperaban.. Luego de haber finalizado con el lucho la noche se pone tensa. Ese día se había jugado un partido donde los espectadores y jugadores no eran personas muy inteligentes. Luego del encuentro se juntaron enfrente al club, en un banco de la plaza con un auto a escuchar música y beber, beber mucho. Cuando de repente se empiezan a oír gritos, como si se fueran a golpear. Nosotros en nuestro estado mas imbecil no podíamos entender que estaba pasando. De un momento a otro llega un patrullero donde en la esquina frena y acelera de 0 a 100 sin dudas. A esto una persona al grito de “que se paren de manos” “se están llevando a mi compañero” . Empieza una persona irse por una calle y volverse para escapar de la policía. Para estos simple achuritas la vida parecía una pelicula. Donde no entediamos nada. De la nada una persona le dice a marto que lo busca bruno y entramos. Al mometo de llegar a la puerta chucho, sin duda alguna ve una cara conocida. Era él, nuestro angel, el pola. Cuando nos ve el se empieza a preocupar por la asistencia de achura en este momento de la noche. Y nos dice la siguiente frase: -Tio, mira la hora que es y vos con la moto. Quédense aca, tomen algo. Cualquier cosa me avisan. Marto y guido se quedan atónitos ante semejante presencia. Donde marto cree que podíamos chupar gratis, porque el pola pagaría.(Cosa que no era cierta) No pasan ni dos minutos que el pola dice que nos llevaba, que nos teníamos que ir. Donde el procede a buscar su camioneta AMAROK AG, con el comentario de guido de “alta nave”, el responde “ya esta vieja”. El camino de vuelta parecía el de Odiseo. Aquí la historia se divide en dos. Para chucho toda la vuelta fue el juego del subway surfers, el creía que por su estado estaba malviajando que el pola iba rápido hasta que doblaba de una forma muy riesgosa. En un momento hasta casi sintió el calor del motor de la chata en su nuca. Al llegar de marto pudo despejar todas sus dudas. Los chicos confirmaron que el pola puso cumbia al palo, pidió un tema y al poner justo lo que el quería escuchar, grito como nunca antes “ Aa re gede el polaco”. Marto y guido nunca habían creído que la noche tuviera el rumbo que tuvo. El pola no tenia limites, ni de semáforos, ni de velocidad ni de integridad física. Al llegar subió la camioneta a la vereda como escudo protector de los chicos. Al poder entrar y dar por finalizada la noche los 3 achuritas solo podían reirse de poder decir que vivieron eso."
-          }
-        ]
-      },
-      {
-        "id": "n47",
-        "nombre": "Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/media/secuencia-ano-nicolas-tiscornia.jpg",
-        "poster": "/media/secuencia-ano-nicolas-tiscornia.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "Japón - República Checa en lo de Pad 10, con policía"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Primer día del mundial,achura completamente manija por cómo iba a ser el desenlace de este evento tan ansiado por achura. Pero no es lo que nos interesa, ya que lo que nos pasó esa noche es el plato fuerte. Luego de vivir uno de los mejores goles del mundial, ya que era un partido entre dos selecciones que tenían mucho para sorprendernos. El partido fue un partido muy parejo, terminando 2-2. Pablo, que ya a esta altura del año estaba queriendo alejarse de lucho. Le cede una tuca que tenía guardada a chucho. Chucho y Guido ya tenían todo un plan en la cabeza. Se comprarían un chocolate y lo comerían re locos en el auto. Pero la vida tenía otros planes para ellos. Cuando estaban saliendo Mateo se logra meter en su auto. Pero en el momento donde Guido, Nico y Chucho  se querían subir a sus autos, aparece un patrullero que los intercepta y les pide su documentación. Los pone contra el capot del patrullero. Les consultan si tienen algo que los comprometa a lo que chucho dice que tiene una tuca y la deja en el capot. Pero el policía no se los había quitado aún la tuca seguía ahí. Mientras seguían haciendo el rastreo de la documentación Guido y Chucho siguen esperanzados de que se lo devuelvan y seguir con su plan. Pero de la nada otro oficial de otro patrullero llega y se la guarda en los bolsillos. Rompiendo no solo las expectativas de la noche, sino también la esperanza de buena fe de esta oficial."
-          }
-        ]
-      },
-      {
-        "id": "n48",
-        "nombre": "Pablo Agustín Damino",
-        "descripcion": "",
-        "media": "/media/outfit-ano-pablo-damino.jpg",
-        "poster": "/media/outfit-ano-pablo-damino.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "La Ouija"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Nos remontamos al segundo día de achura en el último mdt. Se inició la espera a la mejor comida que alguna vez hicieron en esa casa. La bondiola era un plato que achura jamás podría haber imaginado comer en los viajes anteriores. Luego de una tarde llena de playa, mates y muchos cambios de frentes, achura se vio en la necesidad de aumentar el goce de esa noche. Mateo y Joaquin tuvieron la idea de crear un trago, lleno de sabor frutal y gin"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "El mayor problema de esto es que no fue el trago, sino que los creadores no tenían los utensilios necesarios para poder crearlo. Ya que gastaron todo el paquete de azúcar y jamás se pudo revolver,  entonces fue un gasto enorme por un gusto insignificante. Pero este no era el único trago de la noche. Ya que Paul, Franco y Guido se dieron el gusto de poder comprarse 2 jaggers para esa noche. Aunque la noche ya se tornaba y daba forma para una noche de anécdotas, jamás creímos que desembocará en lo que terminó siendo. A la espera de que la bondiola llegue a desmenuzarse en su disco achura siguió bebiendo. De un momento a otro el jagger se fue terminando. Pero la botella no se fue por sí sola…"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Empezamos a notar la ausencia de un achura,¿Dónde está Pablo? ¿Alguien lo vio?"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "A lo que chucho recuerda un evento que había pasado hace aproximadamente 30 minutos."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Lo que pasó es que se dio un encuentro entre 4 miembros de achura que realizaron una medición corporal captada en cámara. Y él nunca había visto bajar a Pablo de esa habitación. Entonces con el sanguche de bondiola que le corresponde a Pablo, sube y se lo pone en la nariz. A lo que paul sin abrir los ojos usa su sentido del olfato y le empieza a dar mordiscos. Chucho no podía creer que estaba viendo la transformación hacia lo que ellos llamaban, “Agustín”."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "La noche, como las bebidas, siguieron pasando. Pero se volvió inminente la llegada del miembro número 11 de achura. “Lucho”. Aunque esta vez, no era una ocasión normal. Se hizo la cápsula en el baño. Este método hace que los efectos de luciano sean aún mayores. Lo vuelve mucho más fuerte. Para dar un contexto aún no eran ni las 12 de la noche y todo achura estaba totalmente quebrado."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Guido durante todo el viaje estaba muy molesto con jugar a la ouija. Siempre el resto de los miembros se negaban pero luego de lo ocurrido con Gianna, achura creía que era el momento perfecto.(Achura fue echado de esa habitación por empeorar su estado de malviaje, y tenía prohibido la vuelta a la planta alta) El juego comenzó, el espíritu no hablaba. Nadie entendía cómo se movía. Pero no solo tenía control del vaso.. Sino que también tomó control de Marto. Marto estaba completamente poseído. Hablaba un idioma extraño que nadie podía entender. Pero solo nuestros seguidores podían ayudarnos. Con sus donaciones pudimos traerlo de vuelta. La historia que nos contó sobre lo que pasaría con Pablo fue muy asombrosa."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Pero todas estas cosas son solo lo que quedó captado en cámara. Ya que al despertarnos nadie recordaba que pasó, hasta que vieron en la mesa, ese trozo de papel…"
-          }
-        ]
-      }
+   },
+   {
+    "id": "n71",
+    "nombre": "Franco Bernardi",
+    "descripcion": "",
+    "media": "/media/franco-bernardi.jpg",
+    "poster": "/media/franco-bernardi.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "LA CAIDA DE CARA EN LA PLAZA"
+     }
     ]
-  },
-  {
-    "id": "achura-mas-quebrado",
-    "nombre": "Achura mas quebrado",
-    "tipo": "imagen",
-    "poster": "/media/quebrado-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n49",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-jesus-quiero.jpg",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n50",
-        "nombre": "Pablo Agustín Damino",
-        "descripcion": "",
-        "media": "/media/outfit-ano-pablo-damino.jpg",
-        "poster": "/media/outfit-ano-pablo-damino.jpg",
-        "story": []
-      },
-      {
-        "id": "n51",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/media/franco-bernardi.jpg",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n52",
-        "nombre": "Juan Martín Leyes",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "story": []
-      }
+   },
+   {
+    "id": "n72",
+    "nombre": "Joaquín Just",
+    "descripcion": "",
+    "media": "/media/achura-del-ano-joaquin-just.jpg",
+    "poster": "/media/achura-del-ano-joaquin-just.jpg",
+    "story": [
+     {
+      "tipo": "titulo",
+      "contenido": "REMERAS IMPRESAS CON LOS NOMBRES MAL"
+     }
     ]
-  },
-  {
-    "id": "fail-del-a-o",
-    "nombre": "Fail del año",
-    "tipo": "video",
-    "poster": "/media/fail-del-ano.jpg",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n53",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/fail-ano-jesus-quiero.mp4",
-        "poster": "/media/fail-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n54",
-        "nombre": "Franco Da Resurreicao",
-        "descripcion": "",
-        "media": "/media/fail-ano-franco-da-resurreicao.mp4",
-        "poster": "/media/fail-ano-franco-da-resurreicao.jpg",
-        "story": []
-      },
-      {
-        "id": "n55",
-        "nombre": "Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/media/fail-ano-mateo-guagliardi.jpg",
-        "poster": "/media/fail-ano-mateo-guagliardi.jpg",
-        "story": []
-      },
-      {
-        "id": "n56",
-        "nombre": "Nicolás Tiscornia (Rosenz cut)",
-        "descripcion": "",
-        "media": "/media/fail-ano-nicolas-tiscornia.jpg",
-        "poster": "/media/fail-ano-nicolas-tiscornia.jpg",
-        "story": []
-      }
-    ]
-  },
-  {
-    "id": "achura-mas-gobernado",
-    "nombre": "Achura mas gobernado",
-    "tipo": "imagen",
-    "poster": "/media/achura-mas-gobernado.webp",
-    "mencion": "",
-    "pesos_voto": [
-      2
-    ],
-    "nominados": [
-      {
-        "id": "n57",
-        "nombre": "Juan Martín Leyes y Catalina Bogo",
-        "descripcion": "",
-        "media": "/media/gobernado-juan-martin-leyes-catalina-bogo.jpg",
-        "poster": "/media/gobernado-juan-martin-leyes-catalina-bogo.jpg",
-        "story": []
-      },
-      {
-        "id": "n58",
-        "nombre": "Jesús Quiero y Guadalupe Pedernera",
-        "descripcion": "",
-        "media": "/media/gobernado-jesus-quiero-guadalupe-pedernera.jpg",
-        "poster": "/media/gobernado-jesus-quiero-guadalupe-pedernera.jpg",
-        "story": []
-      },
-      {
-        "id": "n59",
-        "nombre": "Pablo Agustín Damino y Sofía Cevasco",
-        "descripcion": "",
-        "media": "/media/gobernado-pablo-damino-sofia-cevasco.jpg",
-        "poster": "/media/gobernado-pablo-damino-sofia-cevasco.jpg",
-        "story": []
-      }
-    ]
-  },
-  {
-    "id": "cumplea-os-del-a-o",
-    "nombre": "Cumpleaños del año",
-    "tipo": "imagen",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n61",
-        "nombre": "Juan Martín Leyes",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "poster": "/media/achura-revelacion-juan-martin-leyes.jpg",
-        "story": []
-      },
-      {
-        "id": "n62",
-        "nombre": "Guido Olmo",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-guido-olmo.jpg",
-        "poster": "/media/achura-del-ano-guido-olmo.jpg",
-        "story": []
-      },
-      {
-        "id": "n63",
-        "nombre": "Jesús Quiero",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-jesus-quiero.jpg",
-        "poster": "/media/achura-del-ano-jesus-quiero.jpg",
-        "story": []
-      },
-      {
-        "id": "n64",
-        "nombre": "Franco Da Resurreicao",
-        "descripcion": "",
-        "media": "/media/franco-da-resurreicao.jpg",
-        "poster": "/media/franco-da-resurreicao.jpg",
-        "story": []
-      }
-    ]
-  },
-  {
-    "id": "gordiada-del-a-o",
-    "nombre": "Gordiada del año",
-    "tipo": "story",
-    "poster": "/media/gordiada-del-ano.jpg",
-    "mencion": "Este premio sera entregado por el mismisimo Franco Bernardi (alias Gordi) al ganador.",
-    "mencion_titulo": "🏆 El premio",
-    "narrador": "Franco Bernardi (alias Gordi)",
-    "nominados": [
-      {
-        "id": "n69",
-        "nombre": "Mateo Guagliardi",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "poster": "/media/achura-del-ano-mateo-guagliardi.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "EL GORDI PERDIENDO LOS CELULARES(UNO PRESTADO)"
-          }
-        ]
-      },
-      {
-        "id": "n70",
-        "nombre": "Ramiro Domínguez",
-        "descripcion": "",
-        "media": "/media/achura-revelacion-ramiro-dominguez.jpg",
-        "poster": "/media/achura-revelacion-ramiro-dominguez.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "EL BERRINCHE EN LA CANCHA DE ITO(SE TIRA Y SE PUTEA CON SU EQUIPO)"
-          }
-        ]
-      },
-      {
-        "id": "n71",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/media/franco-bernardi.jpg",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "LA CAIDA DE CARA EN LA PLAZA"
-          }
-        ]
-      },
-      {
-        "id": "n72",
-        "nombre": "Joaquín Just",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-joaquin-just.jpg",
-        "poster": "/media/achura-del-ano-joaquin-just.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "REMERAS IMPRESAS CON LOS NOMBRES MAL"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "mejor-momento-mdt",
-    "nombre": "Mejor momento MDT",
-    "tipo": "story",
-    "poster": "/media/momento-mdt.png",
-    "mencion": "",
-    "nominados": [
-      {
-        "id": "n73",
-        "nombre": "Guido Olmo",
-        "descripcion": "",
-        "media": "/media/achura-del-ano-guido-olmo.jpg",
-        "poster": "/media/achura-del-ano-guido-olmo.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "LA OUIJA(el espíritu que poseyó a Marto y el tablero al otro día)"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "La noche, como las bebidas, siguieron pasando. Pero se volvió inminente la llegada del miembro número 11 de achura. “Lucho”. Aunque esta vez, no era una ocasión normal. Se hizo la cápsula en el baño. Este método hace que los efectos de luciano sean aún mayores. Lo vuelve mucho más fuerte. Para dar un contexto aún no eran ni las 12 de la noche y todo achura estaba totalmente quebrado."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Guido durante todo el viaje estaba muy molesto con jugar a la ouija. Siempre el resto de los miembros se negaban pero luego de lo ocurrido con Gianna, achura creía que era el momento perfecto.(Achura fue echado de esa habitación por empeorar su estado de malviaje, y tenía prohibido la vuelta a la planta alta) El juego comenzó, el espíritu no hablaba. Nadie entendía cómo se movía. Pero no solo tenía control del vaso.. Sino que también tomó control de Marto. Marto estaba completamente poseído. Hablaba un idioma extraño que nadie podía entender. Pero solo nuestros seguidores podían ayudarnos. Con sus donaciones pudimos traerlo de vuelta. La historia que nos contó sobre lo que pasaría con Pablo fue muy asombrosa."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Pero todas estas cosas son solo lo que quedó captado en cámara. Ya que al despertarnos nadie recordaba que pasó, hasta que vieron en la mesa, ese trozo de papel…"
-          }
-        ]
-      },
-      {
-        "id": "n74",
-        "nombre": "Franco Bernardi",
-        "descripcion": "",
-        "media": "/media/franco-bernardi.jpg",
-        "poster": "/media/franco-bernardi.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "PABLO CONVERTIDO EN AGUSTIN ( BONDIOLA, TOP 1 - TOP 0)"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Nos remontamos al segundo día de achura en el último mdt. Se inició la espera a la mejor comida que alguna vez hicieron en esa casa. La bondiola era un plato que achura jamás podría haber imaginado comer en los viajes anteriores. Luego de una tarde llena de playa, mates y muchos cambios de frentes, achura se vio en la necesidad de aumentar el goce de esa noche. Mateo y Joaquin tuvieron la idea de crear un trago, lleno de sabor frutal y gin"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "El mayor problema de esto es que no fue el trago, sino que los creadores no tenían los utensilios necesarios para poder crearlo. Ya que gastaron todo el paquete de azúcar y jamás se pudo revolver,  entonces fue un gasto enorme por un gusto insignificante. Pero este no era el único trago de la noche. Ya que Paul, Franco y Guido se dieron el gusto de poder comprarse 2 jaggers para esa noche. Aunque la noche ya se tornaba y daba forma para una noche de anécdotas, jamás creímos que desembocará en lo que terminó siendo. A la espera de que la bondiola llegue a desmenuzarse en su disco achura siguió bebiendo. De un momento a otro el jagger se fue terminando. Pero la botella no se fue por sí sola…"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Empezamos a notar la ausencia de un achura,¿Dónde está Pablo? ¿Alguien lo vio?"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "A lo que chucho recuerda un evento que había pasado hace aproximadamente 30 minutos."
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Lo que pasó es que se dio un encuentro entre 4 miembros de achura que realizaron una medición corporal captada en cámara. Y él nunca había visto bajar a Pablo de esa habitación. Entonces con el sanguche de bondiola que le corresponde a Pablo, sube y se lo pone en la nariz. A lo que paul sin abrir los ojos usa su sentido del olfato y le empieza a dar mordiscos. Chucho no podía creer que estaba viendo la transformación hacia lo que ellos llamaban, “Agustín”"
-          }
-        ]
-      },
-      {
-        "id": "n75",
-        "nombre": "Pablo Agustín Damino",
-        "descripcion": "",
-        "media": "/media/outfit-ano-pablo-damino.jpg",
-        "poster": "/media/outfit-ano-pablo-damino.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "PASTA TUTTI"
-          },
-          {
-            "tipo": "texto",
-            "contenido": "Recuerdo el gran momento donde todo achura y la grieta se encontraba en el garaje de la casa de mdt aproximadamentea las 13hs, comiendo sobre dos grandes mesas a lo largo del garaje, achura se encontraba en la mesa del lado derecho y la grieta estaba mas bien cerca de la parrilla por el lado izquierdo. Recuerdo tener un gran parlante en el grupo, el charge de camilo, un parlante con buen sonido y que llenaba toda la habitación, tal parlante sonaba siempre a lo largo de los dias de vacaciones, sobre la mesa habia muchos platos de fideos, uno para cada uno y dos grandes ollas con la pasta y la salsa dentro, recuerdo que todos estábamos comiendo tranquilos hasta que alguien puso la canción \"Tarantella Napoletana\" de Gli Italiani di leri, mítica canción italiana relacionada a la cocina y las pastas de la tierra de la bota, al escuchar la canción en ese contexto todo achura comenzó a reírse por unos segundos, pero al instante, los 10 miembros de achura comenzaron a realizar un baile sinceridad el cual consistía en pinchar los ravioles y fideos que habia en cada uno de nuestros platos, luego el baile y los pinchazos fueron mutando, pasamos de pinchar únicamente en nuestros platos super sincronizados a pinchar cualquier fideo que haya en la mesa, luego algunos empezamos a comer esos fideos y mojarlos en salsa sin salir del tentador y jocoso baile, comiendo, pinchando y mojando fideos en salsa al ritmo, el próximo paso de algunos fue empezar a dirigir los tenedores llenos de pasta a la boca de otros mientras todos seguían bailando, a su vez otros mojaban los fideos y las pastas en vasos llenos y bebidas ajenas dándoles de comer a otros miembros de achura mientras todos bailábamos al mítico ritmo de \"Tarantella Napoletana\" sonando en el gran charger five."
-          }
-        ]
-      },
-      {
-        "id": "n76",
-        "nombre": "Nicolás Tiscornia",
-        "descripcion": "",
-        "media": "/media/mdt-nicolas-tiscornia.mp4",
-        "poster": "/media/mdt-nicolas-tiscornia.jpg",
-        "story": [
-          {
-            "tipo": "titulo",
-            "contenido": "CHARLA SEXUAL MDT"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "outfit-del-dia",
-    "nombre": "Outfit del día",
-    "tipo": "outfit",
-    "ganadores": 1,
-    "poster": "/media/outfit-del-dia.jpg",
-    "mencion": "",
-    "nominados": []
-  }
+   }
+  ]
+ },
+ {
+  "id": "outfit-del-dia",
+  "nombre": "Outfit del día",
+  "tipo": "outfit",
+  "ganadores": 1,
+  "poster": "/media/outfit-del-dia.jpg",
+  "mencion": "",
+  "nominados": []
+ }
 ]
