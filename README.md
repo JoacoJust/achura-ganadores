@@ -23,10 +23,8 @@ nombres, fotos y videos. No hay que volver a cargar nada.
 - Al entrar a una terna se ve **la terna completa**: primero los **candidatos con sus historias**
   (tocá a un candidato para abrirla), después un botón **✦ Revelar al ganador** y recién ahí el
   ganador (foto + nombre + puntos) con los **puestos** (podio + tabla), que se siguen actualizando en vivo.
-- Al revelar, la terna queda **marcada como "ya se mostró"** (se anota en el navegador del
-  organizador, en `localStorage`, clave `achura_ternas_mostradas`) y aparece un botón
-  **Continuar →** que salta a la próxima terna que todavía no se mostró. En la portada se ve
-  *"X de 18 ternas mostradas"* y las ternas ya reveladas salen tachadas con un **✓**.
+- Al revelar, la terna queda revelada en la pestaña (para poder ir y volver sin repetir el click) y
+  aparece un botón **Continuar →** que va a la próxima terna de la lista.
 - **La terna del Outfit del día** vive en la misma lista (`outfit-del-dia` en `categories.json`,
   `"tipo": "outfit"` y sin nominados) y su encuesta se lee en vivo de `/api/outfit/detalle`:
   - Muestra la **encuesta en vivo** (votos por invitado y quiénes votaron), solo con **iniciales,
@@ -38,9 +36,8 @@ nombres, fotos y videos. No hay que volver a cargar nada.
   - Abajo de esas listas aparece **✦ Mostrar al ganador ✦**, **bloqueado hasta que votaron los 19
     del padrón** (`padron` = invitados de `data/invitados.json`); mientras tanto dice *"Faltan N votos"*.
   - Recién ahí se ordena por votos, se destaca el 1º y aparece la tarjeta del **ganador** (o
-    ganadores, si hay empate) con sus votos y porcentaje, más el aviso **✓ Esta terna ya se mostró**
-    y **Continuar →**.
-- La revelación queda accordada por terna en el navegador, así que se puede ir y volver sin perderla.
+    ganadores, si hay empate) con sus votos y porcentaje, más **Continuar →**.
+- La revelación queda acordada por terna en el navegador, así que se puede ir y volver sin perderla.
 - **Achura del año tiene premio compartido: dos ganadores.** Se configura con `"ganadores": 2` en
   `web/src/data/categories.json`.
 - Los resultados **no viajan en el JavaScript**: se piden a la API, que exige la cookie que se obtiene

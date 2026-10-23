@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
@@ -52,43 +52,12 @@ function ganadoresDe(datos, id) {
   return (r.puestos || []).filter((p) => p.votos > 0).slice(0, 1)
 }
 
-/* ------------- ternas ya mostradas (para no volver a mostrarlas) ------------- */
+/* ------------- la terna que sigue (para el botón "Continuar") ------------- */
 
-const KEY_MOSTRADAS = 'achura_ternas_mostradas'
-
-function leerMostradas() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(KEY_MOSTRADAS) || '[]')
-    return Array.isArray(raw) ? raw : []
-  } catch (e) {
-    return []
-  }
-}
-
-function useMostradas() {
-  const [ids, setIds] = useState(leerMostradas)
-
-  const marcar = useCallback((id) => {
-    setIds((prev) => {
-      if (prev.includes(id)) return prev
-      const next = [...prev, id]
-      try {
-        localStorage.setItem(KEY_MOSTRADAS, JSON.stringify(next))
-      } catch (e) {}
-      return next
-    })
-  }, [])
-
-  return [ids, marcar]
-}
-
-// La próxima terna que todavía no se mostró (arranca por la siguiente de la actual)
-function siguienteTerna(idActual, mostradas) {
+function siguienteTerna(idActual) {
   const i = categorias.findIndex((c) => c.id === idActual)
-  if (i < 0) return '#/ternas'
-  const resto = categorias.slice(i + 1).concat(categorias.slice(0, i))
-  const sig = resto.find((c) => !mostradas.includes(c.id))
-  return sig ? `#/terna/${encodeURIComponent(sig.id)}` : '#/ternas'
+  if (i < 0 || i === categorias.length - 1) return '#/ternas'
+  return `#/terna/${encodeURIComponent(categorias[i + 1].id)}`
 }
 
 /* ------------- los invitados del outfit (todos juntos) ------------- */
@@ -165,22 +134,11 @@ export default function App() {
     await cargarVivo()
   }
 
-  // Ternas que ya se mostraron en la noche: quedan anotadas en el navegador
-  const [mostradas, marcarMostrada] = useMostradas()
-
   let vista
   if (hash.startsWith('#/terna/')) {
-    vista = (
-      <Terna
-        id={decodeURIComponent(hash.slice('#/terna/'.length))}
-        res={res}
-        recargar={recargar}
-        mostradas={mostradas}
-        marcarMostrada={marcarMostrada}
-      />
-    )
+    vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={recargar} />
   } else if (hash === '#/ternas') {
-    vista = <Ternas res={res} recargar={recargar} mostradas={mostradas} />
+    vista = <Ternas res={res} recargar={recargar} />
   } else if (hash === '#/outfit-panel') {
     vista = <OutfitPanel res={res} recargar={recargar} />
   } else {
@@ -569,7 +527,7 @@ function BloquePrivado({ res, recargar, children }) {
 
 /* ------------------------------ ternas (privado) ------------------------------ */
 
-function Ternas({ res, recargar, mostradas = [] }) {
+function Ternas({ res, recargar }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
       {(datos) => {
@@ -577,8 +535,6 @@ function Ternas({ res, recargar, mostradas = [] }) {
         // (y el ganador se revela recién cuando votaron los 19).
         const normales = categorias.filter((c) => c.tipo !== 'outfit')
         const definidas = normales.filter((c) => ganadoresDe(datos, c.id).length > 0).length
-        const pendientes = categorias.filter((c) => !mostradas.includes(c.id))
-        const siguiente = pendientes[0]
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
             <div className="text-center animate-fade-up">
@@ -598,35 +554,9 @@ function Ternas({ res, recargar, mostradas = [] }) {
               </p>
             </div>
 
-            {siguiente && (
-              <div className="mt-10 rounded-3xl border border-gold/30 bg-gold/[0.05] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-center sm:text-left">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-gold">
-                    {mostradas.length} de {categorias.length} ternas mostradas
-                  </p>
-                  <p className="mt-2 text-white/70 text-sm">
-                    Sigue con <span className="text-white">{siguiente.nombre}</span>
-                  </p>
-                </div>
-                <a
-                  href={`#/terna/${encodeURIComponent(siguiente.id)}`}
-                  className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-6 py-3 rounded-full hover:brightness-110 shadow-goldglow transition"
-                >
-                  Continuar →
-                </a>
-              </div>
-            )}
-
-            {pendientes.length === 0 && (
-              <p className="mt-10 text-center text-sm text-gold/90">
-                ✦ Ya mostraste todas las ternas.
-              </p>
-            )}
-
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
               {categorias.map((cat, i) => {
                 const listoTerna = ganadoresDe(datos, cat.id).length > 0
-                const mostrada = mostradas.includes(cat.id)
                 return (
                   <a
                     key={cat.id}
@@ -641,22 +571,13 @@ function Ternas({ res, recargar, mostradas = [] }) {
                         className="w-full h-full rounded-full object-cover object-top"
                         size={70}
                       />
-                      {mostrada && (
-                        <span className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-gold text-black text-xs flex items-center justify-center shadow-goldglow">
-                          ✓
-                        </span>
-                      )}
                     </span>
 
                     <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
                       {cat.nombre}
                     </span>
 
-                    {mostrada ? (
-                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-gold/70">
-                        Ya se mostró ✓
-                      </span>
-                    ) : cat.tipo === 'outfit' ? (
+                    {cat.tipo === 'outfit' ? (
                       <EstadoOutfit />
                     ) : listoTerna ? (
                       <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
@@ -682,7 +603,7 @@ function Ternas({ res, recargar, mostradas = [] }) {
 
 /* ------------------------------ terna (privado) ------------------------------ */
 
-function Terna({ id, res, recargar, mostradas = [], marcarMostrada }) {
+function Terna({ id, res, recargar }) {
   const cat = categorias.find((c) => c.id === id)
 
   if (!cat) {
@@ -700,22 +621,16 @@ function Terna({ id, res, recargar, mostradas = [], marcarMostrada }) {
     <BloquePrivado res={res} recargar={recargar}>
       {(datos) =>
         cat.tipo === 'outfit' ? (
-          <DetalleOutfit key={cat.id} cat={cat} mostradas={mostradas} marcarMostrada={marcarMostrada} />
+          <DetalleOutfit key={cat.id} cat={cat} />
         ) : (
-          <DetalleTerna
-            key={cat.id}
-            cat={cat}
-            datos={datos}
-            mostradas={mostradas}
-            marcarMostrada={marcarMostrada}
-          />
+          <DetalleTerna key={cat.id} cat={cat} datos={datos} />
         )
       }
     </BloquePrivado>
   )
 }
 
-function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
+function DetalleTerna({ cat, datos }) {
   const r = resultadoDe(datos, cat.id)
   const puestos = r.puestos || []
   const ganadores = ganadoresDe(datos, cat.id)
@@ -735,9 +650,8 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
   const [historia, setHistoria] = useState(null)
   const [fotoGanador, setFotoGanador] = useState(null)
 
-  // Una terna ya mostrada no se vuelve a revelar: se entra directo al resultado
-  const yaMostrada = mostradas.includes(cat.id)
-  const mostrarGanador = revelado || yaMostrada
+  // Una terna ya revelada en esta sesión no se vuelve a revelar: se entra directo al resultado
+  const mostrarGanador = revelado
 
   function irAPuestos() {
     const el = document.getElementById('puestos')
@@ -749,14 +663,13 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
     try {
       sessionStorage.setItem('revelado_' + cat.id, '1')
     } catch (e) {}
-    if (marcarMostrada) marcarMostrada(cat.id)
     setTimeout(() => {
       const el = document.getElementById('ganador')
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 150)
   }
 
-  const siguiente = siguienteTerna(cat.id, mostradas)
+  const siguiente = siguienteTerna(cat.id)
 
   return (
     <div className="max-w-5xl mx-auto px-5 pt-8 pb-20">
@@ -928,19 +841,11 @@ function DetalleTerna({ cat, datos, mostradas = [], marcarMostrada }) {
             )}
           </div>
 
-          {/* 4) la terna ya se mostró: aviso + continuar con la próxima */}
-          <div className="mt-16 rounded-3xl border border-gold/25 bg-gold/[0.04] p-6 sm:p-7 text-center animate-fade-up">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold">
-              ✓ Esta terna ya se mostró
-            </p>
-            <p className="mt-2 text-white/55 text-sm max-w-md mx-auto">
-              {siguiente === '#/ternas'
-                ? 'No la vuelvas a presentar. Ya mostraste todas las ternas.'
-                : 'No la vuelvas a presentar. Seguí con la próxima terna que falta.'}
-            </p>
+          {/* 4) continuar con la próxima terna */}
+          <div className="mt-16 text-center">
             <a
               href={siguiente}
-              className="mt-5 inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
+              className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
             >
               {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
             </a>
@@ -1446,7 +1351,7 @@ function EstadoOutfit() {
 
 /* ---------- la terna del Outfit del día: encuesta en vivo y ganador ---------- */
 
-function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
+function DetalleOutfit({ cat }) {
   const d = useOutfitVivo(4000)
   // 0 = encuesta · 1 = quiénes votaron / quiénes faltaron · 2 = ganador
   const [paso, setPaso] = useState(() => {
@@ -1458,10 +1363,8 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
     }
   })
 
-  const yaMostrada = mostradas.includes(cat.id)
-  const pasoActual = yaMostrada ? 2 : paso
-  const mostrarGanador = pasoActual === 2
-  const siguiente = siguienteTerna(cat.id, mostradas)
+  const mostrarGanador = paso === 2
+  const siguiente = siguienteTerna(cat.id)
 
   function irA(p, ancla) {
     setPaso(p)
@@ -1480,7 +1383,6 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
   // 2do click: recién ahí el ganador (y sólo si votaron todos)
   function verGanador() {
     if (!listo) return
-    if (marcarMostrada) marcarMostrada(cat.id)
     irA(2, 'ganador')
   }
 
@@ -1562,7 +1464,7 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
           </section>
 
           {/* Paso 1: al tocar "Revelar al ganador" se ve quiénes votaron y quiénes faltan */}
-          {pasoActual >= 1 && (
+          {paso >= 1 && (
             <section id="votacion" className="mt-14 scroll-mt-24 animate-fade-up">
               <div className="text-center">
                 <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">La votación</p>
@@ -1612,7 +1514,7 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
           )}
 
           {/* Paso 0 → 1: el botón muestra primero quiénes votaron y quiénes faltaron */}
-          {pasoActual === 0 && (
+          {paso === 0 && (
             <div className="mt-12 text-center animate-fade-up">
               <button
                 onClick={verVotacion}
@@ -1672,18 +1574,10 @@ function DetalleOutfit({ cat, mostradas = [], marcarMostrada }) {
                 </div>
               )}
 
-              <div className="mt-16 rounded-3xl border border-gold/25 bg-gold/[0.04] p-6 sm:p-7 text-center animate-fade-up">
-                <p className="text-[11px] uppercase tracking-[0.3em] text-gold">
-                  ✓ Esta terna ya se mostró
-                </p>
-                <p className="mt-2 text-white/55 text-sm max-w-md mx-auto">
-                  {siguiente === '#/ternas'
-                    ? 'No la vuelvas a presentar. Ya mostraste todas las ternas.'
-                    : 'No la vuelvas a presentar. Seguí con la próxima terna que falta.'}
-                </p>
+              <div className="mt-16 text-center">
                 <a
                   href={siguiente}
-                  className="mt-5 inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
+                  className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
                 >
                   {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
                 </a>
