@@ -1,5 +1,14 @@
 [
  {
+  "id": "apertura",
+  "nombre": "Apertura",
+  "tipo": "video-solo",
+  "poster": "/media/apertura.jpg",
+  "video": "/media/apertura.mp4",
+  "mencion": "",
+  "nominados": []
+ },
+ {
   "id": "achura-mas-gobernado",
   "nombre": "Achura mas gobernado",
   "tipo": "imagen",
