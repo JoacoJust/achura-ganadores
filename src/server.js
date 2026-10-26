@@ -202,7 +202,7 @@ app.get('/api/outfit', async (req, res) => {
     baseOk,
     invitados,
     padron: cfg.invitados.length,
-    // Ids de los invitados que ya votaron (para el conteo X de 19)
+    // Ids de los invitados que ya votaron (para el conteo X del padrón)
     votantes,
     total: totalVotos,
     yaVoto: !!miVoto,
@@ -264,7 +264,7 @@ app.get('/api/outfit/detalle', async (req, res) => {
       titulo: cfg.titulo,
       activo: cfg.activo,
       total: votos.length,
-      // Padrón: los invitados del outfit (hoy 19). El ganador se revela
+      // Padrón: los invitados del outfit. El ganador se revela
       // recién cuando votaron todos.
       padron: cfg.invitados.length,
       votaronTotal: votaron.length,
@@ -321,10 +321,10 @@ app.post('/api/outfit/votar', async (req, res) => {
   const yaVoto = await OutfitVoto.findOne({ votante: votante.id }).lean();
   if (yaVoto) return res.status(409).json({ error: 'Ese nombre ya votó', yaVoto: true });
 
-  // Nunca puede haber más votos que invitados (19)
+  // Nunca puede haber más votos que invitados del padrón
   const total = await OutfitVoto.countDocuments({});
   if (total >= cfg.invitados.length) {
-    return res.status(409).json({ error: 'Ya votaron las 19 personas', completo: true });
+    return res.status(409).json({ error: `Ya votaron las ${cfg.invitados.length} personas`, completo: true });
   }
 
   try {

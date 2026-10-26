@@ -20,6 +20,7 @@
     { "id": "male-rabanal", "nombre": "Male Rabanal", "alias": ["Malena"], "grupo": "invitado", "foto": "" },
     { "id": "rosario-bogo", "nombre": "Rosario Bogo", "alias": ["Rosi"], "grupo": "invitado", "foto": "" },
     { "id": "francisco-estigarribia", "nombre": "Francisco Estigarribia", "alias": ["Fran", "Pancho", "Esti"], "grupo": "invitado", "foto": "/media/promesa-francisco-estigarribia.jpg" },
-    { "id": "sofia-cevasco", "nombre": "Sofía Cevasco", "alias": ["Sofi"], "grupo": "invitado", "foto": "/media/gobernado-pablo-damino-sofia-cevasco.jpg" }
+    { "id": "sofia-cevasco", "nombre": "Sofía Cevasco", "alias": ["Sofi"], "grupo": "invitado", "foto": "/media/gobernado-pablo-damino-sofia-cevasco.jpg" },
+    { "id": "ezequiel-aznar", "nombre": "Ezequiel Aznar", "alias": ["Zequi", "Eze"], "grupo": "invitado", "foto": "" }
   ]
 }

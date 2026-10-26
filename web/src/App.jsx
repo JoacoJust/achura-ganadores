@@ -547,7 +547,7 @@ function Ternas({ res, recargar }) {
     <BloquePrivado res={res} recargar={recargar}>
       {(datos) => {
         // La terna del outfit no sale de resultados.json: su encuesta se lee en vivo
-        // (y el ganador se revela recién cuando votaron los 19).
+        // (y el ganador se revela recién cuando votó todo el padrón).
         const normales = categorias.filter((c) => c.tipo !== 'outfit' && c.tipo !== 'video-solo')
         const definidas = normales.filter((c) => ganadoresDe(datos, c.id).length > 0).length
         return (
@@ -1175,7 +1175,7 @@ function OutfitPanel({ res, recargar }) {
   )
 }
 
-/* ---- datos del outfit EN VIVO: ranking, quiénes votaron y padrón (19) ---- */
+/* ---- datos del outfit EN VIVO: ranking, quiénes votaron y padrón ---- */
 
 function useOutfitVivo(intervalo = 5000) {
   const [d, setD] = useState(null)
@@ -1830,7 +1830,7 @@ function Outfit() {
           {necesitaNombre
             ? 'Escribí tu nombre y votá el mejor outfit de la noche. Cada uno vota una sola vez.'
             : completo && puedenVotar
-              ? '¡Ya votaron las 19 personas!'
+              ? `¡Ya votaron las ${padron} personas!`
               : puedenVotar
                 ? 'Elegí el mejor outfit de la noche. Un voto por persona.'
                 : yaVoto
@@ -1838,7 +1838,7 @@ function Outfit() {
                   : 'La votación está cerrada.'}
         </p>
 
-        {/* Conteo en vivo: los nombres que ya votaron, sin pasar de 19 */}
+        {/* Conteo en vivo: los nombres que ya votaron, sin pasar el padrón */}
         <div className="mt-7 max-w-sm mx-auto">
           <div className="flex items-baseline justify-between text-[11px] uppercase tracking-[0.2em]">
             <span className="text-white/40">Ya votaron</span>
