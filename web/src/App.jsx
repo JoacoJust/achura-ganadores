@@ -1596,6 +1596,64 @@ function DetalleOutfit({ cat }) {
   )
 }
 
+/* -------------------------- terna de video (sin votación) -------------------------- */
+
+function DetalleVideoSolo({ cat }) {
+  const [videoGrande, setVideoGrande] = useState(false)
+  const posterior = cat.poster && !esPlaceholder(cat.poster) ? cat.poster : undefined
+  const siguiente = siguienteTerna(cat.id)
+
+  return (
+    <div className="max-w-5xl mx-auto px-5 pt-8 pb-20">
+      <a href="#/ternas" className="text-sm text-white/50 hover:text-white transition">
+        ← Volver a las ternas
+      </a>
+
+      <div className="mt-6 text-center">
+        <div className="flex justify-center mb-4">
+          <BadgeEnVivo texto="Video" />
+        </div>
+        <p className="text-[11px] uppercase tracking-[0.4em] text-cyan/80">Terna</p>
+        <h1 className="font-serif text-3xl sm:text-5xl mt-3 tracking-wide">{cat.nombre}</h1>
+        <div className="gold-rule h-px w-40 mx-auto mt-5" />
+      </div>
+
+      <div className="mt-10 rounded-3xl overflow-hidden border border-white/10 bg-black shadow-[0_40px_80px_-60px_rgba(18,199,228,0.25)]">
+        <video
+          src={cat.video}
+          poster={posterior}
+          controls
+          autoPlay
+          playsInline
+          className="w-full max-h-[78vh] bg-black"
+        />
+      </div>
+
+      <div className="mt-6 text-center">
+        <button
+          onClick={() => setVideoGrande(true)}
+          className="inline-flex items-center gap-2 border border-cyan/50 hover:bg-cyan/10 hover:text-cyan text-cyan/90 rounded-full px-5 py-2.5 text-sm transition"
+        >
+          ⛶ Ver en pantalla completa
+        </button>
+      </div>
+
+      <div className="mt-14 text-center">
+        <a
+          href={siguiente}
+          className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
+        >
+          {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
+        </a>
+      </div>
+
+      {videoGrande && (
+        <ModalVideo src={cat.video} poster={posterior} onCerrar={() => setVideoGrande(false)} />
+      )}
+    </div>
+  )
+}
+
 /* ---------------------------- outfit del día (público) ---------------------------- */
 
 const VOTANTE_KEY = 'achura_outfit_votante'
