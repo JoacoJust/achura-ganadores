@@ -25,6 +25,10 @@ nombres, fotos y videos. No hay que volver a cargar nada.
   ganador (foto + nombre + puntos) con los **puestos** (podio + tabla), que se siguen actualizando en vivo.
 - Al revelar, la terna queda revelada en la pestaña (para poder ir y volver sin repetir el click) y
   aparece un botón **Continuar →** que va a la próxima terna de la lista.
+- **Ternas de video** (`"tipo": "video-solo"`): no tienen nominados ni votación, solo un video que
+  se reproduce en la propia terna (`autoPlay`) con botón **⛶ Ver en pantalla completa**. En la
+  portada se ven como **VER VIDEO →**. Son `apertura`, `momentos-pad-10` y `mejores-momentos-gordi`,
+  con `video` y `poster` en `categories.json` (archivos en `web/public/media/`).
 - **La terna del Outfit del día** vive en la misma lista (`outfit-del-dia` en `categories.json`,
   `"tipo": "outfit"` y sin nominados) y su encuesta se lee en vivo de `/api/outfit/detalle`:
   - Muestra la **encuesta en vivo** (votos por invitado y quiénes votaron), solo con **iniciales,
@@ -219,6 +223,6 @@ scripts/sync-resultados.js  Genera data/resultados.json (respaldo)
 data/resultados.json        Resultados (privado, se sirve por API; no se versiona)
 data/invitados.json         Lista de invitados del Outfit (19: 9 Achura + 10 Invitados)
 web/src/App.jsx             Outfit público + ternas privadas + panel en vivo del organizador
-web/src/data/categories.json  Copia de las 18 ternas (17 + la del Outfit del día; nombres, fotos, videos)
+web/src/data/categories.json  Copia de las 21 ternas (17 con nominados + 3 de video + la del Outfit del día; nombres, fotos, videos)
 web/public/media/           Fotos y videos copiados de achura-awards
 ```
