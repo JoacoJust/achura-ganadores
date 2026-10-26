@@ -11,6 +11,7 @@
     { "id": "franco-bernardi", "nombre": "Franco Bernardi", "alias": ["Gordi", "Gordita", "Gordiada"], "grupo": "achura", "foto": "/media/franco-bernardi.jpg" },
     { "id": "franco-da-resurreicao", "nombre": "Franco Da Resurreicao", "alias": ["Franco Da", "Da Resurreicao"], "grupo": "achura", "foto": "/media/franco-da-resurreicao.jpg" },
     { "id": "guido-olmo", "nombre": "Guido Olmo", "alias": [], "grupo": "achura", "foto": "/media/achura-del-ano-guido-olmo.jpg" },
+    { "id": "nicolas-tiscornia", "nombre": "Nicolás Tiscornia", "alias": ["Nico", "Tisco"], "grupo": "achura", "foto": "/media/outfit-ano-nicolas-tiscornia.jpg" },
     { "id": "guadalupe-pedernera", "nombre": "Guadalupe Pedernera", "alias": ["Guada", "Lupe"], "grupo": "invitado", "foto": "/media/gobernado-jesus-quiero-guadalupe-pedernera.jpg" },
     { "id": "alma-pedernera", "nombre": "Alma Pedernera", "alias": [], "grupo": "invitado", "foto": "" },
     { "id": "delfina-scoccimarro", "nombre": "Delfina Scoccimarro", "alias": ["Delfi"], "grupo": "invitado", "foto": "/media/promesa-delfina-scoccimarro.jpg" },
