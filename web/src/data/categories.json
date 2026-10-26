@@ -2,6 +2,7 @@
  {
   "id": "apertura",
   "nombre": "Apertura",
+  "bloque": "Primer bloque",
   "tipo": "video-solo",
   "poster": "/media/apertura.jpg",
   "video": "/media/apertura.mp4",
@@ -252,6 +253,7 @@
  {
   "id": "momentos-pad-10",
   "nombre": "Momentos Pad 10",
+  "bloque": "Segundo bloque",
   "tipo": "video-solo",
   "poster": "/media/momentos-pad-10.jpg?v=2",
   "video": "/media/momentos-pad-10.mp4",
@@ -562,6 +564,7 @@
  {
   "id": "mejores-momentos-gordi",
   "nombre": "Mejores momentos Gordi",
+  "bloque": "Tercer bloque",
   "tipo": "video-solo",
   "poster": "/media/mejores-momentos-gordi.jpg",
   "video": "/media/mejores-momentos-gordi.mp4",

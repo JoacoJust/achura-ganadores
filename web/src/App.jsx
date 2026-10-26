@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
@@ -527,6 +527,21 @@ function BloquePrivado({ res, recargar, children }) {
 
 /* ------------------------------ ternas (privado) ------------------------------ */
 
+/* Separador de bloque: filete dorado con el nombre del bloque en el medio.
+   El nombre sale de `bloque` en categories.json, así que el orden de los bloques
+   se cambia editando el JSON y no el código. */
+function SeparadorBloque({ nombre }) {
+  return (
+    <div className="col-span-full flex items-center gap-4 pt-2 animate-fade-up">
+      <span className="h-px flex-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+      <span className="font-serif text-[11px] uppercase tracking-[0.45em] text-gold/90 whitespace-nowrap">
+        ✦&nbsp;&nbsp;{nombre}&nbsp;&nbsp;✦
+      </span>
+      <span className="h-px flex-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+    </div>
+  )
+}
+
 function Ternas({ res, recargar }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
@@ -558,39 +573,41 @@ function Ternas({ res, recargar }) {
               {categorias.map((cat, i) => {
                 const listoTerna = ganadoresDe(datos, cat.id).length > 0
                 return (
-                  <a
-                    key={cat.id}
-                    href={`#/terna/${encodeURIComponent(cat.id)}`}
-                    className="group flex flex-col items-center text-center animate-fade-up"
-                    style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
-                  >
-                    <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
-                      <Foto
-                        src={fotoTerna(cat)}
-                        alt={cat.nombre}
-                        className="w-full h-full rounded-full object-cover object-top"
-                        size={70}
-                      />
-                    </span>
-
-                    <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
-                      {cat.nombre}
-                    </span>
-
-                    {cat.tipo === 'video-solo' ? (
-                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
-                        Ver video →
+                  <Fragment key={cat.id}>
+                    {cat.bloque && <SeparadorBloque nombre={cat.bloque} />}
+                    <a
+                      href={`#/terna/${encodeURIComponent(cat.id)}`}
+                      className="group flex flex-col items-center text-center animate-fade-up"
+                      style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
+                    >
+                      <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
+                        <Foto
+                          src={fotoTerna(cat)}
+                          alt={cat.nombre}
+                          className="w-full h-full rounded-full object-cover object-top"
+                          size={70}
+                        />
                       </span>
-                    ) : cat.tipo === 'outfit' ? (
-                      <EstadoOutfit />
-                    ) : listoTerna ? (
-                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
-                        Ver ganador →
+
+                      <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
+                        {cat.nombre}
                       </span>
-                    ) : (
-                      <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
-                    )}
-                  </a>
+
+                      {cat.tipo === 'video-solo' ? (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
+                          Ver video →
+                        </span>
+                      ) : cat.tipo === 'outfit' ? (
+                        <EstadoOutfit />
+                      ) : listoTerna ? (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
+                          Ver ganador →
+                        </span>
+                      ) : (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
+                      )}
+                    </a>
+                  </Fragment>
                 )
               })}
             </div>

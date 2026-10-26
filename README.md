@@ -20,6 +20,9 @@ nombres, fotos y videos. No hay que volver a cargar nada.
   cache de 4 s) y el sitio los refresca cada 8 s: los puestos y el ganador se ven **en vivo**.
 - La portada de las ternas **no muestra nombres de ganadores** ("VER GANADOR →"); el ganador se
   revela al entrar a la terna.
+- La portada está dividida en **3 bloques** con un separador dorado (*✦ PRIMER BLOQUE ✦*, etc.).
+  El separador se dibuja arriba de la terna que tiene el campo `bloque` en `categories.json`, así que
+  para mover un bloque alcanza con mover ese campo (no hay que tocar el código).
 - Al entrar a una terna se ve **la terna completa**: primero los **candidatos con sus historias**
   (tocá a un candidato para abrirla), después un botón **✦ Revelar al ganador** y recién ahí el
   ganador (foto + nombre + puntos) con los **puestos** (podio + tabla), que se siguen actualizando en vivo.
