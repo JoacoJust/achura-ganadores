@@ -1089,6 +1089,7 @@ function ModalHistoria({ cat, nom, onCerrar }) {
   const bloques = (nom.story || []).filter((b) => (b.contenido || '').trim())
   const video = esVideo(nom.media)
   const sincronizada = historiasSincronizadas[nom.id] || {}
+  const imagenHistoria = sincronizada.imagen || ''
   const [fotoGrande, setFotoGrande] = useState(null)
   const [videoGrande, setVideoGrande] = useState(null)
 
@@ -1133,12 +1134,20 @@ function ModalHistoria({ cat, nom, onCerrar }) {
               aria-label={`Ampliar la foto de ${nom.nombre}`}
               className="block w-full cursor-zoom-in"
             >
-              <FotoEntera
-                src={fotoDe(nom)}
-                alt={nom.nombre}
-                className="w-full h-80 rounded-xl mt-6"
-                size={60}
-              />
+              {imagenHistoria ? (
+                <img
+                  src={imagenHistoria}
+                  alt={`Ilustración de ${nom.nombre}`}
+                  className="w-full max-h-[55vh] rounded-xl mt-6 object-contain bg-black"
+                />
+              ) : (
+                <FotoEntera
+                  src={fotoDe(nom)}
+                  alt={nom.nombre}
+                  className="w-full h-80 rounded-xl mt-6"
+                  size={60}
+                />
+              )}
               <span className="mt-2 block text-[11px] uppercase tracking-[0.2em] text-white/35">
                 Tocá la foto para verla grande
               </span>
