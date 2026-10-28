@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
@@ -17,12 +17,7 @@ import categorias from './data/categories.json'
 
 const esVideo = (m) => /\.(mp4|webm|mov|m4v|ogv)$/i.test(m || '') && !/placeholder/i.test(m || '')
 const esPlaceholder = (m) => !m || /placeholder/i.test(m)
-
-// Ajustes de la presentación por bloques.
-const LOOP_REPETITIONS = 1
-const BLOCK_DURATIONS_MS = [0, 12000, 0]
-const LOOP_ALL = false
-const BLOCK_VIDEO = '/media/sin_marca_de_agua.mp4'
+const TRANSITION_VIDEO = '/media/sin_marca_de_agua.mp4'
 
 function fotoDe(n) {
   if (!n) return ''
@@ -91,6 +86,15 @@ const esRutaPrivada = (hash) =>
 export default function App() {
   const hash = useRuta()
   const [res, setRes] = useState({ estado: 'cargando', datos: null, error: '' })
+  const [mostrarTransicion, setMostrarTransicion] = useState(false)
+  const hashAnterior = useRef(hash)
+
+  useEffect(() => {
+    const veniaDeTerna = hashAnterior.current.startsWith('#/terna/')
+    const vaAOtraTerna = hash.startsWith('#/terna/') && hash !== hashAnterior.current
+    if (veniaDeTerna && vaAOtraTerna) setMostrarTransicion(true)
+    hashAnterior.current = hash
+  }, [hash])
 
   // Chequeo de acceso (no necesita la base)
   async function chequearAcceso() {
@@ -154,8 +158,25 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header hash={hash} autorizado={res.estado === 'ok'} recargar={recargar} />
-      <main className="flex-1">{vista}</main>
+      <main className="flex-1">
+        {mostrarTransicion && <TransicionEntreTernas onContinuar={() => setMostrarTransicion(false)} />}
+        {vista}
+      </main>
       <Footer generado={res.estado === 'ok' ? res.datos && res.datos.generado : null} />
+    </div>
+  )
+}
+
+function TransicionEntreTernas({ onContinuar }) {
+  return (
+    <div className="terna-transition" role="dialog" aria-label="Transición entre ternas">
+      <video src={TRANSITION_VIDEO} autoPlay loop muted playsInline aria-hidden="true" />
+      <div className="terna-transition__veil" />
+      <div className="terna-transition__content">
+        <span className="terna-transition__spinner" aria-hidden="true" />
+        <p>Cargando…</p>
+        <button type="button" onClick={onContinuar}>Continuar →</button>
+      </div>
     </div>
   )
 }
@@ -548,150 +569,6 @@ function SeparadorBloque({ nombre }) {
   )
 }
 
-function bloquesDeCategorias() {
-  const bloques = []
-  let actual = null
-
-  categorias.forEach((cat) => {
-    if (cat.bloque) {
-      actual = { nombre: cat.bloque, categorias: [] }
-      bloques.push(actual)
-    }
-    if (!actual) return
-    actual.categorias.push(cat)
-  })
-
-  return bloques.slice(0, 3)
-}
-
-function SecuenciaDeBloques({ datos }) {
-  const bloques = bloquesDeCategorias()
-  const [indice, setIndice] = useState(0)
-  const [repeticiones, setRepeticiones] = useState(0)
-  const [esperando, setEsperando] = useState(false)
-  const videoRef = useRef(null)
-
-  const videoDeBloque = (blockIndex) => {
-    if (blockIndex === 0) return BLOCK_VIDEO
-    const video = bloques[blockIndex]?.categorias.find((cat) => cat.tipo === 'video-solo')
-    return video?.video || ''
-  }
-
-  const goToBlock = (nextIndex) => {
-    if (nextIndex >= bloques.length) {
-      if (LOOP_ALL) {
-        setIndice(0)
-        setRepeticiones(0)
-      }
-      return
-    }
-    setIndice(nextIndex)
-    setRepeticiones(0)
-    setEsperando(false)
-  }
-
-  const terminarBloque = () => {
-    if (indice < bloques.length - 1) setEsperando(true)
-  }
-
-  useEffect(() => {
-    if (indice === 0) return undefined
-    if (indice === bloques.length - 1) return undefined
-    if (videoDeBloque(indice)) return undefined
-
-    const timer = window.setTimeout(terminarBloque, BLOCK_DURATIONS_MS[indice])
-    return () => window.clearTimeout(timer)
-  }, [indice, bloques.length])
-
-  useEffect(() => {
-    if (!videoRef.current) return undefined
-    const video = videoRef.current
-    video.currentTime = 0
-    video.play().catch(() => {})
-    return undefined
-  }, [indice])
-
-  const onVideoEnded = () => {
-    const nextRepetition = repeticiones + 1
-    if (nextRepetition < LOOP_REPETITIONS) {
-      setRepeticiones(nextRepetition)
-      if (videoRef.current) {
-        videoRef.current.currentTime = 0
-        videoRef.current.play().catch(() => {})
-      }
-      return
-    }
-    terminarBloque()
-  }
-
-  return (
-    <div className="blocks-sequence" aria-live="polite">
-      {esperando && (
-        <div className="sequence-loading">
-          <div className="sequence-loading__spinner" aria-hidden="true" />
-          <p>Cargando…</p>
-          <button type="button" onClick={() => goToBlock(indice + 1)}>
-            Continuar →
-          </button>
-        </div>
-      )}
-      {bloques.map((bloque, blockIndex) => {
-        const visible = blockIndex === indice && !esperando
-        return (
-          <section
-            key={bloque.nombre}
-            className={`sequence-block ${visible ? 'is-active' : ''}`}
-            aria-hidden={!visible}
-          >
-            {videoDeBloque(blockIndex) && (
-              <video
-                ref={visible ? videoRef : null}
-                className="sequence-block__video"
-                src={videoDeBloque(blockIndex)}
-                autoPlay={visible}
-                muted
-                playsInline
-                onEnded={blockIndex < bloques.length - 1 ? onVideoEnded : undefined}
-                aria-label="Video de apertura"
-              />
-            )}
-            <div className="sequence-block__content">
-              <SeparadorBloque nombre={bloque.nombre} />
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-10">
-                {bloque.categorias.map((cat, i) => {
-                  const listoTerna = ganadoresDe(datos, cat.id).length > 0
-                  return (
-                    <a
-                      key={cat.id}
-                      href={`#/terna/${encodeURIComponent(cat.id)}`}
-                      className="group flex flex-col items-center text-center animate-fade-up"
-                      style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
-                    >
-                      <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
-                        <Foto src={fotoTerna(cat)} alt={cat.nombre} className="w-full h-full rounded-full object-cover object-top" size={70} />
-                      </span>
-                      <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">{cat.nombre}</span>
-                      {cat.tipo === 'video-solo' ? (
-                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">Ver video →</span>
-                      ) : cat.tipo === 'outfit' ? (
-                        <EstadoOutfit />
-                      ) : listoTerna ? (
-                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">Ver ganador →</span>
-                      ) : (
-                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
-                      )}
-                    </a>
-                  )
-                })}
-              </div>
-            </div>
-          </section>
-        )
-      })}
-    </div>
-  )
-}
-
 function Ternas({ res, recargar }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
@@ -719,7 +596,48 @@ function Ternas({ res, recargar }) {
               </p>
             </div>
 
-            <SecuenciaDeBloques datos={datos} />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
+              {categorias.map((cat, i) => {
+                const listoTerna = ganadoresDe(datos, cat.id).length > 0
+                return (
+                  <Fragment key={cat.id}>
+                    {cat.bloque && <SeparadorBloque nombre={cat.bloque} />}
+                    <a
+                      href={`#/terna/${encodeURIComponent(cat.id)}`}
+                      className="group flex flex-col items-center text-center animate-fade-up"
+                      style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
+                    >
+                      <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
+                        <Foto
+                          src={fotoTerna(cat)}
+                          alt={cat.nombre}
+                          className="w-full h-full rounded-full object-cover object-top"
+                          size={70}
+                        />
+                      </span>
+
+                      <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
+                        {cat.nombre}
+                      </span>
+
+                      {cat.tipo === 'video-solo' ? (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
+                          Ver video →
+                        </span>
+                      ) : cat.tipo === 'outfit' ? (
+                        <EstadoOutfit />
+                      ) : listoTerna ? (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
+                          Ver ganador →
+                        </span>
+                      ) : (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
+                      )}
+                    </a>
+                  </Fragment>
+                )
+              })}
+            </div>
 
             <p className="mt-16 text-center text-[11px] text-white/25">
               Cada persona votó 2 veces por terna: el 1º voto vale 2 puntos y el 2º vale 1 punto.

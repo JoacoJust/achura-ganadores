@@ -43,104 +43,74 @@ body {
   background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.8), transparent);
 }
 
-/* Presentación secuencial de los tres bloques de ternas. */
-.blocks-sequence {
-  position: relative;
-  width: 100vw;
-  min-height: 100vh;
-  margin-left: calc(50% - 50vw);
-  overflow: hidden;
-}
-
-.sequence-block {
-  position: absolute;
+/* Video de espera entre ternas: no altera el contenido ni el formato original. */
+.terna-transition {
+  position: fixed;
   inset: 0;
-  width: 100vw;
-  min-height: 100vh;
-  overflow-y: auto;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.6s ease, visibility 0s linear 0.6s;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #06070c;
 }
 
-.sequence-block.is-active {
-  position: relative;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition-delay: 0s;
-}
-
-.sequence-block__content {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 1400px);
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 4rem 1.25rem 6rem;
-}
-
-.sequence-block__video {
+.terna-transition > video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.16;
-  pointer-events: none;
 }
 
-.sequence-loading {
+.terna-transition__veil {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  background: rgba(6, 7, 12, 0.52);
+}
+
+.terna-transition__content {
+  position: relative;
+  z-index: 1;
   display: flex;
-  min-height: 100vh;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 1rem;
-  background: #06070c;
   color: #f5f0e6;
+  text-align: center;
 }
 
-.sequence-loading__spinner {
+.terna-transition__spinner {
   width: 52px;
   height: 52px;
-  border: 2px solid rgba(212, 175, 55, 0.25);
+  border: 2px solid rgba(212, 175, 55, 0.3);
   border-top-color: #d4af37;
   border-radius: 50%;
-  animation: sequence-loading-spin 1s linear infinite;
+  animation: terna-transition-spin 1s linear infinite;
 }
 
-.sequence-loading p {
-  color: rgba(245, 240, 230, 0.55);
+.terna-transition__content p {
+  color: rgba(245, 240, 230, 0.7);
   font-size: 0.75rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-.sequence-loading button {
-  margin-top: 1rem;
-  border: 1px solid rgba(212, 175, 55, 0.65);
+.terna-transition__content button {
+  margin-top: 0.5rem;
+  border: 1px solid rgba(212, 175, 55, 0.7);
   border-radius: 9999px;
-  background: transparent;
+  background: rgba(6, 7, 12, 0.55);
   color: #d4af37;
   padding: 0.7rem 1.4rem;
   cursor: pointer;
 }
 
-@keyframes sequence-loading-spin {
+@keyframes terna-transition-spin {
   to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sequence-block {
-    transition: none;
-  }
-
-  .sequence-loading__spinner {
+  .terna-transition__spinner {
     animation: none;
   }
 }
