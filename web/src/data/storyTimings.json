@@ -1,9 +1,84 @@
 {
   "n45": {
     "audios": [
-      "/media/historia-01.ogg",
-      "/media/historia-02.ogg"
+      "/media/historia-01.mp3",
+      "/media/historia-02.mp3"
     ],
-    "tiempos": []
+    "tiempos": [
+      [
+        {
+          "inicio": 0.75,
+          "fin": 12.13,
+          "texto": "Esto es así, fuimos al cumple de marto."
+        },
+        {
+          "inicio": 12.13,
+          "fin": 29.25,
+          "texto": "y apareció por primera vez la figura del lápiz, ese lápiz que toda hoja escribe, que todo destino predice, y Pablo se dejó llevar por su llamado incesante, a pocas horas de que el cumpleaños haya comenzado se podía ver como Pablo ya no era el mismo que hace unas horas."
+        },
+        {
+          "inicio": 29.87,
+          "fin": 58.69,
+          "texto": "El suele ser una persona que mucho dice en infimas palabras que salen de su boca, yo, que soy bastante observador me percate de que Pablo a la hora de jugar al famoso juego \"la H\" estaba hablando de más, por lo que mi conclusión junto a mis compañeros fue que el se encontraba seducido por el alcohol, yo a todo esto no sabía de la existencia del lápiz debido a que no contaba con su existencia."
+        },
+        {
+          "inicio": 58.69,
+          "fin": 100.49,
+          "texto": "después de conocer al lápiz supe los motivos del comportamiento de Pablo, se había convertido en un ser salvaje, gritaba, insultaba sin cesar, las mujeres que estaban sentadas en la mesa lo miraban extrañadas por su comportamiento fuera de lo habitual, mis amigos junto a Pablo fueron a comprar algo (no se que) y al rato llegaron, con un anuncio, muy emocionados y entre risas nos dijeron que Pablo subió al positron a la plaza y nos mostraron imágenes que parecían sacadas de esos vídeos de Twitter en los que pasan cosas no tan buenas."
+        },
+        {
+          "inicio": 102.07,
+          "fin": 107.14,
+          "texto": "A la hora de la vuelta del cumpleaños de marto, nos encontramos con que Pablo estaba sentado en la mesa derrotado, no podía mediar palabras con ninguno de los presentes, ni siquiera pudo saludar a male Rabanal, imaginen al nivel al que había llegado que ni siquiera pudo despedir a esa bomba atómica."
+        }
+      ],
+      [
+        {
+          "inicio": 0,
+          "fin": 16.34,
+          "texto": "A la hora de la vuelta del cumpleaños de marto, nos encontramos con que Pablo estaba sentado en la mesa derrotado, no podía mediar palabras con ninguno de los presentes, ni siquiera pudo saludar a male Rabanal, imaginen al nivel al que había llegado que ni siquiera pudo despedir a esa bomba atómica."
+        },
+        {
+          "inicio": 17.58,
+          "fin": 33.08,
+          "texto": "Finalmente logramos mover el cuerpo de Pablo, el cual parecía una babosa arrastrándose a cada paso, se subió a su auto y gracias a dios nos dimos cuenta de que no estaba en condiciones de conducir, por lo que lo retiramos de su asiento y lo colocamos en la parte trasera."
+        },
+        {
+          "inicio": 33.7,
+          "fin": 58.12,
+          "texto": "el tute tomo el mando del positron y zarpamos viaje hasta la casa de Pablo en Temperley, a la hora de llegar nos encontramos con que había un vehículo de policía patrullando la zona, nosotros por supuesto habíamos tomado alcohol y consumido marihuana, por lo que no tuvimos más remedio que bajar rápido a Pablo para que abra su portón y poder pasar todos juntos y esperar el rescate del señor just, que a todo esto conducía el auto del tute."
+        },
+        {
+          "inicio": 58.86,
+          "fin": 99.3,
+          "texto": "finalmente depositamos a Pablo en su puerta esperando poder entrar, abrio el portón, con cierta timidez, y nosotros al ver que el portón se abrió y se cerró en un parpadeo, intuímos que fue un error inintencionado, pero al ver la expresión que Pablo tenía en su rostro, supimos al instante que habíamos Sido traicionados, al no poder contener a Pablo en su portón intentando convencerlo para que nos deje pasar, suplicándole por poco, entro a su casa sin mediar palabra con ninguno de los presentes, por lo que en ese momento la única opción era comenzar a caminar e intentar hacer tiempo para que just rescate al grupo."
+        },
+        {
+          "inicio": 99.84,
+          "fin": 137.7,
+          "texto": "al cabo de un par de cuadras en círculos creyendo que perdimos a la policía, por suerte just rescato al grupo, excepto a mi, al gordi, al que los problemas lo persiguen, por lo que yo considere caminar por al lado del vehículo de la policía pensando que quizás si yo pasaba por al lado demostraba que no tenía ningún problema con ellos, por lo que ellos quizas no lo tendrian conmigo, pero bueno, no fue asi, apenas hice 2 pasos quizás 1 paso nada más, oi una voz decir ¡\"caballero, venga por favor!"
+        },
+        {
+          "inicio": 138.6,
+          "fin": 200.96,
+          "texto": "', y ahi ya supe en ese momento que estaba en problemas, mientras veía que el Tiida doblaba en una esquina no muy cerca de donde yo estaba parado con 2 patrulleros y 3 policías, pensaba en mi cabeza, \"la puta madre que me pario, por que siempre yo\", pero bueno, deje las quejas para otro momento mas oportuno e infle el pecho y dije, \"hola oficial que tal, dígame\" intentado quizás una suerte de complicidad con el policia que al instante se destruyó cuando el policia me pidio que ponga las manos sobre el patrullero y separe las piernas, mientras me cacheaban pensé, yo mañana tengo la seju, no me pueden llevar a ningún lado, si me llegan a querer llevar tengo que escapar o algo, no puedo tener tanta mala suerte de vivir a dos cuadras de lo de Pablo, como nos va a traicionar asi, no lo puedo entender, el no es asi, el es mi hermano, no haria esto yo si fuese el que estuviese del otro lado de ese porton."
+        },
+        {
+          "inicio": 202.52,
+          "fin": 231.36,
+          "texto": "preferí dejar los pensamientos de lado y al momento de que el policía terminase de cachearme me pidió mi documento el cual yo obviamente no tenía, a lo que también sugirió que le muestre mi cuenta dni y yo respondí con sinceridad, \"no tengo datos moviles tampoco\", al ver que hubo un par de segundos interminables de silencio pregunté: \"¿cuál es el motivo de esta detención oficial?"
+        },
+        {
+          "inicio": 231.36,
+          "fin": 263.82,
+          "texto": "\" a lo que me respondió: \"mira flaco, estabas con tus amigos, salieron de un auto que yo no se si es suyo, esperaron un rato ahi y despues salieron caminando apurados mientras nos miraban y empezaron a dar vueltas\" y en ese momento dije bueno, me toca cerrar el orto porque el oficial tiene razón, somos muy boludos, más boludos fuimos por confiar en el bobo de Pablo, pero bueno, por suerte, después de tantas decepciones, la vida me sonrió y salí ileso de la posibilidad de ir a la comisaría."
+        },
+        {
+          "inicio": 264.68,
+          "fin": 270.88,
+          "texto": "Nunca olvidaré ese rostro, nunca olvidaré al EVIL PABLO."
+        }
+      ]
+    ]
   }
 }
