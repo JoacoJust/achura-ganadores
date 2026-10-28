@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 
@@ -17,6 +17,12 @@ import categorias from './data/categories.json'
 
 const esVideo = (m) => /\.(mp4|webm|mov|m4v|ogv)$/i.test(m || '') && !/placeholder/i.test(m || '')
 const esPlaceholder = (m) => !m || /placeholder/i.test(m)
+
+// Ajustes de la presentación por bloques.
+const LOOP_REPETITIONS = 1
+const BLOCK_DURATIONS_MS = [0, 12000, 0]
+const LOOP_ALL = false
+const BLOCK_VIDEO = '/media/sin_marca_de_agua.mp4'
 
 function fotoDe(n) {
   if (!n) return ''
@@ -542,6 +548,135 @@ function SeparadorBloque({ nombre }) {
   )
 }
 
+function bloquesDeCategorias() {
+  const bloques = []
+  let actual = null
+
+  categorias.forEach((cat) => {
+    if (cat.bloque) {
+      actual = { nombre: cat.bloque, categorias: [] }
+      bloques.push(actual)
+    }
+    if (!actual) return
+    actual.categorias.push(cat)
+  })
+
+  return bloques.slice(0, 3)
+}
+
+function SecuenciaDeBloques({ datos }) {
+  const bloques = bloquesDeCategorias()
+  const [indice, setIndice] = useState(0)
+  const [repeticiones, setRepeticiones] = useState(0)
+  const videoRef = useRef(null)
+
+  const videoDeBloque = (blockIndex) => {
+    if (blockIndex === 0) return BLOCK_VIDEO
+    const video = bloques[blockIndex]?.categorias.find((cat) => cat.tipo === 'video-solo')
+    return video?.video || ''
+  }
+
+  const goToBlock = (nextIndex) => {
+    if (nextIndex >= bloques.length) {
+      if (LOOP_ALL) {
+        setIndice(0)
+        setRepeticiones(0)
+      }
+      return
+    }
+    setIndice(nextIndex)
+    setRepeticiones(0)
+  }
+
+  useEffect(() => {
+    if (indice === 0) return undefined
+    if (indice === bloques.length - 1) return undefined
+    if (videoDeBloque(indice)) return undefined
+
+    const timer = window.setTimeout(() => goToBlock(indice + 1), BLOCK_DURATIONS_MS[indice])
+    return () => window.clearTimeout(timer)
+  }, [indice, bloques.length])
+
+  useEffect(() => {
+    if (!videoRef.current) return undefined
+    const video = videoRef.current
+    video.currentTime = 0
+    video.play().catch(() => {})
+    return undefined
+  }, [indice])
+
+  const onVideoEnded = () => {
+    const nextRepetition = repeticiones + 1
+    if (nextRepetition < LOOP_REPETITIONS) {
+      setRepeticiones(nextRepetition)
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0
+        videoRef.current.play().catch(() => {})
+      }
+      return
+    }
+    goToBlock(indice + 1)
+  }
+
+  return (
+    <div className="blocks-sequence" aria-live="polite">
+      {bloques.map((bloque, blockIndex) => {
+        const visible = blockIndex === indice
+        return (
+          <section
+            key={bloque.nombre}
+            className={`sequence-block ${visible ? 'is-active' : ''}`}
+            aria-hidden={!visible}
+          >
+            {videoDeBloque(blockIndex) && (
+              <video
+                ref={visible ? videoRef : null}
+                className="sequence-block__video"
+                src={videoDeBloque(blockIndex)}
+                autoPlay={visible}
+                muted
+                playsInline
+                onEnded={blockIndex < bloques.length - 1 ? onVideoEnded : undefined}
+                aria-label="Video de apertura"
+              />
+            )}
+            <div className="sequence-block__content">
+              <SeparadorBloque nombre={bloque.nombre} />
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-10">
+                {bloque.categorias.map((cat, i) => {
+                  const listoTerna = ganadoresDe(datos, cat.id).length > 0
+                  return (
+                    <a
+                      key={cat.id}
+                      href={`#/terna/${encodeURIComponent(cat.id)}`}
+                      className="group flex flex-col items-center text-center animate-fade-up"
+                      style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
+                    >
+                      <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
+                        <Foto src={fotoTerna(cat)} alt={cat.nombre} className="w-full h-full rounded-full object-cover object-top" size={70} />
+                      </span>
+                      <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">{cat.nombre}</span>
+                      {cat.tipo === 'video-solo' ? (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">Ver video →</span>
+                      ) : cat.tipo === 'outfit' ? (
+                        <EstadoOutfit />
+                      ) : listoTerna ? (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">Ver ganador →</span>
+                      ) : (
+                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
+                      )}
+                    </a>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
+        )
+      })}
+    </div>
+  )
+}
+
 function Ternas({ res, recargar }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
@@ -569,48 +704,7 @@ function Ternas({ res, recargar }) {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
-              {categorias.map((cat, i) => {
-                const listoTerna = ganadoresDe(datos, cat.id).length > 0
-                return (
-                  <Fragment key={cat.id}>
-                    {cat.bloque && <SeparadorBloque nombre={cat.bloque} />}
-                    <a
-                      href={`#/terna/${encodeURIComponent(cat.id)}`}
-                      className="group flex flex-col items-center text-center animate-fade-up"
-                      style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
-                    >
-                      <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
-                        <Foto
-                          src={fotoTerna(cat)}
-                          alt={cat.nombre}
-                          className="w-full h-full rounded-full object-cover object-top"
-                          size={70}
-                        />
-                      </span>
-
-                      <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
-                        {cat.nombre}
-                      </span>
-
-                      {cat.tipo === 'video-solo' ? (
-                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
-                          Ver video →
-                        </span>
-                      ) : cat.tipo === 'outfit' ? (
-                        <EstadoOutfit />
-                      ) : listoTerna ? (
-                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/30 group-hover:text-cyan transition">
-                          Ver ganador →
-                        </span>
-                      ) : (
-                        <span className="mt-2 text-[11px] uppercase tracking-[0.2em] text-white/25">En votación</span>
-                      )}
-                    </a>
-                  </Fragment>
-                )
-              })}
-            </div>
+            <SecuenciaDeBloques datos={datos} />
 
             <p className="mt-16 text-center text-[11px] text-white/25">
               Cada persona votó 2 veces por terna: el 1º voto vale 2 puntos y el 2º vale 1 punto.
