@@ -650,7 +650,7 @@ function Ternas({ res, recargar, bloqueVisible }) {
         const nombreBloque = categorias.find((c) => numeroDeBloque(bloqueDeTerna(c.id)) === bloqueVisible)?.bloque
           || [...new Set(categorias.map((c) => bloqueDeTerna(c.id)))][bloqueVisible - 1]
         const categoriasVisibles = categorias.filter(
-          (c) => c.tipo !== 'outfit' && bloqueDeTerna(c.id) === nombreBloque,
+          (c) => (c.tipo !== 'outfit' || nombreBloque === 'Tercer bloque') && bloqueDeTerna(c.id) === nombreBloque,
         )
         const vistas = leerTernasVistas()
 
