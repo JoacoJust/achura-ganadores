@@ -680,9 +680,7 @@ function Ternas({ res, recargar }) {
                           size={70}
                         />
                         {vistas.has(cat.id) && (
-                          <span className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full border border-gold bg-black text-gold text-xs" aria-label="Terna vista">
-                            ✓
-                          </span>
+                          <span className="absolute inset-0 rounded-full border-2 border-gold shadow-goldglow" aria-label="Terna vista" />
                         )}
                       </span>
 
@@ -968,7 +966,7 @@ function DetalleTerna({ cat, datos }) {
           {/* 4) continuar con la próxima terna */}
           <div className="mt-16 text-center">
             <a
-              href={siguiente}
+              href="#/ternas"
               className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
             >
               {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
@@ -1700,7 +1698,7 @@ function DetalleOutfit({ cat }) {
 
               <div className="mt-16 text-center">
                 <a
-                  href={siguiente}
+                  href="#/ternas"
                   className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
                 >
                   {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
@@ -1757,7 +1755,7 @@ function DetalleVideoSolo({ cat }) {
 
       <div className="mt-14 text-center">
         <a
-          href={siguiente}
+          href="#/ternas"
           className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
         >
           {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
