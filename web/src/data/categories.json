@@ -56,8 +56,8 @@
     "id": "n41",
     "nombre": "Guido Olmo",
     "descripcion": "",
-    "media": "/media/achura-del-ano-guido-olmo.jpg",
-    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+     "media": "/media/achura-del-ano-guido-olmo.jpg",
+     "poster": "/media/achura-del-ano-guido-olmo.jpg",
     "story": []
    },
    {
@@ -686,8 +686,8 @@
     "id": "n45",
     "nombre": "Guido Olmo",
     "descripcion": "",
-    "media": "/media/achura-del-ano-guido-olmo.jpg",
-    "poster": "/media/achura-del-ano-guido-olmo.jpg",
+    "media": "/media/secuencia-ano-guido-evil-pablo.png",
+    "poster": "/media/secuencia-ano-guido-evil-pablo.png",
     "story": [
      {
       "tipo": "titulo",
