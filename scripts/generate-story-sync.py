@@ -27,8 +27,7 @@ FFMPEG = Path(shutil.which("ffmpeg") or r"C:\Users\JOTA\AppData\Local\Temp\ffmpe
 MODEL = sys.argv[1] if len(sys.argv) > 1 else "small"
 
 AUDIOS = [
-    (MEDIA / "historia-01.ogg", MEDIA / "historia-01.mp3"),
-    (MEDIA / "historia-02.ogg", MEDIA / "historia-02.mp3"),
+    (MEDIA / "historia-evil-pablo.mpeg", MEDIA / "historia-evil-pablo.mp3"),
 ]
 
 

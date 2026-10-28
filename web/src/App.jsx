@@ -1146,6 +1146,14 @@ function ModalHistoria({ cat, nom, onCerrar }) {
           )}
 
           {(sincronizada.audio || sincronizada.audios) && (
+            <div className="mt-6 space-y-2">
+              {bloques.filter((b) => b.tipo === 'titulo').map((b, i) => (
+                <p key={i} className="font-serif text-xl text-gold">{b.contenido}</p>
+              ))}
+            </div>
+          )}
+
+          {(sincronizada.audio || sincronizada.audios) && (
             <HistoriaAudio
               audio={sincronizada.audios || sincronizada.audio}
               tiempos={sincronizada.tiempos || []}
