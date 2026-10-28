@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
 import historiasSincronizadas from './data/storyTimings.json'
@@ -1146,10 +1146,14 @@ function ModalHistoria({ cat, nom, onCerrar }) {
           )}
 
           {(sincronizada.audio || sincronizada.audios) && (
-            <HistoriaAudio audio={sincronizada.audios || sincronizada.audio} tiempos={sincronizada.tiempos || []} />
+            <HistoriaAudio
+              audio={sincronizada.audios || sincronizada.audio}
+              tiempos={sincronizada.tiempos || []}
+              texto={bloques.filter((b) => b.tipo === 'texto').map((b) => b.contenido)}
+            />
           )}
 
-          {bloques.length > 0 && (
+          {bloques.filter((b) => !sincronizada.audio && !sincronizada.audios).length > 0 && (
             <div className="text-white/90 space-y-4 mt-6">
               {bloques.map((b, i) =>
                 b.tipo === 'titulo' ? (
@@ -1189,8 +1193,8 @@ function ModalHistoria({ cat, nom, onCerrar }) {
 }
 
 /* Reproductor de historias: la frase activa se calcula con timeupdate. */
-function HistoriaAudio({ audio, tiempos }) {
-  const fuentes = Array.isArray(audio) ? audio : [audio]
+function HistoriaAudio({ audio, tiempos, texto }) {
+  const fuentes = useMemo(() => (Array.isArray(audio) ? audio : [audio]), [audio])
   const audioRef = useRef(null)
   const frasesRef = useRef({})
   const [pista, setPista] = useState(0)
@@ -1198,11 +1202,44 @@ function HistoriaAudio({ audio, tiempos }) {
   const [actual, setActual] = useState(0)
   const [duracion, setDuracion] = useState(0)
   const [fraseActiva, setFraseActiva] = useState(-1)
-  const tiemposActuales = Array.isArray(tiempos[0]) ? (tiempos[pista] || []) : tiempos
+  const frases = useMemo(
+    () => texto.flatMap((parrafo) => parrafo.match(/[^.!?]+(?:[.!?]+|$)/g) || [parrafo]).map((frase) => frase.trim()).filter(Boolean),
+    [texto],
+  )
+  const frasesPorPista = useMemo(() => {
+    if (fuentes.length === 1) return [frases]
+    const totalCaracteres = frases.reduce((total, frase) => total + frase.length, 0)
+    let acumulado = 0
+    let indice = 0
+    return fuentes.map((_, pistaIndex) => {
+      if (pistaIndex === fuentes.length - 1) return frases.slice(indice)
+      const objetivo = totalCaracteres * ((pistaIndex + 1) / fuentes.length)
+      const parte = []
+      while (indice < frases.length && acumulado + frases[indice].length <= objetivo) {
+        parte.push(frases[indice])
+        acumulado += frases[indice].length
+        indice += 1
+      }
+      return parte
+    })
+  }, [frases, fuentes])
+  const tiemposActuales = useMemo(() => {
+    if (tiempos.length > 0) return Array.isArray(tiempos[0]) ? (tiempos[pista] || []) : tiempos
+    const frasesDePista = frasesPorPista[pista] || []
+    if (!duracion || !frasesDePista.length) return []
+    return frasesDePista.map((textoFrase, indice) => ({
+      inicio: (duracion * indice) / frasesDePista.length,
+      fin: (duracion * (indice + 1)) / frasesDePista.length,
+      texto: textoFrase,
+    }))
+  }, [duracion, frasesPorPista, pista, tiempos])
 
   useEffect(() => {
     const elemento = audioRef.current
     if (!elemento) return undefined
+    setActual(0)
+    setDuracion(0)
+    setFraseActiva(-1)
 
     const actualizar = () => {
       const tiempo = elemento.currentTime
