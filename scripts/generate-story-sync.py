@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
 import sys
 import unicodedata
@@ -22,7 +23,7 @@ from faster_whisper import WhisperModel
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "web" / "public" / "media"
 DATA = ROOT / "web" / "src" / "data"
-FFMPEG = Path(r"C:\Users\JOTA\AppData\Local\Temp\ffmpeg\ffmpeg-9.0.2-essentials_build\bin\ffmpeg.exe")
+FFMPEG = Path(shutil.which("ffmpeg") or r"C:\Users\JOTA\AppData\Local\Temp\ffmpeg\ffmpeg-9.0.2-essentials_build\bin\ffmpeg.exe")
 MODEL = sys.argv[1] if len(sys.argv) > 1 else "small"
 
 AUDIOS = [
