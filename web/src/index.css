@@ -57,37 +57,10 @@ body {
 .terna-transition > video {
   position: relative;
   z-index: 1;
-  width: min(86vw, 720px);
-  max-height: 62vh;
+  width: min(92vw, 1100px);
+  max-height: 78vh;
   object-fit: cover;
   border-radius: 1rem;
-}
-
-.terna-transition__content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  color: #f5f0e6;
-  text-align: center;
-}
-
-.terna-transition__spinner {
-  width: 52px;
-  height: 52px;
-  border: 2px solid rgba(212, 175, 55, 0.3);
-  border-top-color: #d4af37;
-  border-radius: 50%;
-  animation: terna-transition-spin 1s linear infinite;
-}
-
-.terna-transition__content p {
-  color: rgba(245, 240, 230, 0.7);
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
 }
 
 .terna-transition__next {
@@ -113,14 +86,4 @@ body {
 .terna-transition__next:focus-visible {
   background: #d4af37;
   color: #06070c;
-}
-
-@keyframes terna-transition-spin {
-  to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .terna-transition__spinner {
-    animation: none;
-  }
 }

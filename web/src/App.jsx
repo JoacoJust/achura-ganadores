@@ -171,10 +171,6 @@ function TransicionEntreTernas({ onContinuar }) {
   return (
     <div className="terna-transition" role="dialog" aria-label="Transición entre ternas">
       <video src={TRANSITION_VIDEO} autoPlay loop muted playsInline aria-label="Video de espera" />
-      <div className="terna-transition__content">
-        <span className="terna-transition__spinner" aria-hidden="true" />
-        <p>Cargando…</p>
-      </div>
       <button
         type="button"
         className="terna-transition__next"
