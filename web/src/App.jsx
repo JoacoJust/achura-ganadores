@@ -170,13 +170,19 @@ export default function App() {
 function TransicionEntreTernas({ onContinuar }) {
   return (
     <div className="terna-transition" role="dialog" aria-label="Transición entre ternas">
-      <video src={TRANSITION_VIDEO} autoPlay loop muted playsInline aria-hidden="true" />
-      <div className="terna-transition__veil" />
+      <video src={TRANSITION_VIDEO} autoPlay loop muted playsInline aria-label="Video de espera" />
       <div className="terna-transition__content">
         <span className="terna-transition__spinner" aria-hidden="true" />
         <p>Cargando…</p>
-        <button type="button" onClick={onContinuar}>Continuar →</button>
       </div>
+      <button
+        type="button"
+        className="terna-transition__next"
+        onClick={onContinuar}
+        aria-label="Pasar a la siguiente terna"
+      >
+        →
+      </button>
     </div>
   )
 }
