@@ -568,6 +568,7 @@ function SecuenciaDeBloques({ datos }) {
   const bloques = bloquesDeCategorias()
   const [indice, setIndice] = useState(0)
   const [repeticiones, setRepeticiones] = useState(0)
+  const [esperando, setEsperando] = useState(false)
   const videoRef = useRef(null)
 
   const videoDeBloque = (blockIndex) => {
@@ -586,6 +587,11 @@ function SecuenciaDeBloques({ datos }) {
     }
     setIndice(nextIndex)
     setRepeticiones(0)
+    setEsperando(false)
+  }
+
+  const terminarBloque = () => {
+    if (indice < bloques.length - 1) setEsperando(true)
   }
 
   useEffect(() => {
@@ -593,7 +599,7 @@ function SecuenciaDeBloques({ datos }) {
     if (indice === bloques.length - 1) return undefined
     if (videoDeBloque(indice)) return undefined
 
-    const timer = window.setTimeout(() => goToBlock(indice + 1), BLOCK_DURATIONS_MS[indice])
+    const timer = window.setTimeout(terminarBloque, BLOCK_DURATIONS_MS[indice])
     return () => window.clearTimeout(timer)
   }, [indice, bloques.length])
 
@@ -615,13 +621,22 @@ function SecuenciaDeBloques({ datos }) {
       }
       return
     }
-    goToBlock(indice + 1)
+    terminarBloque()
   }
 
   return (
     <div className="blocks-sequence" aria-live="polite">
+      {esperando && (
+        <div className="sequence-loading">
+          <div className="sequence-loading__spinner" aria-hidden="true" />
+          <p>Cargando…</p>
+          <button type="button" onClick={() => goToBlock(indice + 1)}>
+            Continuar →
+          </button>
+        </div>
+      )}
       {bloques.map((bloque, blockIndex) => {
-        const visible = blockIndex === indice
+        const visible = blockIndex === indice && !esperando
         return (
           <section
             key={bloque.nombre}
