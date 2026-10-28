@@ -1,10 +1,9 @@
 {
-  "n73": {
-    "audio": "/media/historia-01.ogg",
-    "tiempos": []
-  },
-  "n74": {
-    "audio": "/media/historia-02.ogg",
+  "n45": {
+    "audios": [
+      "/media/historia-01.ogg",
+      "/media/historia-02.ogg"
+    ],
     "tiempos": []
   }
 }

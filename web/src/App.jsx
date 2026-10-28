@@ -1145,8 +1145,8 @@ function ModalHistoria({ cat, nom, onCerrar }) {
             </button>
           )}
 
-          {sincronizada.audio && (
-            <HistoriaAudio audio={sincronizada.audio} tiempos={sincronizada.tiempos || []} />
+          {(sincronizada.audio || sincronizada.audios) && (
+            <HistoriaAudio audio={sincronizada.audios || sincronizada.audio} tiempos={sincronizada.tiempos || []} />
           )}
 
           {bloques.length > 0 && (
@@ -1190,12 +1190,15 @@ function ModalHistoria({ cat, nom, onCerrar }) {
 
 /* Reproductor de historias: la frase activa se calcula con timeupdate. */
 function HistoriaAudio({ audio, tiempos }) {
+  const fuentes = Array.isArray(audio) ? audio : [audio]
   const audioRef = useRef(null)
   const frasesRef = useRef({})
+  const [pista, setPista] = useState(0)
   const [reproduciendo, setReproduciendo] = useState(false)
   const [actual, setActual] = useState(0)
   const [duracion, setDuracion] = useState(0)
   const [fraseActiva, setFraseActiva] = useState(-1)
+  const tiemposActuales = Array.isArray(tiempos[0]) ? (tiempos[pista] || []) : tiempos
 
   useEffect(() => {
     const elemento = audioRef.current
@@ -1204,11 +1207,17 @@ function HistoriaAudio({ audio, tiempos }) {
     const actualizar = () => {
       const tiempo = elemento.currentTime
       setActual(tiempo)
-      const indice = tiempos.findIndex((frase) => tiempo >= frase.inicio && tiempo < frase.fin)
+      const indice = tiemposActuales.findIndex((frase) => tiempo >= frase.inicio && tiempo < frase.fin)
       setFraseActiva(indice)
     }
     const cargarDuracion = () => setDuracion(elemento.duration || 0)
-    const alTerminar = () => setReproduciendo(false)
+    const alTerminar = () => {
+      if (pista < fuentes.length - 1) {
+        setPista((valor) => valor + 1)
+      } else {
+        setReproduciendo(false)
+      }
+    }
 
     elemento.addEventListener('timeupdate', actualizar)
     elemento.addEventListener('loadedmetadata', cargarDuracion)
@@ -1221,7 +1230,7 @@ function HistoriaAudio({ audio, tiempos }) {
       elemento.removeEventListener('loadedmetadata', cargarDuracion)
       elemento.removeEventListener('ended', alTerminar)
     }
-  }, [audio, tiempos])
+  }, [audio, pista, tiemposActuales])
 
   useEffect(() => {
     const frase = frasesRef.current[fraseActiva]
@@ -1254,7 +1263,7 @@ function HistoriaAudio({ audio, tiempos }) {
 
   return (
     <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-      <audio ref={audioRef} src={audio} preload="metadata" />
+      <audio ref={audioRef} src={fuentes[pista]} preload="metadata" />
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -1283,9 +1292,9 @@ function HistoriaAudio({ audio, tiempos }) {
         </span>
       </div>
 
-      {tiempos.length > 0 ? (
+      {tiemposActuales.length > 0 ? (
         <div className="mt-5 max-h-64 overflow-y-auto space-y-2 pr-2">
-          {tiempos.map((frase, indice) => (
+          {tiemposActuales.map((frase, indice) => (
             <button
               type="button"
               key={`${frase.inicio}-${indice}`}
@@ -1303,7 +1312,7 @@ function HistoriaAudio({ audio, tiempos }) {
         </div>
       ) : (
         <p className="mt-3 text-xs text-white/35">
-          La narración ya está cargada. Faltan los tiempos para resaltar cada frase.
+          Narración {fuentes.length > 1 ? `· parte ${pista + 1} de ${fuentes.length}` : ''}. Faltan los tiempos para resaltar cada frase.
         </p>
       )}
     </div>
