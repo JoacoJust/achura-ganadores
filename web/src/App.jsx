@@ -64,6 +64,15 @@ function bloqueDeTerna(id) {
   return ''
 }
 
+function numeroDeBloque(nombre) {
+  let numero = 0
+  for (const cat of categorias) {
+    if (cat.bloque) numero += 1
+    if (cat.bloque === nombre) return numero
+  }
+  return 1
+}
+
 function siguienteTerna(idActual) {
   const i = categorias.findIndex((c) => c.id === idActual)
   if (i < 0 || i === categorias.length - 1) return '#/ternas'
@@ -181,7 +190,8 @@ export default function App() {
           <TransicionEntreTernas
             onContinuar={() => {
               try {
-                sessionStorage.setItem('achura-bloque-inicial-completo', '1')
+                const idSiguiente = decodeURIComponent(hash.slice('#/terna/'.length))
+                sessionStorage.setItem('achura-bloque-visible', String(numeroDeBloque(bloqueDeTerna(idSiguiente))))
               } catch (e) {}
               setMostrarTransicion(false)
               window.location.hash = '#/ternas'
@@ -198,7 +208,7 @@ export default function App() {
 function TransicionEntreTernas({ onContinuar }) {
   return (
     <div className="terna-transition" role="dialog" aria-label="Transición entre ternas">
-      <video src={TRANSITION_VIDEO} autoPlay loop muted playsInline aria-label="Video de espera" />
+      <video src={TRANSITION_VIDEO} autoPlay loop muted defaultMuted playsInline aria-label="Video de espera" />
       <button
         type="button"
         className="terna-transition__next"
@@ -605,20 +615,16 @@ function Ternas({ res, recargar }) {
       {(datos) => {
         // La terna del outfit no sale de resultados.json: su encuesta se lee en vivo
         // (y el ganador se revela recién cuando votó todo el padrón).
-        const normales = categorias.filter((c) => c.tipo !== 'outfit' && c.tipo !== 'video-solo')
-        const definidas = normales.filter((c) => ganadoresDe(datos, c.id).length > 0).length
-        let mostrarTodas = false
+        let bloqueVisible = 1
         try {
-          mostrarTodas = sessionStorage.getItem('achura-bloque-inicial-completo') === '1'
+          bloqueVisible = Number(sessionStorage.getItem('achura-bloque-visible') || '1') || 1
         } catch (e) {}
 
-        // Al entrar por primera vez se ven solamente las seis ternas del
-        // primer bloque. Después de la transición, la flecha habilita la
-        // interfaz completa para elegir cualquier terna.
-        const primerasSeis = categorias.filter(
-          (c) => c.tipo !== 'video-solo' && c.tipo !== 'outfit' && bloqueDeTerna(c.id) === 'Primer bloque',
+        const nombreBloque = categorias.find((c) => numeroDeBloque(bloqueDeTerna(c.id)) === bloqueVisible)?.bloque
+          || [...new Set(categorias.map((c) => bloqueDeTerna(c.id)))][bloqueVisible - 1]
+        const categoriasVisibles = categorias.filter(
+          (c) => c.tipo !== 'video-solo' && c.tipo !== 'outfit' && bloqueDeTerna(c.id) === nombreBloque,
         )
-        const categoriasVisibles = mostrarTodas ? categorias : primerasSeis
 
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
@@ -627,15 +633,12 @@ function Ternas({ res, recargar }) {
                 <BadgeEnVivo />
               </div>
               <p className="text-[11px] uppercase tracking-[0.45em] text-cyan/80">Sección privada</p>
-              <h1 className="font-serif text-4xl sm:text-6xl mt-4 tracking-wide">
-                LOS <span className="text-gold">GANADORES</span>
+              <h1 className="font-serif text-5xl sm:text-7xl mt-4 tracking-wide">
+                BLOQUE <span className="text-gold">{bloqueVisible}</span>
               </h1>
               <div className="gold-rule h-px w-56 mx-auto mt-6" />
               <p className="mt-6 text-white/55 max-w-xl mx-auto text-sm">
-                Entrá a cada terna para ver el ganador y cómo quedaron los puestos.
-              </p>
-              <p className="mt-4 text-xs text-white/35">
-                {mostrarTodas ? `${definidas} de ${normales.length} ternas con votos · se actualiza solo` : 'Primer bloque · elegí una terna para comenzar'}
+                Elegí una terna para comenzar.
               </p>
             </div>
 
