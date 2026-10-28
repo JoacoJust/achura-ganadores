@@ -191,7 +191,7 @@ export default function App() {
 
   let vista
   if (hash.startsWith('#/terna/')) {
-    vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={recargar} />
+    vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={recargar} enTransicion={mostrarTransicion} />
   } else if (hash === '#/ternas') {
     vista = <Ternas res={res} recargar={recargar} />
   } else if (hash === '#/outfit-panel') {
@@ -721,12 +721,12 @@ function Ternas({ res, recargar }) {
 
 /* ------------------------------ terna (privado) ------------------------------ */
 
-function Terna({ id, res, recargar }) {
+function Terna({ id, res, recargar, enTransicion }) {
   const cat = categorias.find((c) => c.id === id)
 
   useEffect(() => {
-    if (cat) marcarTernaVista(cat.id)
-  }, [cat])
+    if (cat && !enTransicion) marcarTernaVista(cat.id)
+  }, [cat, enTransicion])
 
   if (!cat) {
     return (
