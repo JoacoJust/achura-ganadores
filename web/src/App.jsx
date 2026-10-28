@@ -136,6 +136,7 @@ export default function App() {
   const hash = useRuta()
   const [res, setRes] = useState({ estado: 'cargando', datos: null, error: '' })
   const [mostrarTransicion, setMostrarTransicion] = useState(false)
+  const [bloqueVisible, setBloqueVisible] = useState(1)
   const hashAnterior = useRef(hash)
 
   useEffect(() => {
@@ -206,7 +207,7 @@ export default function App() {
   if (hash.startsWith('#/terna/')) {
     vista = <Terna id={decodeURIComponent(hash.slice('#/terna/'.length))} res={res} recargar={recargar} enTransicion={mostrarTransicion} />
   } else if (hash === '#/ternas') {
-    vista = <Ternas res={res} recargar={recargar} />
+    vista = <Ternas res={res} recargar={recargar} bloqueVisible={bloqueVisible} />
   } else if (hash === '#/outfit-panel') {
     vista = <OutfitPanel res={res} recargar={recargar} />
   } else {
@@ -222,7 +223,7 @@ export default function App() {
             onContinuar={() => {
               try {
                 const idSiguiente = decodeURIComponent(hash.slice('#/terna/'.length))
-                sessionStorage.setItem('achura-bloque-visible', String(numeroDeBloque(bloqueDeTerna(idSiguiente))))
+                setBloqueVisible(numeroDeBloque(bloqueDeTerna(idSiguiente)))
               } catch (e) {}
               setMostrarTransicion(false)
               window.location.hash = '#/ternas'
@@ -640,17 +641,12 @@ function SeparadorBloque({ nombre }) {
   )
 }
 
-function Ternas({ res, recargar }) {
+function Ternas({ res, recargar, bloqueVisible }) {
   return (
     <BloquePrivado res={res} recargar={recargar}>
       {(datos) => {
         // La terna del outfit no sale de resultados.json: su encuesta se lee en vivo
         // (y el ganador se revela recién cuando votó todo el padrón).
-        let bloqueVisible = 1
-        try {
-          bloqueVisible = Number(sessionStorage.getItem('achura-bloque-visible') || '1') || 1
-        } catch (e) {}
-
         const nombreBloque = categorias.find((c) => numeroDeBloque(bloqueDeTerna(c.id)) === bloqueVisible)?.bloque
           || [...new Set(categorias.map((c) => bloqueDeTerna(c.id)))][bloqueVisible - 1]
         const categoriasVisibles = categorias.filter(
