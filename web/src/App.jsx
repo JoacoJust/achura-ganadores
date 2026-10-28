@@ -1259,6 +1259,7 @@ function HistoriaAudio({ audio, tiempos, texto }) {
     elemento.addEventListener('timeupdate', actualizar)
     elemento.addEventListener('loadedmetadata', cargarDuracion)
     elemento.addEventListener('ended', alTerminar)
+    if (elemento.readyState >= 1) cargarDuracion()
     elemento.play().then(() => setReproduciendo(true)).catch(() => setReproduciendo(false))
 
     return () => {
