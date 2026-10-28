@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import Emblem from './components/Emblem.jsx'
 import categorias from './data/categories.json'
+import historiasSincronizadas from './data/storyTimings.json'
 
 /* ---------------------------------------------------------------
    Achura Awards.
@@ -1087,6 +1088,7 @@ function Candidatos({ cat, onAbrir }) {
 function ModalHistoria({ cat, nom, onCerrar }) {
   const bloques = (nom.story || []).filter((b) => (b.contenido || '').trim())
   const video = esVideo(nom.media)
+  const sincronizada = historiasSincronizadas[nom.id] || {}
   const [fotoGrande, setFotoGrande] = useState(null)
   const [videoGrande, setVideoGrande] = useState(null)
 
@@ -1143,6 +1145,10 @@ function ModalHistoria({ cat, nom, onCerrar }) {
             </button>
           )}
 
+          {sincronizada.audio && (
+            <HistoriaAudio audio={sincronizada.audio} tiempos={sincronizada.tiempos || []} />
+          )}
+
           {bloques.length > 0 && (
             <div className="text-white/90 space-y-4 mt-6">
               {bloques.map((b, i) =>
@@ -1177,6 +1183,128 @@ function ModalHistoria({ cat, nom, onCerrar }) {
           poster={videoGrande.poster}
           onCerrar={() => setVideoGrande(null)}
         />
+      )}
+    </div>
+  )
+}
+
+/* Reproductor de historias: la frase activa se calcula con timeupdate. */
+function HistoriaAudio({ audio, tiempos }) {
+  const audioRef = useRef(null)
+  const frasesRef = useRef({})
+  const [reproduciendo, setReproduciendo] = useState(false)
+  const [actual, setActual] = useState(0)
+  const [duracion, setDuracion] = useState(0)
+  const [fraseActiva, setFraseActiva] = useState(-1)
+
+  useEffect(() => {
+    const elemento = audioRef.current
+    if (!elemento) return undefined
+
+    const actualizar = () => {
+      const tiempo = elemento.currentTime
+      setActual(tiempo)
+      const indice = tiempos.findIndex((frase) => tiempo >= frase.inicio && tiempo < frase.fin)
+      setFraseActiva(indice)
+    }
+    const cargarDuracion = () => setDuracion(elemento.duration || 0)
+    const alTerminar = () => setReproduciendo(false)
+
+    elemento.addEventListener('timeupdate', actualizar)
+    elemento.addEventListener('loadedmetadata', cargarDuracion)
+    elemento.addEventListener('ended', alTerminar)
+    elemento.play().then(() => setReproduciendo(true)).catch(() => setReproduciendo(false))
+
+    return () => {
+      elemento.pause()
+      elemento.removeEventListener('timeupdate', actualizar)
+      elemento.removeEventListener('loadedmetadata', cargarDuracion)
+      elemento.removeEventListener('ended', alTerminar)
+    }
+  }, [audio, tiempos])
+
+  useEffect(() => {
+    const frase = frasesRef.current[fraseActiva]
+    if (frase) frase.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [fraseActiva])
+
+  function alternarReproduccion() {
+    const elemento = audioRef.current
+    if (!elemento) return
+    if (elemento.paused) {
+      elemento.play().then(() => setReproduciendo(true)).catch(() => {})
+    } else {
+      elemento.pause()
+      setReproduciendo(false)
+    }
+  }
+
+  function saltarA(frase, indice) {
+    const elemento = audioRef.current
+    if (!elemento) return
+    elemento.currentTime = frase.inicio
+    setFraseActiva(indice)
+    elemento.play().then(() => setReproduciendo(true)).catch(() => {})
+  }
+
+  const formatearTiempo = (valor) => {
+    const segundos = Math.floor(valor || 0)
+    return `${Math.floor(segundos / 60)}:${String(segundos % 60).padStart(2, '0')}`
+  }
+
+  return (
+    <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <audio ref={audioRef} src={audio} preload="metadata" />
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={alternarReproduccion}
+          aria-label={reproduciendo ? 'Pausar narración' : 'Reproducir narración'}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-black font-bold"
+        >
+          {reproduciendo ? 'Ⅱ' : '▶'}
+        </button>
+        <input
+          type="range"
+          min="0"
+          max={duracion || 0}
+          step="0.01"
+          value={actual}
+          onChange={(e) => {
+            const tiempo = Number(e.target.value)
+            if (audioRef.current) audioRef.current.currentTime = tiempo
+            setActual(tiempo)
+          }}
+          aria-label="Progreso de la narración"
+          className="min-w-0 flex-1 accent-gold"
+        />
+        <span className="shrink-0 text-xs text-white/50 tabular-nums">
+          {formatearTiempo(actual)} / {formatearTiempo(duracion)}
+        </span>
+      </div>
+
+      {tiempos.length > 0 ? (
+        <div className="mt-5 max-h-64 overflow-y-auto space-y-2 pr-2">
+          {tiempos.map((frase, indice) => (
+            <button
+              type="button"
+              key={`${frase.inicio}-${indice}`}
+              ref={(elemento) => { frasesRef.current[indice] = elemento }}
+              onClick={() => saltarA(frase, indice)}
+              className={`block w-full text-left leading-relaxed transition-all duration-300 ${
+                indice === fraseActiva
+                  ? 'text-gold text-xl opacity-100'
+                  : 'text-white/30 text-base opacity-60 hover:text-white/60'
+              }`}
+            >
+              {frase.texto}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-3 text-xs text-white/35">
+          La narración ya está cargada. Faltan los tiempos para resaltar cada frase.
+        </p>
       )}
     </div>
   )
