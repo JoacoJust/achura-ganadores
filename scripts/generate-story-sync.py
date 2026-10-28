@@ -25,10 +25,13 @@ MEDIA = ROOT / "web" / "public" / "media"
 DATA = ROOT / "web" / "src" / "data"
 FFMPEG = Path(shutil.which("ffmpeg") or r"C:\Users\JOTA\AppData\Local\Temp\ffmpeg\ffmpeg-9.0.2-essentials_build\bin\ffmpeg.exe")
 MODEL = sys.argv[1] if len(sys.argv) > 1 else "small"
+STORY_ID = sys.argv[2] if len(sys.argv) > 2 else "n45"
 
-AUDIOS = [
-    (MEDIA / "historia-evil-pablo.mpeg", MEDIA / "historia-evil-pablo.mp3"),
-]
+AUDIO_CONFIG = {
+    "n45": [(MEDIA / "historia-evil-pablo.mpeg", MEDIA / "historia-evil-pablo.mp3")],
+    "n46": [(MEDIA / "historia-jesus-pola.mpeg", MEDIA / "historia-jesus-pola.mp3")],
+}
+AUDIOS = AUDIO_CONFIG.get(STORY_ID, [])
 
 
 def normalizar(texto: str) -> list[str]:
@@ -37,11 +40,11 @@ def normalizar(texto: str) -> list[str]:
     return re.findall(r"[a-z0-9]+", texto)
 
 
-def obtener_texto_original() -> str:
+def obtener_texto_original(story_id: str) -> str:
     categorias = json.loads((DATA / "categories.json").read_text(encoding="utf-8"))
     candidato = next(
         n for c in categorias if c["id"] == "secuencia-del-a-o"
-        for n in c.get("nominados", []) if n["id"] == "n45"
+        for n in c.get("nominados", []) if n["id"] == story_id
     )
     return " ".join(b["contenido"] for b in candidato.get("story", []) if b.get("tipo") == "texto")
 
@@ -120,6 +123,8 @@ def separar_por_audio(frases: list[dict], duraciones: list[float]) -> list[list[
 
 
 def main() -> None:
+    if not AUDIOS:
+        raise SystemExit(f"No hay audios configurados para {STORY_ID}")
     for origen, destino in AUDIOS:
         convertir(origen, destino)
 
@@ -132,15 +137,15 @@ def main() -> None:
         palabras_totales.extend([{**p, "inicio": p["inicio"] + sum(duraciones), "fin": p["fin"] + sum(duraciones)} for p in palabras])
         duraciones.append(duracion)
 
-    frases = alinear(obtener_texto_original(), palabras_totales)
+    frases = alinear(obtener_texto_original(STORY_ID), palabras_totales)
     por_audio = separar_por_audio(frases, duraciones)
-    sincronizacion = {
-        "n45": {
-            "audios": [f"/media/{mp3.name}" for _, mp3 in AUDIOS],
-            "tiempos": por_audio,
-        }
+    archivo_sincronizacion = DATA / "storyTimings.json"
+    sincronizacion = json.loads(archivo_sincronizacion.read_text(encoding="utf-8")) if archivo_sincronizacion.exists() else {}
+    sincronizacion[STORY_ID] = {
+        "audios": [f"/media/{mp3.name}" for _, mp3 in AUDIOS],
+        "tiempos": por_audio,
     }
-    (DATA / "storyTimings.json").write_text(json.dumps(sincronizacion, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    archivo_sincronizacion.write_text(json.dumps(sincronizacion, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Listo: storyTimings.json y transcripciones .txt generados.")
 
 
