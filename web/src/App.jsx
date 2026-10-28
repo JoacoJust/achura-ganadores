@@ -18,6 +18,24 @@ import categorias from './data/categories.json'
 const esVideo = (m) => /\.(mp4|webm|mov|m4v|ogv)$/i.test(m || '') && !/placeholder/i.test(m || '')
 const esPlaceholder = (m) => !m || /placeholder/i.test(m)
 const TRANSITION_VIDEO = '/media/sin_marca_de_agua.mp4'
+const TERNAS_VISTAS_KEY = 'achura-ternas-vistas'
+
+function leerTernasVistas() {
+  try {
+    const vistas = JSON.parse(sessionStorage.getItem(TERNAS_VISTAS_KEY) || '[]')
+    return new Set(Array.isArray(vistas) ? vistas : [])
+  } catch (e) {
+    return new Set()
+  }
+}
+
+function marcarTernaVista(id) {
+  try {
+    const vistas = leerTernasVistas()
+    vistas.add(id)
+    sessionStorage.setItem(TERNAS_VISTAS_KEY, JSON.stringify([...vistas]))
+  } catch (e) {}
+}
 
 function fotoDe(n) {
   if (!n) return ''
@@ -623,8 +641,9 @@ function Ternas({ res, recargar }) {
         const nombreBloque = categorias.find((c) => numeroDeBloque(bloqueDeTerna(c.id)) === bloqueVisible)?.bloque
           || [...new Set(categorias.map((c) => bloqueDeTerna(c.id)))][bloqueVisible - 1]
         const categoriasVisibles = categorias.filter(
-          (c) => c.tipo !== 'video-solo' && c.tipo !== 'outfit' && bloqueDeTerna(c.id) === nombreBloque,
+          (c) => c.tipo !== 'outfit' && bloqueDeTerna(c.id) === nombreBloque,
         )
+        const vistas = leerTernasVistas()
 
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
@@ -653,13 +672,18 @@ function Ternas({ res, recargar }) {
                       className="group flex flex-col items-center text-center animate-fade-up"
                       style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
                     >
-                      <span className="relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent group-hover:from-gold/80 group-hover:via-gold/30 transition-all duration-300 group-hover:shadow-goldglow">
+                      <span className={`relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent transition-all duration-300 group-hover:from-gold/80 group-hover:via-gold/30 group-hover:shadow-goldglow ${vistas.has(cat.id) ? 'ring-2 ring-gold shadow-goldglow' : ''}`}>
                         <Foto
                           src={fotoTerna(cat)}
                           alt={cat.nombre}
                           className="w-full h-full rounded-full object-cover object-top"
                           size={70}
                         />
+                        {vistas.has(cat.id) && (
+                          <span className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full border border-gold bg-black text-gold text-xs" aria-label="Terna vista">
+                            ✓
+                          </span>
+                        )}
                       </span>
 
                       <span className="mt-4 font-serif text-[13px] leading-snug tracking-[0.12em] uppercase max-w-[180px]">
@@ -699,6 +723,10 @@ function Ternas({ res, recargar }) {
 
 function Terna({ id, res, recargar }) {
   const cat = categorias.find((c) => c.id === id)
+
+  useEffect(() => {
+    if (cat) marcarTernaVista(cat.id)
+  }, [cat])
 
   if (!cat) {
     return (
@@ -1709,12 +1737,11 @@ function DetalleVideoSolo({ cat }) {
       </div>
 
       <div className="mt-10 rounded-3xl overflow-hidden border border-white/10 bg-black shadow-[0_40px_80px_-60px_rgba(18,199,228,0.25)]">
-        <video
-          src={cat.video}
-          poster={posterior}
-          controls
-          autoPlay
-          playsInline
+          <video
+           src={cat.video}
+           poster={posterior}
+           controls
+           playsInline
           className="w-full max-h-[78vh] bg-black"
         />
       </div>
