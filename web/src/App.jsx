@@ -674,18 +674,20 @@ function Ternas({ res, recargar }) {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 sm:gap-x-10 gap-y-12 mt-14 max-w-5xl mx-auto">
               {categoriasVisibles.map((cat, i) => {
                 const listoTerna = ganadoresDe(datos, cat.id).length > 0
+                const ultimaSola = i === categoriasVisibles.length - 1 && categoriasVisibles.length % 3 === 1
+                const ultimaSolaEnMovil = i === categoriasVisibles.length - 1 && categoriasVisibles.length % 2 === 1
                 return (
                   <Fragment key={cat.id}>
                     {cat.bloque && <SeparadorBloque nombre={cat.bloque} />}
                     <a
                       href={`#/terna/${encodeURIComponent(cat.id)}`}
-                      className="group flex flex-col items-center text-center animate-fade-up"
+                      className={`group flex flex-col items-center text-center animate-fade-up ${ultimaSolaEnMovil ? 'col-span-2 sm:col-span-1' : ''} ${ultimaSola ? 'sm:col-start-2' : ''}`}
                       style={{ animationDelay: `${Math.min(i * 45, 500)}ms` }}
                     >
-                      <span className={`relative w-[132px] h-[132px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent transition-all duration-300 group-hover:from-gold/80 group-hover:via-gold/30 group-hover:shadow-goldglow ${vistas.has(cat.id) ? 'ring-2 ring-gold shadow-goldglow' : ''}`}>
+                      <span className={`relative w-[158px] h-[158px] sm:w-[176px] sm:h-[176px] rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent transition-all duration-300 group-hover:from-gold/80 group-hover:via-gold/30 group-hover:shadow-goldglow ${vistas.has(cat.id) ? 'ring-2 ring-gold shadow-goldglow' : ''}`}>
                         <Foto
                           src={fotoTerna(cat)}
                           alt={cat.nombre}
