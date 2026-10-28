@@ -97,6 +97,19 @@ function siguienteTerna(idActual) {
   return `#/terna/${encodeURIComponent(categorias[i + 1].id)}`
 }
 
+function esUltimaTernaDelBloque(id) {
+  const bloque = bloqueDeTerna(id)
+  const ternas = categorias.filter(
+    (c) => c.tipo !== 'video-solo' && c.tipo !== 'outfit' && bloqueDeTerna(c.id) === bloque,
+  )
+  return ternas[ternas.length - 1]?.id === id
+}
+
+function tieneSiguienteBloque(id) {
+  const bloqueActual = numeroDeBloque(bloqueDeTerna(id))
+  return categorias.some((c) => numeroDeBloque(bloqueDeTerna(c.id)) === bloqueActual + 1)
+}
+
 /* ------------- los invitados del outfit (todos juntos) ------------- */
 
 /* ---------------- ruteo por hash (#/, #/ternas, #/terna/:id, #/outfit-panel) ---------------- */
@@ -792,6 +805,8 @@ function DetalleTerna({ cat, datos }) {
   }
 
   const siguiente = siguienteTerna(cat.id)
+  const vaAlLoop = esUltimaTernaDelBloque(cat.id) && tieneSiguienteBloque(cat.id)
+  const destinoContinuar = vaAlLoop ? siguiente : '#/ternas'
 
   return (
     <div className="max-w-5xl mx-auto px-5 pt-8 pb-20">
@@ -966,7 +981,7 @@ function DetalleTerna({ cat, datos }) {
           {/* 4) continuar con la próxima terna */}
           <div className="mt-16 text-center">
             <a
-              href="#/ternas"
+              href={destinoContinuar}
               className="inline-flex items-center justify-center gap-2 bg-gold text-black font-bold uppercase text-xs tracking-[0.2em] px-7 py-3.5 rounded-full hover:brightness-110 shadow-goldglow transition"
             >
               {siguiente === '#/ternas' ? 'Volver a las ternas' : 'Continuar →'}
