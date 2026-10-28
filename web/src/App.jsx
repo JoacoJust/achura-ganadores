@@ -53,7 +53,16 @@ function ganadoresDe(datos, id) {
   return (r.puestos || []).filter((p) => p.votos > 0).slice(0, 1)
 }
 
-/* ------------- la terna que sigue (para el botón "Continuar") ------------- */
+/* ------------- orden y bloques de las ternas ------------- */
+
+function bloqueDeTerna(id) {
+  let bloque = ''
+  for (const cat of categorias) {
+    if (cat.bloque) bloque = cat.bloque
+    if (cat.id === id) return bloque
+  }
+  return ''
+}
 
 function siguienteTerna(idActual) {
   const i = categorias.findIndex((c) => c.id === idActual)
@@ -90,9 +99,18 @@ export default function App() {
   const hashAnterior = useRef(hash)
 
   useEffect(() => {
-    const veniaDeTerna = hashAnterior.current.startsWith('#/terna/')
-    const vaAOtraTerna = hash.startsWith('#/terna/') && hash !== hashAnterior.current
-    if (veniaDeTerna && vaAOtraTerna) setMostrarTransicion(true)
+    const ternaAnterior = hashAnterior.current.startsWith('#/terna/')
+      ? decodeURIComponent(hashAnterior.current.slice('#/terna/'.length))
+      : ''
+    const ternaActual = hash.startsWith('#/terna/')
+      ? decodeURIComponent(hash.slice('#/terna/'.length))
+      : ''
+    const cambioDeTerna = ternaAnterior && ternaActual && ternaAnterior !== ternaActual
+    const cambioDeBloque = cambioDeTerna && bloqueDeTerna(ternaAnterior) !== bloqueDeTerna(ternaActual)
+
+    // Las ternas del mismo bloque se muestran seguidas. La pantalla con el
+    // video aparece solamente al terminar un bloque completo.
+    if (cambioDeBloque) setMostrarTransicion(true)
     hashAnterior.current = hash
   }, [hash])
 
