@@ -177,7 +177,17 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Header hash={hash} autorizado={res.estado === 'ok'} recargar={recargar} />
       <main className="flex-1">
-        {mostrarTransicion && <TransicionEntreTernas onContinuar={() => setMostrarTransicion(false)} />}
+        {mostrarTransicion && (
+          <TransicionEntreTernas
+            onContinuar={() => {
+              try {
+                sessionStorage.setItem('achura-bloque-inicial-completo', '1')
+              } catch (e) {}
+              setMostrarTransicion(false)
+              window.location.hash = '#/ternas'
+            }}
+          />
+        )}
         {vista}
       </main>
       <Footer generado={res.estado === 'ok' ? res.datos && res.datos.generado : null} />
@@ -597,6 +607,19 @@ function Ternas({ res, recargar }) {
         // (y el ganador se revela recién cuando votó todo el padrón).
         const normales = categorias.filter((c) => c.tipo !== 'outfit' && c.tipo !== 'video-solo')
         const definidas = normales.filter((c) => ganadoresDe(datos, c.id).length > 0).length
+        let mostrarTodas = false
+        try {
+          mostrarTodas = sessionStorage.getItem('achura-bloque-inicial-completo') === '1'
+        } catch (e) {}
+
+        // Al entrar por primera vez se ven solamente las seis ternas del
+        // primer bloque. Después de la transición, la flecha habilita la
+        // interfaz completa para elegir cualquier terna.
+        const primerasSeis = categorias.filter(
+          (c) => c.tipo !== 'video-solo' && c.tipo !== 'outfit' && bloqueDeTerna(c.id) === 'Primer bloque',
+        )
+        const categoriasVisibles = mostrarTodas ? categorias : primerasSeis
+
         return (
           <div className="max-w-6xl mx-auto px-5 pt-14 pb-20">
             <div className="text-center animate-fade-up">
@@ -612,12 +635,12 @@ function Ternas({ res, recargar }) {
                 Entrá a cada terna para ver el ganador y cómo quedaron los puestos.
               </p>
               <p className="mt-4 text-xs text-white/35">
-                {definidas} de {normales.length} ternas con votos · se actualiza solo
+                {mostrarTodas ? `${definidas} de ${normales.length} ternas con votos · se actualiza solo` : 'Primer bloque · elegí una terna para comenzar'}
               </p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 mt-14">
-              {categorias.map((cat, i) => {
+              {categoriasVisibles.map((cat, i) => {
                 const listoTerna = ganadoresDe(datos, cat.id).length > 0
                 return (
                   <Fragment key={cat.id}>
