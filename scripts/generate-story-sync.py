@@ -31,6 +31,7 @@ AUDIO_CONFIG = {
     "n45": [(MEDIA / "historia-evil-pablo.mpeg", MEDIA / "historia-evil-pablo.mp3")],
     "n46": [(MEDIA / "historia-jesus-pola.mpeg", MEDIA / "historia-jesus-pola.mp3")],
     "n48": [(MEDIA / "historia-pablo-ouija.ogg", MEDIA / "historia-pablo-ouija.mp3")],
+    "n47": [(MEDIA / "historia-nicolas-secuencia.ogg", MEDIA / "historia-nicolas-secuencia.mp3")],
 }
 AUDIOS = AUDIO_CONFIG.get(STORY_ID, [])
 

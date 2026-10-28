@@ -468,5 +468,99 @@
       ]
     ],
     "imagen": "/media/secuencia-ano-pablo-ouija.jpg"
+  },
+  "n47": {
+    "audios": [
+      "/media/historia-nicolas-secuencia.mp3"
+    ],
+    "tiempos": [
+      [
+        {
+          "inicio": 1.14,
+          "fin": 17.18,
+          "texto": "Primer día del mundial,achura completamente manija por cómo iba a ser el desenlace de este evento tan ansiado por achura."
+        },
+        {
+          "inicio": 17.18,
+          "fin": 25.18,
+          "texto": "Pero no es lo que nos interesa, ya que lo que nos pasó esa noche es el plato fuerte."
+        },
+        {
+          "inicio": 25.98,
+          "fin": 30.78,
+          "texto": "Luego de vivir uno de los mejores goles del mundial, ya que era un partido entre dos selecciones que tenían mucho para sorprendernos."
+        },
+        {
+          "inicio": 30.78,
+          "fin": 35.2,
+          "texto": "El partido fue un partido muy parejo, terminando 2-2."
+        },
+        {
+          "inicio": 35.2,
+          "fin": 40.9,
+          "texto": "Pablo, que ya a esta altura del año estaba queriendo alejarse de lucho."
+        },
+        {
+          "inicio": 41.34,
+          "fin": 43.42,
+          "texto": "Le cede una tuca que tenía guardada a chucho."
+        },
+        {
+          "inicio": 45.24,
+          "fin": 48.0,
+          "texto": "Chucho y Guido ya tenían todo un plan en la cabeza."
+        },
+        {
+          "inicio": 48.0,
+          "fin": 51.62,
+          "texto": "Se comprarían un chocolate y lo comerían re locos en el auto."
+        },
+        {
+          "inicio": 52.58,
+          "fin": 55.3,
+          "texto": "Pero la vida tenía otros planes para ellos."
+        },
+        {
+          "inicio": 56.06,
+          "fin": 59.2,
+          "texto": "Cuando estaban saliendo Mateo se logra meter en su auto."
+        },
+        {
+          "inicio": 59.72,
+          "fin": 66.8,
+          "texto": "Pero en el momento donde Guido, Nico y Chucho  se querían subir a sus autos, aparece un patrullero que los intercepta y les pide su documentación."
+        },
+        {
+          "inicio": 67.48,
+          "fin": 68.74,
+          "texto": "Los pone contra el capot del patrullero."
+        },
+        {
+          "inicio": 68.74,
+          "fin": 77.0,
+          "texto": "Les consultan si tienen algo que los comprometa a lo que chucho dice que tiene una tuca y la deja en el capot."
+        },
+        {
+          "inicio": 77.0,
+          "fin": 80.34,
+          "texto": "Pero el policía no se los había quitado aún la tuca seguía ahí."
+        },
+        {
+          "inicio": 80.34,
+          "fin": 90.18,
+          "texto": "Mientras seguían haciendo el rastreo de la documentación Guido y Chucho siguen esperanzados de que se lo devuelvan y seguir con su plan."
+        },
+        {
+          "inicio": 91.72,
+          "fin": 96.36,
+          "texto": "Pero de la nada otro oficial de otro patrullero llega y se la guarda en los bolsillos."
+        },
+        {
+          "inicio": 97.18,
+          "fin": 104.06,
+          "texto": "Rompiendo no solo las expectativas de la noche, sino también la esperanza de buena fe de esta oficial."
+        }
+      ]
+    ]
   }
 }
