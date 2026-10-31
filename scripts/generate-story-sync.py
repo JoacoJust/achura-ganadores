@@ -51,7 +51,7 @@ def obtener_texto_original(story_id: str) -> str:
         n for c in categorias
         for n in c.get("nominados", []) if n["id"] == story_id
     )
-    return " ".join(b["contenido"] for b in candidato.get("story", []) if b.get("tipo") == "texto")
+    return "\n".join(b["contenido"] for b in candidato.get("story", []) if b.get("tipo") == "texto")
 
 
 def convertir(origen: Path, destino: Path) -> None:
@@ -83,7 +83,7 @@ def transcribir(model: WhisperModel, audio: Path) -> tuple[list[dict], float]:
 
 
 def alinear(texto: str, palabras: list[dict]) -> list[dict]:
-    frases = [f.strip() for f in re.findall(r"[^.!?]+(?:[.!?]+|$)", texto) if f.strip()]
+    frases = [f.strip() for f in re.split(r"(?<=[.!?])\s+|\n+", texto) if f.strip()]
     objetivos = [normalizar(f) for f in frases]
     total_objetivo = max(1, sum(len(x) for x in objetivos))
     cursor = 0
