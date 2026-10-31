@@ -639,7 +639,9 @@
   "nombre": "Fail del año",
   "tipo": "video",
   "poster": "/media/fail-del-ano.jpg",
-  "mencion": "",
+  "mencion_titulo": "Mención honorífica para el TIDA",
+  "mencion": "No podíamos dejar de mencionar y recordar el atentado que ocurrió ayer con el TIDA. Supiste ser un gran compañero de viajes y siempre vamos a estar agradecidos por todo lo vivido. Vas a ser para siempre parte de la historia de Achura.",
+  "mencion_imagen": "/media/mencion-honorifica-tida.jpg",
   "nominados": [
    {
     "id": "n53",

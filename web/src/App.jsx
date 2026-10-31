@@ -844,6 +844,14 @@ function DetalleTerna({ cat, datos }) {
             {cat.mencion_titulo && cat.mencion_titulo.trim() ? cat.mencion_titulo : '🎖 Mención honorífica'}
           </p>
           <p className="mt-2 text-white/75">{cat.mencion}</p>
+          {cat.mencion_imagen && (
+            <img
+              src={cat.mencion_imagen}
+              alt="El TIDA, compañero de viajes de Achura"
+              loading="lazy"
+              className="mt-5 mx-auto w-full max-w-3xl max-h-[60vh] rounded-xl object-contain"
+            />
+          )}
         </div>
       )}
 
