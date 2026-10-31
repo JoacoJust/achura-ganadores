@@ -1087,7 +1087,8 @@ function Candidatos({ cat, onAbrir }) {
 
 function ModalHistoria({ cat, nom, onCerrar }) {
   const bloques = (nom.story || []).filter((b) => (b.contenido || '').trim())
-  const video = esVideo(nom.media)
+  const historiaMedia = nom.historiaMedia || nom.media
+  const video = esVideo(historiaMedia)
   const sincronizada = historiasSincronizadas[nom.id] || {}
   const imagenHistoria = sincronizada.imagen || ''
   const [fotoGrande, setFotoGrande] = useState(null)
@@ -1120,7 +1121,15 @@ function ModalHistoria({ cat, nom, onCerrar }) {
 
           {video ? (
             <div className="mt-6">
-              <video src={nom.media} poster={nom.poster} controls autoPlay playsInline className="w-full rounded-xl" />
+              <video
+                src={historiaMedia}
+                poster={nom.poster}
+                controls
+                autoPlay
+                muted={Boolean(sincronizada.audio || sincronizada.audios)}
+                playsInline
+                className="w-full rounded-xl"
+              />
               <button
                 onClick={() => setVideoGrande(nom)}
                 className="mt-3 inline-flex items-center gap-2 border border-cyan/50 hover:bg-cyan/10 hover:text-cyan text-cyan/90 rounded-full px-4 py-2 text-xs uppercase tracking-[0.15em] transition"
@@ -1200,7 +1209,7 @@ function ModalHistoria({ cat, nom, onCerrar }) {
       )}
       {videoGrande && (
         <ModalVideo
-          src={videoGrande.media}
+          src={videoGrande.historiaMedia || videoGrande.media}
           poster={videoGrande.poster}
           onCerrar={() => setVideoGrande(null)}
         />

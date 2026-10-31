@@ -563,5 +563,109 @@
       ]
     ],
     "imagen": "/media/secuencia-ano-nicolas-policia.jpg"
+  },
+  "n74": {
+    "audios": [
+      "/media/historia-franco-pablo-agustin.mp3"
+    ],
+    "tiempos": [
+      [
+        {
+          "inicio": 0.88,
+          "fin": 3.98,
+          "texto": "Nos remontamos al segundo día de achura en el último mdt."
+        },
+        {
+          "inicio": 3.98,
+          "fin": 9.62,
+          "texto": "Se inició la espera a la mejor comida que alguna vez hicieron en esa casa."
+        },
+        {
+          "inicio": 10.4,
+          "fin": 15.34,
+          "texto": "La bondiola era un plato que achura jamás podría haber imaginado comer en los viajes anteriores."
+        },
+        {
+          "inicio": 16.02,
+          "fin": 23.0,
+          "texto": "Luego de una tarde llena de playa, mates y muchos cambios de frentes, achura se vio en la necesidad de aumentar el goce de esa noche."
+        },
+        {
+          "inicio": 23.8,
+          "fin": 37.44,
+          "texto": "Mateo y Joaquin tuvieron la idea de crear un trago, lleno de sabor frutal y gin El mayor problema de esto es que no fue el trago, sino que los creadores no tenían los utensilios necesarios para poder crearlo."
+        },
+        {
+          "inicio": 38.04,
+          "fin": 46.7,
+          "texto": "Ya que gastaron todo el paquete de azúcar y jamás se pudo revolver,  entonces fue un gasto enorme por un gusto insignificante."
+        },
+        {
+          "inicio": 47.5,
+          "fin": 49.52,
+          "texto": "Pero este no era el único trago de la noche."
+        },
+        {
+          "inicio": 50.0,
+          "fin": 56.24,
+          "texto": "Ya que Paul, Franco y Guido se dieron el gusto de poder comprarse 2 jaggers para esa noche."
+        },
+        {
+          "inicio": 57.14,
+          "fin": 64.28,
+          "texto": "Aunque la noche ya se tornaba y daba forma para una noche de anécdotas, jamás creímos que desembocará en lo que terminó siendo."
+        },
+        {
+          "inicio": 65.26,
+          "fin": 69.78,
+          "texto": "A la espera de que la bondiola llegue a desmenuzarse en su disco achura siguió bebiendo."
+        },
+        {
+          "inicio": 70.42,
+          "fin": 74.04,
+          "texto": "De un momento a otro el jagger se fue terminando."
+        },
+        {
+          "inicio": 74.3,
+          "fin": 83.48,
+          "texto": "Pero la botella no se fue por sí sola… Empezamos a notar la ausencia de un achura,¿Dónde está Pablo?"
+        },
+        {
+          "inicio": 85.02,
+          "fin": 85.52,
+          "texto": "¿Alguien lo vio?"
+        },
+        {
+          "inicio": 88.17,
+          "fin": 93.95,
+          "texto": "A lo que chucho recuerda un evento que había pasado hace aproximadamente 30 minutos."
+        },
+        {
+          "inicio": 93.95,
+          "fin": 102.35,
+          "texto": "Lo que pasó es que se dio un encuentro entre 4 miembros de achura que realizaron una medición corporal captada en cámara."
+        },
+        {
+          "inicio": 103.57,
+          "fin": 106.27,
+          "texto": "Y él nunca había visto bajar a Pablo de esa habitación."
+        },
+        {
+          "inicio": 106.99,
+          "fin": 112.29,
+          "texto": "Entonces con el sanguche de bondiola que le corresponde a Pablo, sube y se lo pone en la nariz."
+        },
+        {
+          "inicio": 114.75,
+          "fin": 120.77,
+          "texto": "A lo que paul sin abrir los ojos usa su sentido del olfato y le empieza a dar mordiscos."
+        },
+        {
+          "inicio": 120.77,
+          "fin": 125.41,
+          "texto": "Chucho no podía creer que estaba viendo la transformación hacia lo que ellos llamaban, “Agustín”"
+        }
+      ]
+    ]
   }
 }

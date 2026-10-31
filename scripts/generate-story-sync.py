@@ -30,8 +30,9 @@ STORY_ID = sys.argv[2] if len(sys.argv) > 2 else "n45"
 AUDIO_CONFIG = {
     "n45": [(MEDIA / "historia-evil-pablo.mpeg", MEDIA / "historia-evil-pablo.mp3")],
     "n46": [(MEDIA / "historia-jesus-pola.mpeg", MEDIA / "historia-jesus-pola.mp3")],
-    "n48": [(MEDIA / "historia-pablo-ouija.ogg", MEDIA / "historia-pablo-ouija.mp3")],
+    "n48": [(MEDIA / "historia-pablo-ouija-completa.mp3", MEDIA / "historia-pablo-ouija-completa.mp3")],
     "n47": [(MEDIA / "historia-nicolas-secuencia.ogg", MEDIA / "historia-nicolas-secuencia.mp3")],
+    "n74": [(MEDIA / "historia-franco-pablo-agustin.mp4", MEDIA / "historia-franco-pablo-agustin.mp3")],
 }
 AUDIOS = AUDIO_CONFIG.get(STORY_ID, [])
 
@@ -45,7 +46,7 @@ def normalizar(texto: str) -> list[str]:
 def obtener_texto_original(story_id: str) -> str:
     categorias = json.loads((DATA / "categories.json").read_text(encoding="utf-8"))
     candidato = next(
-        n for c in categorias if c["id"] == "secuencia-del-a-o"
+        n for c in categorias
         for n in c.get("nominados", []) if n["id"] == story_id
     )
     return " ".join(b["contenido"] for b in candidato.get("story", []) if b.get("tipo") == "texto")
