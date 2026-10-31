@@ -527,16 +527,8 @@
   "poster": "/media/dupla-del-ano.jpg",
   "mencion": "",
   "nominados": [
-   {
-    "id": "n37",
-    "nombre": "Guido Olmo y Mateo Guagliardi",
-    "descripcion": "",
-    "media": "/placeholder.mp4",
-    "poster": "/media/dupla-ano-guido-olmo-mateo-guagliardi.jpg",
-    "story": []
-   },
-   {
-    "id": "n38",
+    {
+     "id": "n38",
     "nombre": "Franco Bernardi y Pablo Agustín Damino",
     "descripcion": "",
     "media": "/placeholder.mp4",
