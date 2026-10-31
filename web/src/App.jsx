@@ -2225,7 +2225,7 @@ function Outfit() {
             Continuar
           </button>
           <p className="mt-4 text-[11px] text-white/25">
-            Tiene que coincidir con la lista de invitados ({padron}). Podés usar tu apodo.
+            Tiene que coincidir con la lista de invitados ({padron}).
           </p>
         </form>
       )}
