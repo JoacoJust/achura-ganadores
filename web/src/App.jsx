@@ -847,7 +847,7 @@ function DetalleTerna({ cat, datos }) {
           {cat.mencion_imagen && (
             <img
               src={cat.mencion_imagen}
-              alt="El TIDA, compañero de viajes de Achura"
+              alt="El TIIDA, compañero de viajes de Achura"
               loading="lazy"
               className="mt-5 mx-auto w-full max-w-3xl max-h-[60vh] rounded-xl object-contain"
             />
