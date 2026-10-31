@@ -30,7 +30,7 @@ STORY_ID = sys.argv[2] if len(sys.argv) > 2 else "n45"
 AUDIO_CONFIG = {
     "n45": [(MEDIA / "historia-evil-pablo.mpeg", MEDIA / "historia-evil-pablo.mp3")],
     "n46": [(MEDIA / "historia-jesus-pola.mpeg", MEDIA / "historia-jesus-pola.mp3")],
-    "n48": [(MEDIA / "historia-pablo-ouija-completa.mp3", MEDIA / "historia-pablo-ouija-completa.mp3")],
+    "n48": [(MEDIA / "historia-pablo-ouija-video.mp4", MEDIA / "historia-pablo-ouija-video.mp3")],
     "n47": [(MEDIA / "historia-nicolas-secuencia.ogg", MEDIA / "historia-nicolas-secuencia.mp3")],
     "n74": [(MEDIA / "historia-franco-pablo-agustin.mp4", MEDIA / "historia-franco-pablo-agustin.mp3")],
     "n73": [(MEDIA / "historia-pablo-ouija-video.mp4", MEDIA / "historia-pablo-ouija-video.mp3")],
@@ -131,7 +131,8 @@ def main() -> None:
     if not AUDIOS:
         raise SystemExit(f"No hay audios configurados para {STORY_ID}")
     for origen, destino in AUDIOS:
-        convertir(origen, destino)
+        if origen.resolve() != destino.resolve():
+            convertir(origen, destino)
 
     print(f"Cargando modelo faster-whisper: {MODEL}")
     model = WhisperModel(MODEL, device="cpu", compute_type="int8")
@@ -146,10 +147,13 @@ def main() -> None:
     por_audio = separar_por_audio(frases, duraciones)
     archivo_sincronizacion = DATA / "storyTimings.json"
     sincronizacion = json.loads(archivo_sincronizacion.read_text(encoding="utf-8")) if archivo_sincronizacion.exists() else {}
+    entrada = sincronizacion.get(STORY_ID, {})
     sincronizacion[STORY_ID] = {
         "audios": [f"/media/{mp3.name}" for _, mp3 in AUDIOS],
         "tiempos": por_audio,
     }
+    if entrada.get("imagen"):
+        sincronizacion[STORY_ID]["imagen"] = entrada["imagen"]
     archivo_sincronizacion.write_text(json.dumps(sincronizacion, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Listo: storyTimings.json y transcripciones .txt generados.")
 
