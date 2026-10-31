@@ -19,7 +19,12 @@ import historiasSincronizadas from './data/storyTimings.json'
 const esVideo = (m) => /\.(mp4|webm|mov|m4v|ogv)$/i.test(m || '') && !/placeholder/i.test(m || '')
 const esPlaceholder = (m) => !m || /placeholder/i.test(m)
 const TRANSITION_VIDEO = '/media/sin_marca_de_agua.mp4'
-const TERNAS_VISTAS_KEY = 'achura-ternas-vistas'
+// Cambiar esta versión reinicia globalmente la presentación al publicar un deploy.
+// Las selecciones y revelados viven en sessionStorage, por dispositivo.
+const PRESENTACION_RESET_VERSION = '2026-10-31-v2'
+const TERNAS_VISTAS_KEY = `achura-ternas-vistas-${PRESENTACION_RESET_VERSION}`
+const claveRevelado = (id) => `revelado-${PRESENTACION_RESET_VERSION}-${id}`
+const claveOutfitPaso = (id) => `outfit_paso-${PRESENTACION_RESET_VERSION}-${id}`
 
 function leerTernasVistas() {
   try {
@@ -776,7 +781,7 @@ function DetalleTerna({ cat, datos }) {
   // mientras el organizador navegue entre ternas.
   const [revelado, setRevelado] = useState(() => {
     try {
-      return sessionStorage.getItem('revelado_' + cat.id) === '1'
+      return sessionStorage.getItem(claveRevelado(cat.id)) === '1'
     } catch (e) {
       return false
     }
@@ -795,7 +800,7 @@ function DetalleTerna({ cat, datos }) {
   function revelar() {
     setRevelado(true)
     try {
-      sessionStorage.setItem('revelado_' + cat.id, '1')
+      sessionStorage.setItem(claveRevelado(cat.id), '1')
     } catch (e) {}
     setTimeout(() => {
       const el = document.getElementById('ganador')
@@ -1692,7 +1697,7 @@ function DetalleOutfit({ cat }) {
   // 0 = encuesta · 1 = quiénes votaron / quiénes faltaron · 2 = ganador
   const [paso, setPaso] = useState(() => {
     try {
-      const g = sessionStorage.getItem('outfit_paso_' + cat.id)
+      const g = sessionStorage.getItem(claveOutfitPaso(cat.id))
       return g === '2' ? 2 : g === '1' ? 1 : 0
     } catch (e) {
       return 0
@@ -1705,7 +1710,7 @@ function DetalleOutfit({ cat }) {
   function irA(p, ancla) {
     setPaso(p)
     try {
-      sessionStorage.setItem('outfit_paso_' + cat.id, String(p))
+      sessionStorage.setItem(claveOutfitPaso(cat.id), String(p))
     } catch (e) {}
     setTimeout(() => {
       const el = document.getElementById(ancla)
