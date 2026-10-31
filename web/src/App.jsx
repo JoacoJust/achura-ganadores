@@ -21,10 +21,20 @@ const esPlaceholder = (m) => !m || /placeholder/i.test(m)
 const TRANSITION_VIDEO = '/media/sin_marca_de_agua.mp4'
 // Cambiar esta versión reinicia globalmente la presentación al publicar un deploy.
 // Las selecciones y revelados viven en sessionStorage, por dispositivo.
-const PRESENTACION_RESET_VERSION = '2026-10-31-v3'
+const PRESENTACION_RESET_VERSION = '2026-10-31-v4'
 const TERNAS_VISTAS_KEY = `achura-ternas-vistas-${PRESENTACION_RESET_VERSION}`
 const claveRevelado = (id) => `revelado-${PRESENTACION_RESET_VERSION}-${id}`
 const claveOutfitPaso = (id) => `outfit_paso-${PRESENTACION_RESET_VERSION}-${id}`
+
+function limpiarReveladosAnteriores() {
+  try {
+    Object.keys(sessionStorage)
+      .filter((clave) => clave.startsWith('revelado') || clave.startsWith('outfit_paso') || clave.includes('ternas-vistas'))
+      .forEach((clave) => sessionStorage.removeItem(clave))
+  } catch (e) {}
+}
+
+limpiarReveladosAnteriores()
 
 function leerTernasVistas() {
   try {
