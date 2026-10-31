@@ -783,5 +783,24 @@
       ]
     ],
     "imagen": "/media/secuencia-ano-pablo-ouija.jpg"
+  },
+  "n75": {
+    "audios": [
+      "/media/historia-pablo-pasta-tutti.mp3"
+    ],
+    "tiempos": [
+      [
+        {
+          "inicio": 1.88,
+          "fin": 20.34,
+          "texto": "Recuerdo el gran momento donde todo achura y la grieta se encontraba en el garaje de la casa de mdt aproximadamentea las 13hs, comiendo sobre dos grandes mesas a lo largo del garaje, achura se encontraba en la mesa del lado derecho y la grieta estaba mas bien cerca de la parrilla por el lado izquierdo."
+        },
+        {
+          "inicio": 20.34,
+          "fin": 118.88,
+          "texto": "Recuerdo tener un gran parlante en el grupo, el charge de camilo, un parlante con buen sonido y que llenaba toda la habitación, tal parlante sonaba siempre a lo largo de los dias de vacaciones, sobre la mesa habia muchos platos de fideos, uno para cada uno y dos grandes ollas con la pasta y la salsa dentro, recuerdo que todos estábamos comiendo tranquilos hasta que alguien puso la canción \"Tarantella Napoletana\" de Gli Italiani di leri, mítica canción italiana relacionada a la cocina y las pastas de la tierra de la bota, al escuchar la canción en ese contexto todo achura comenzó a reírse por unos segundos, pero al instante, los 10 miembros de achura comenzaron a realizar un baile sinceridad el cual consistía en pinchar los ravioles y fideos que habia en cada uno de nuestros platos, luego el baile y los pinchazos fueron mutando, pasamos de pinchar únicamente en nuestros platos super sincronizados a pinchar cualquier fideo que haya en la mesa, luego algunos empezamos a comer esos fideos y mojarlos en salsa sin salir del tentador y jocoso baile, comiendo, pinchando y mojando fideos en salsa al ritmo, el próximo paso de algunos fue empezar a dirigir los tenedores llenos de pasta a la boca de otros mientras todos seguían bailando, a su vez otros mojaban los fideos y las pastas en vasos llenos y bebidas ajenas dándoles de comer a otros miembros de achura mientras todos bailábamos al mítico ritmo de \"Tarantella Napoletana\" sonando en el gran charger five."
+        }
+      ]
+    ]
   }
 }
